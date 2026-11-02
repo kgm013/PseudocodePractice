@@ -3,19 +3,93 @@
 }
 
 :root {
+  color-scheme: light;
   --bg: #f5f7fb;
   --surface: #ffffff;
   --text: #1c2333;
   --muted: #5b6475;
   --border: #dde3ee;
   --accent: #2f5bea;
-  --accent-dark: #2448c4;
+  --accent-fill: #2f5bea;
+  --accent-fill-hover: #2448c4;
+  --accent-soft: #e8eefc;
+  --ring: #e3eaff;
+  --focus: #9db4ff;
+  --switch-bg: #e3e9f6;
+  --hover: #f3f6fc;
+  --input-bg: #ffffff;
+  --console-bg: #fbfcfe;
+  --info-bg: #eef2fb;
   --error: #c81e1e;
   --error-bg: #fdecec;
   --warning: #9a5b00;
   --warning-bg: #fff6e0;
   --ok: #1a7f4b;
   --mono: ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace;
+
+  /* Code editor */
+  --cm-bg: #ffffff;
+  --cm-gutter-bg: #f8fafc;
+  --cm-gutter-text: #94a3b8;
+  --cm-gutter-border: #e2e8f0;
+  --cm-active-line: #f1f5ff;
+  --cm-active-gutter: #e8eefc;
+  --cm-active-gutter-text: #334155;
+  --cm-error-line: #fde8e8;
+  --cm-tab-arrow: #cbd5e1;
+  --cm-selection: #cfe0ff;
+  --syn-keyword: #1d4ed8;
+  --syn-type: #0f766e;
+  --syn-bool: #b45309;
+  --syn-builtin: #7c3aed;
+  --syn-string: #b91c1c;
+  --syn-number: #b45309;
+  --syn-comment: #6b7280;
+  --syn-operator: #334155;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0f1420;
+  --surface: #171e2e;
+  --text: #e6eaf4;
+  --muted: #9aa5bd;
+  --border: #2a3448;
+  --accent: #8fa8ff;
+  --accent-fill: #3b63e6;
+  --accent-fill-hover: #5075f0;
+  --accent-soft: #232f52;
+  --ring: #26335e;
+  --focus: #6c8cff;
+  --switch-bg: #232c40;
+  --hover: #1e2740;
+  --input-bg: #0f1420;
+  --console-bg: #121826;
+  --info-bg: #1c2438;
+  --error: #ff8a8a;
+  --error-bg: #3a1c24;
+  --warning: #f0b45a;
+  --warning-bg: #3a2e14;
+  --ok: #5fd193;
+
+  --cm-bg: #131a2a;
+  --cm-gutter-bg: #171e2e;
+  --cm-gutter-text: #6b7690;
+  --cm-gutter-border: #2a3448;
+  --cm-active-line: #1b2438;
+  --cm-active-gutter: #232f52;
+  --cm-active-gutter-text: #c5cde0;
+  --cm-error-line: #3a1c24;
+  --cm-tab-arrow: #3d4863;
+  --cm-selection: #2d447d;
+  --syn-keyword: #82a4ff;
+  --syn-type: #4fd1c0;
+  --syn-bool: #f0b45a;
+  --syn-builtin: #c4a2ff;
+  --syn-string: #ff9a9a;
+  --syn-number: #f0b45a;
+  --syn-comment: #8591ab;
+  --syn-operator: #b9c3da;
 }
 
 body {
@@ -47,7 +121,28 @@ body {
   display: inline-flex;
   padding: 3px;
   border-radius: 999px;
-  background: #e3e9f6;
+  background: var(--switch-bg);
+}
+
+.theme-toggle {
+  margin-left: auto;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .level-switch button {
@@ -67,13 +162,13 @@ body {
 }
 
 .level-switch button.active {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   box-shadow: 0 1px 3px rgba(28, 35, 51, 0.2);
 }
 
 .level-switch button:focus-visible {
-  outline: 3px solid #9db4ff;
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
 
@@ -166,7 +261,7 @@ kbd,
   padding: 9px 22px;
   border: none;
   border-radius: 8px;
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   cursor: pointer;
   display: inline-flex;
@@ -175,18 +270,19 @@ kbd,
 }
 
 .run-button:hover {
-  background: var(--accent-dark);
+  background: var(--accent-fill-hover);
 }
 
-.run-button.stop {
-  background: var(--error);
+.run-button.stop,
+.run-button.stop:hover {
+  background: #c81e1e;
 }
 
 .run-button:focus-visible,
 .link-button:focus-visible,
 .problem:focus-visible,
 .disclosure:focus-visible {
-  outline: 3px solid #9db4ff;
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
 
@@ -305,7 +401,7 @@ kbd,
 }
 
 .problem:hover {
-  background: #f3f6fc;
+  background: var(--hover);
 }
 
 .problem-icon {
@@ -359,7 +455,7 @@ kbd,
   font-family: var(--mono);
   font-size: 14px;
   line-height: 1.55;
-  background: #fbfcfe;
+  background: var(--console-bg);
 }
 
 @media (max-width: 640px) {
@@ -405,7 +501,7 @@ kbd,
 }
 
 .console-line.info {
-  background: #eef2fb;
+  background: var(--info-bg);
   color: var(--muted);
 }
 
@@ -439,8 +535,9 @@ kbd,
   border: 1px solid var(--accent);
   border-radius: 6px;
   outline: none;
-  background: #fff;
-  box-shadow: 0 0 0 3px #e3eaff;
+  background: var(--input-bg);
+  color: var(--text);
+  box-shadow: 0 0 0 3px var(--ring);
 }
 
 /* Files */
@@ -464,7 +561,7 @@ kbd,
   font-weight: 600;
   padding: 1px 8px;
   border-radius: 999px;
-  background: #e8eefc;
+  background: var(--accent-soft);
   color: var(--accent);
 }
 
@@ -494,6 +591,8 @@ kbd,
   padding: 6px 8px;
   border: 1px solid var(--border);
   border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--text);
   resize: vertical;
 }
 
@@ -510,6 +609,8 @@ kbd,
   padding: 6px 10px;
   border: 1px solid var(--border);
   border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--text);
 }
 
 .file-add button {

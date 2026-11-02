@@ -44,14 +44,14 @@ function pseudocodeLanguage(level) {
 }
 
 const highlightStyle = HighlightStyle.define([
-  { tag: tags.keyword, color: "#1d4ed8", fontWeight: "600" },
-  { tag: tags.typeName, color: "#0f766e", fontWeight: "600" },
-  { tag: tags.bool, color: "#b45309", fontWeight: "600" },
-  { tag: tags.standard(tags.variableName), color: "#7c3aed" },
-  { tag: tags.string, color: "#b91c1c" },
-  { tag: tags.number, color: "#b45309" },
-  { tag: tags.comment, color: "#6b7280", fontStyle: "italic" },
-  { tag: tags.operator, color: "#334155" },
+  { tag: tags.keyword, color: "var(--syn-keyword)", fontWeight: "600" },
+  { tag: tags.typeName, color: "var(--syn-type)", fontWeight: "600" },
+  { tag: tags.bool, color: "var(--syn-bool)", fontWeight: "600" },
+  { tag: tags.standard(tags.variableName), color: "var(--syn-builtin)" },
+  { tag: tags.string, color: "var(--syn-string)" },
+  { tag: tags.number, color: "var(--syn-number)" },
+  { tag: tags.comment, color: "var(--syn-comment)", fontStyle: "italic" },
+  { tag: tags.operator, color: "var(--syn-operator)" },
 ]);
 
 // Enter keeps the indentation, and adds a tab after a line that opens a block.
@@ -146,16 +146,29 @@ const errorLineField = StateField.define({
 });
 
 const theme = EditorView.theme({
-  "&": { fontSize: "15px", backgroundColor: "#ffffff", height: "100%" },
+  "&": { fontSize: "15px", backgroundColor: "var(--cm-bg)", color: "var(--text)", height: "100%" },
+  ".cm-cursor, .cm-dropCursor": { borderLeftColor: "var(--text)" },
+  "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": {
+    backgroundColor: "var(--cm-selection)",
+  },
+  ".cm-tooltip": {
+    backgroundColor: "var(--surface)",
+    color: "var(--text)",
+    border: "1px solid var(--border)",
+  },
   ".cm-scroller": {
     fontFamily: 'ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace',
     lineHeight: "1.6",
   },
   ".cm-content": { padding: "10px 0" },
-  ".cm-gutters": { backgroundColor: "#f8fafc", color: "#94a3b8", borderRight: "1px solid #e2e8f0" },
-  ".cm-activeLine": { backgroundColor: "#f1f5ff" },
-  ".cm-activeLineGutter": { backgroundColor: "#e8eefc", color: "#334155" },
-  ".cm-runtime-error-line": { backgroundColor: "#fde8e8" },
+  ".cm-gutters": {
+    backgroundColor: "var(--cm-gutter-bg)",
+    color: "var(--cm-gutter-text)",
+    borderRight: "1px solid var(--cm-gutter-border)",
+  },
+  ".cm-activeLine": { backgroundColor: "var(--cm-active-line)" },
+  ".cm-activeLineGutter": { backgroundColor: "var(--cm-active-gutter)", color: "var(--cm-active-gutter-text)" },
+  ".cm-runtime-error-line": { backgroundColor: "var(--cm-error-line)" },
   // Show each tab as a faint arrow, like the → in the grammar's examples.
   ".cm-highlightTab": {
     backgroundImage: "none",
@@ -165,7 +178,7 @@ const theme = EditorView.theme({
     content: '"→"',
     position: "absolute",
     left: "2px",
-    color: "#cbd5e1",
+    color: "var(--cm-tab-arrow)",
   },
   // Spaces aren't marked: indenting with spaces is already underlined as an error.
   ".cm-highlightSpace": { backgroundImage: "none" },

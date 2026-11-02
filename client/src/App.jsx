@@ -34,7 +34,22 @@ function save(key, value) {
   }
 }
 
+const THEME_KEY = "pseudo-practice:theme";
+
+// index.html has already set data-theme (saved choice, else the system setting).
+function useTheme() {
+  const [theme, setTheme] = useState(() => document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+  const toggle = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    save(THEME_KEY, next);
+    setTheme(next);
+  };
+  return [theme, toggle];
+}
+
 export default function App() {
+  const [theme, toggleTheme] = useTheme();
   const [level, setLevel] = useState(() => {
     const saved = load(LEVEL_KEY, DEFAULT_LEVEL);
     return saved === "O" || saved === "AS" ? saved : DEFAULT_LEVEL;
@@ -50,6 +65,9 @@ export default function App() {
       <header className="header">
         <h1>Pseudocode Practice</h1>
         <LevelSwitch level={level} onChange={setLevel} />
+        <button type="button" className="theme-toggle" onClick={toggleTheme}>
+          <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span> {theme === "dark" ? "Light" : "Dark"} mode
+        </button>
       </header>
       {/* A new key gives each level a fresh editor, console and runner. */}
       <Playground key={level} level={level} />
