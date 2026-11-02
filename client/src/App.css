@@ -734,6 +734,13 @@ kbd,
   cursor: default;
 }
 
+.footnote {
+  margin: 24px 0 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
 /* ---- Feedback ---------------------------------------------------------- */
 
 .feedback {

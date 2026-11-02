@@ -1,14 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 
-const TYPE_HINT = {
-  INTEGER: "a whole number",
-  REAL: "a number",
-  CHAR: "one character",
-  STRING: "some text",
-  BOOLEAN: "TRUE or FALSE",
-  DATE: "a date (DD/MM/YYYY)",
-};
-
 const STATUS_TEXT = {
   idle: "Press Run to start your program.",
   running: "Running…",
@@ -74,7 +65,6 @@ export default function ConsolePanel({ status, entries, inputRequest, onInput, o
               value={value}
               onChange={(e) => setValue(e.target.value)}
               aria-label={`INPUT ${inputRequest.name}`}
-              placeholder={`Enter ${TYPE_HINT[inputRequest.valueType]} for ${inputRequest.name}`}
               autoComplete="off"
               spellCheck="false"
             />

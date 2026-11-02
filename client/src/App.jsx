@@ -81,6 +81,9 @@ export default function App() {
       </SiteHeader>
       {/* A new key gives each level a fresh editor, console and runner. */}
       <Playground key={level} level={level} />
+      <p className="footnote">
+        There's no autocomplete or suggested text here on purpose: you won't have it in your exam either. :)
+      </p>
       <FeedbackFooter />
     </main>
   );
