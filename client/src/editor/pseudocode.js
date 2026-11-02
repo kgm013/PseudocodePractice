@@ -14,6 +14,8 @@ function pseudocodeLanguage(level) {
   const isAS = level === "AS";
   return StreamLanguage.define({
     name: "pseudocode",
+    // Lets Ctrl+/ (Cmd+/ on Mac) comment and uncomment lines with //, as in VS Code.
+    languageData: { commentTokens: { line: "//" } },
     token(stream) {
       if (stream.eatSpace()) return null;
       if (stream.match("//")) {
