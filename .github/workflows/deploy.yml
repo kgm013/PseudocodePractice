@@ -1,8 +1,13 @@
 name: Deploy to GitHub Pages
 
+# GitHub Pages hosts one site per repo, so every deploy builds both branches:
+#   main            -> /PseudocodePractice/
+#   practice-module -> /PseudocodePractice/preview/
+# A push to either branch rebuilds and republishes both.
+
 on:
   push:
-    branches: [main]
+    branches: [main, practice-module]
   workflow_dispatch:
 
 permissions:
@@ -14,19 +19,54 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+env:
+  PREVIEW_BRANCH: practice-module
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+
+      - name: Check out preview branch
+        id: preview
+        continue-on-error: true # the site still deploys if the preview branch is deleted
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PREVIEW_BRANCH }}
+          path: preview
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install --prefix client
-      - run: npm run build --prefix client
+
+      - name: Build main
+        run: |
+          npm install --prefix main/client
+          BASE_PATH=/PseudocodePractice/ npm run build --prefix main/client
+
+      - name: Build preview
+        if: steps.preview.outcome == 'success'
+        run: |
+          npm install --prefix preview/client
+          BASE_PATH=/PseudocodePractice/preview/ npm run build --prefix preview/client
+
+      - name: Put both builds together
+        run: |
+          mkdir -p site
+          cp -r main/client/dist/. site/
+          if [ -d preview/client/dist ]; then
+            mkdir -p site/preview
+            cp -r preview/client/dist/. site/preview/
+          fi
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: client/dist
+          path: site
 
   deploy:
     needs: build

@@ -5,8 +5,10 @@ import react from "@vitejs/plugin-react";
 const shared = fileURLToPath(new URL("../shared", import.meta.url));
 
 export default defineConfig(({ command }) => ({
-  // GitHub Pages serves the site from /PseudocodePractice/; local dev stays at /.
-  base: command === "build" ? "/PseudocodePractice/" : "/",
+  // GitHub Pages serves the site from /PseudocodePractice/ (and the preview branch from
+  // /PseudocodePractice/preview/, set through BASE_PATH by the deploy workflow).
+  // Local dev stays at /.
+  base: command === "build" ? process.env.BASE_PATH || "/PseudocodePractice/" : "/",
   plugins: [react()],
   resolve: {
     alias: { "@shared": shared },
