@@ -21,7 +21,7 @@ export type { InputRequest, RunOptions } from "./machine.ts";
 export type { Program } from "./ast.ts";
 export type { Level } from "./levels.ts";
 export { LEVEL_NAMES } from "./levels.ts";
-export { formatReal, truncateTo, DEFAULT_STEP_LIMIT } from "./machine.ts";
+export { formatReal, truncateTo, DEFAULT_STEP_LIMIT, MAX_FILE_CHARS, MAX_TOTAL_FILE_CHARS } from "./machine.ts";
 
 export interface CompileResult {
   /** null when there is at least one error. */

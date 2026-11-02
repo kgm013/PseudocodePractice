@@ -613,7 +613,39 @@ kbd,
   color: var(--text);
 }
 
-.file-add button {
+.file-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.file-actions .link-button {
+  margin-left: 0;
+}
+
+.hint.note {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.hint.note code {
+  font-family: var(--mono);
+}
+
+.file-import {
+  margin-top: 8px;
+}
+
+.file-error {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: var(--error);
+}
+
+.file-add button,
+.file-import button {
   font: inherit;
   font-size: 0.9rem;
   padding: 6px 14px;
@@ -624,6 +656,11 @@ kbd,
   cursor: pointer;
 }
 
+.file-import button {
+  width: 100%;
+}
+
+.file-import button:disabled,
 .file-add button:disabled {
   border-color: var(--border);
   color: var(--muted);

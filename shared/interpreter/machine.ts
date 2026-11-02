@@ -77,6 +77,12 @@ type Exec = Gen<ReturnSignal | undefined>;
 export const DEFAULT_STEP_LIMIT = 2_000_000;
 export const DEFAULT_MAX_CALL_DEPTH = 500;
 export const DEFAULT_MAX_OUTPUT_LINES = 10_000;
+/** Size limits for text files, in characters (1 MB per file, 2 MB for all files together). */
+export const MAX_FILE_CHARS = 1024 * 1024;
+export const MAX_TOTAL_FILE_CHARS = 2 * MAX_FILE_CHARS;
+
+/** Size of a file's text once its lines are joined with newlines. */
+const fileChars = (lines: string[]) => lines.reduce((n, l) => n + l.length + 1, 0);
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const NUMBER_TEXT = /^[+-]?\d+(\.\d+)?$/;
@@ -149,6 +155,8 @@ export class Machine {
   private warned = new Set<string>();
 
   private files = new Map<string, string[]>();
+  private fileSizes = new Map<string, number>();
+  private totalFileChars = 0;
   private open = new Map<string, { mode: "READ" | "WRITE" | "APPEND"; pos: number }>();
 
   constructor(program: Program, opts: RunOptions) {
@@ -164,6 +172,8 @@ export class Machine {
       const lines = text.split(/\r\n|\r|\n/);
       if (lines.length > 0 && lines[lines.length - 1] === "") lines.pop();
       this.files.set(name, lines);
+      this.fileSizes.set(name, fileChars(lines));
+      this.totalFileChars += fileChars(lines);
     }
   }
 
@@ -470,6 +480,8 @@ export class Machine {
           if (!this.files.has(name)) this.fail(`There is no file called "${name}" to read. Check the name (it is case-sensitive) or create the file first.`);
         } else if (s.mode === "WRITE" || !this.files.has(name)) {
           this.files.set(name, []);
+          this.totalFileChars -= this.fileSizes.get(name) ?? 0;
+          this.fileSizes.set(name, 0);
         }
         this.open.set(name, { mode: s.mode, pos: 0 });
         return undefined;
@@ -498,7 +510,17 @@ export class Machine {
         if (!f) this.fail(`"${name}" isn't open. Use OPENFILE "${name}" FOR WRITE first.`);
         if (f.mode === "READ") this.fail(`"${name}" is open FOR READ, so it can't be written to. Close it and open it FOR WRITE${this.isAS ? " or FOR APPEND" : ""}.`);
         const v = (yield* this.evaluate(s.value)) as Value;
-        this.files.get(name)!.push(formatValue(v, s.value.type!));
+        const text = formatValue(v, s.value.type!);
+        const size = this.fileSizes.get(name)! + text.length + 1;
+        if (size > MAX_FILE_CHARS) {
+          this.fail(`"${name}" would be bigger than the 1 MB limit for a file, so the program was stopped. Is there a loop that never ends?`);
+        }
+        if (this.totalFileChars + text.length + 1 > MAX_TOTAL_FILE_CHARS) {
+          this.fail("All the files together would be bigger than the 2 MB limit, so the program was stopped. Delete some files or write less.");
+        }
+        this.files.get(name)!.push(text);
+        this.fileSizes.set(name, size);
+        this.totalFileChars += text.length + 1;
         return undefined;
       }
 

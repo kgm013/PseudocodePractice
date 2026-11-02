@@ -385,6 +385,32 @@ describe("running programs", () => {
     assert.deepEqual(r.output, ["first line"]);
     assert.equal(r.files["FileB.txt"], "first line");
   });
+  // Reads one long line from Big.txt, then writes it to Out.txt a number of times.
+  const copyBig = (times: number) => src(
+    "DECLARE Line : STRING",
+    "DECLARE Count : INTEGER",
+    "OPENFILE \"Big.txt\" FOR READ",
+    "READFILE \"Big.txt\", Line",
+    "CLOSEFILE \"Big.txt\"",
+    "OPENFILE \"Out.txt\" FOR WRITE",
+    `FOR Count ← 1 TO ${times}`,
+    "\tWRITEFILE \"Out.txt\", Line",
+    "NEXT Count",
+    "CLOSEFILE \"Out.txt\"",
+  );
+  test("a file can't grow past 1 MB", () => {
+    const big = { "Big.txt": "x".repeat(400_000) };
+    assert.equal(run(copyBig(2), [], big).error, null);
+    runtimeError(copyBig(3), /bigger than the 1 MB limit for a file/, [], big);
+  });
+  test("all files together can't grow past 2 MB", () => {
+    const files = { "Big.txt": "x".repeat(400_000), "Other.txt": "y".repeat(1_400_000) };
+    runtimeError(copyBig(2), /All the files together would be bigger than the 2 MB limit/, [], files);
+  });
+  test("rewriting a file FOR WRITE frees its old size", () => {
+    const files = { "Big.txt": "x".repeat(400_000), "Out.txt": "z".repeat(1_000_000), "Other.txt": "y".repeat(500_000) };
+    assert.equal(run(copyBig(2), [], files).error, null);
+  });
   test("RANDOM is between 0 and 1", () => {
     const r = runSource(src("DECLARE N : REAL", "N ← RANDOM()", "OUTPUT (N >= 0) AND (N <= 1)"));
     assert.deepEqual(r.output, ["TRUE"]);

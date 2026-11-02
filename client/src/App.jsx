@@ -17,21 +17,33 @@ const STORAGE = {
   AS: { code: "pseudo-practice:aslevel:code", files: "pseudo-practice:aslevel:files" },
 };
 
-function load(key, fallback) {
+// Code and settings are kept between visits (localStorage). Files are only kept for
+// this browser session (sessionStorage): they survive a refresh but are cleared when
+// the tab is closed. Students download a file to keep it.
+function load(key, fallback, store = localStorage) {
   try {
-    const v = localStorage.getItem(key);
+    const v = store.getItem(key);
     return v == null ? fallback : JSON.parse(v);
   } catch {
     return fallback;
   }
 }
 
-function save(key, value) {
+/** Returns false when the browser refused to save (storage full or blocked). */
+function save(key, value, store = localStorage) {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    store.setItem(key, JSON.stringify(value));
+    return true;
   } catch {
-    // Storage can be full or blocked; the page still works without it.
+    return false;
   }
+}
+
+// Older versions kept files in localStorage; remove those copies.
+try {
+  for (const k of Object.values(STORAGE)) localStorage.removeItem(k.files);
+} catch {
+  // Storage blocked: nothing to clean up.
 }
 
 const THEME_KEY = "pseudo-practice:theme";
@@ -111,7 +123,8 @@ function Playground({ level }) {
   const editorRef = useRef(null);
   const [initialCode] = useState(() => load(keys.code, examples[0].code));
   const [diagnostics, setDiagnostics] = useState([]);
-  const [files, setFiles] = useState(() => load(keys.files, {}));
+  const [files, setFiles] = useState(() => load(keys.files, {}, sessionStorage));
+  const [filesSaved, setFilesSaved] = useState(true);
   const [example, setExample] = useState("");
   const saveTimer = useRef(null);
 
@@ -124,7 +137,7 @@ function Playground({ level }) {
   });
   const running = runner.status === "running" || runner.status === "input";
 
-  useEffect(() => save(keys.files, files), [keys.files, files]);
+  useEffect(() => setFilesSaved(save(keys.files, files, sessionStorage)), [keys.files, files]);
 
   const handleChange = useCallback((text) => {
     clearTimeout(saveTimer.current);
@@ -210,7 +223,7 @@ function Playground({ level }) {
           onSelectLine={(line) => goTo(line)}
           onClear={runner.clear}
         />
-        <FilesPanel files={files} onChange={setFiles} disabled={running} />
+        <FilesPanel files={files} onChange={setFiles} disabled={running} saved={filesSaved} />
       </div>
     </div>
   );
