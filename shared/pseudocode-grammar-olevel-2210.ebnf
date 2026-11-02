@@ -1,0 +1,388 @@
+/*
+ * Cambridge O Level Computer Science 2210 – Pseudocode grammar
+ * ------------------------------------------------------------
+ * Syntax for the practice-app interpreter.
+ * Companion files:
+ *   pseudocode-rules-olevel-2210.json   rules, functions, examples (rule IDs such as O-IF-1 refer to it)
+ *   README.md                           design decisions, check order, error list
+ *
+ * Notation (W3C EBNF, as used in the XML spec):
+ *   A ::= B        A is defined as B
+ *   "IF"           a literal terminal
+ *   A B            A followed by B
+ *   A | B          A or B
+ *   A?  A*  A+     optional / zero or more / one or more
+ *   ( ... )        grouping
+ *   [a-z] [^"]     character class / negated character class
+ *
+ * This grammar describes the TOKENS on each line. Two passes run outside it:
+ *   - Layout check (indentation, one statement per line): see the LAYOUT section at the end.
+ *   - Static checks (types, declarations, scope, define-before-use): see README.md.
+ */
+
+
+/* ================================================================== */
+/* 1. LEXICAL STRUCTURE                                               */
+/* ================================================================== */
+
+/* Whitespace inside a line separates tokens and is otherwise ignored.
+ * Leading whitespace is checked by the layout pass, not by this grammar. */
+Space          ::= [ \t]+
+NEWLINE        ::= "\r"? "\n"
+
+/* O-FMT-COM-1/2: a comment runs from // to the end of the line.
+ * There is no block comment. */
+Comment        ::= "//" [^\n]*
+
+/* --- Keywords ------------------------------------------------------ */
+/* Keywords are matched CASE-INSENSITIVELY so that a lower-case keyword
+ * produces a clear error ("keywords must be upper case", O-FMT-CASE-1)
+ * instead of being read as an identifier. Only the all-upper-case spelling
+ * is valid. Function names are reserved too, so `DECLARE Length : INTEGER`
+ * is an error (O-ID-4). */
+Keyword        ::= "AND" | "ARRAY" | "BOOLEAN" | "CALL" | "CASE" | "CHAR"
+                 | "CLOSEFILE" | "CONSTANT" | "DECLARE" | "DIV" | "DO"
+                 | "ELSE" | "ENDCASE" | "ENDFUNCTION" | "ENDIF"
+                 | "ENDPROCEDURE" | "ENDWHILE" | "FALSE" | "FOR"
+                 | "FUNCTION" | "IF" | "INPUT" | "INTEGER" | "LCASE"
+                 | "LENGTH" | "MOD" | "NEXT" | "NOT" | "OF" | "OPENFILE"
+                 | "OR" | "OTHERWISE" | "OUTPUT" | "PROCEDURE" | "RANDOM"
+                 | "READ" | "READFILE" | "REAL" | "REPEAT" | "RETURN"
+                 | "RETURNS" | "ROUND" | "STEP" | "STRING" | "SUBSTRING"
+                 | "THEN" | "TO" | "TRUE" | "UCASE" | "UNTIL" | "WHILE"
+                 | "WRITE" | "WRITEFILE"
+
+/* Words the lexer rejects with a helpful message because they belong to the
+ * A Level language or to real programming languages:
+ *   BYREF, BYVAL (O-SUB-3), ELSEIF, ENDFOR, MID, LEFT, RIGHT, INT, RAND,
+ *   EOF, APPEND, TYPE, CLASS, &
+ */
+
+/* --- Identifiers --------------------------------------------------- */
+/* O-ID-1/2: letters and digits only, starting with a letter. No underscore.
+ * Starting with a lower-case letter is allowed but gives a WARNING
+ * (O-ID-3, PascalCase style), except single letters such as i, j, n.
+ * Identifiers are CASE-INSENSITIVE (O-ID-5): Total and TOTAL are the same
+ * name. Any Keyword, in any letter case, is not an identifier. */
+Identifier     ::= [A-Za-z] [A-Za-z0-9]* - Keyword
+
+/* --- Literals ------------------------------------------------------ */
+IntegerLiteral ::= [0-9]+
+RealLiteral    ::= [0-9]+ "." [0-9]+          /* digits on BOTH sides: 4.0, 0.3 */
+CharLiteral    ::= "'" [^'\n] "'"             /* exactly one character */
+StringLiteral  ::= '"' [^"\n]* '"'            /* may be empty; no escape sequences */
+BooleanLiteral ::= "TRUE" | "FALSE"
+
+/* Negative numbers are written with unary minus (see Unary below), except
+ * in places that only accept a literal value (constants, CASE labels,
+ * array bounds), where a leading "-" is part of the value. */
+SignedNumber   ::= "-"? ( IntegerLiteral | RealLiteral )
+LiteralValue   ::= SignedNumber | CharLiteral | StringLiteral | BooleanLiteral
+
+/* --- Symbols ------------------------------------------------------- */
+/* O-ASG: assignment is the arrow. "<-" is accepted as typed input and
+ * shown as the arrow. */
+Assign         ::= "←" | "<-"
+RelOp          ::= "=" | "<>" | "<=" | ">=" | "<" | ">"
+
+/* Typography from the syllabus PDF that the lexer rejects with a hint:
+ *   – (en-dash) used as minus   → "use -"
+ *   “ ” (curly double quotes)   → "use \""
+ *   ‘ ’ / ꞌ (curly single)       → "use '"
+ */
+
+
+/* ================================================================== */
+/* 2. PROGRAM STRUCTURE                                               */
+/* ================================================================== */
+
+/* One statement per line. Blank lines and comment-only lines may appear
+ * anywhere. Procedure and function definitions are only allowed at the
+ * top level (never inside another definition or inside a block). */
+Program        ::= Line*
+Line           ::= ( TopLevelItem )? Comment? NEWLINE
+
+TopLevelItem   ::= ProcedureDef | FunctionDef | Statement
+
+/* A Block is the lines between an opening and a closing keyword.
+ * It may contain statements but not subroutine definitions. */
+Block          ::= ( Statement? Comment? NEWLINE )*
+
+Statement      ::= Declaration
+                 | ConstantDecl
+                 | Assignment
+                 | InputStmt
+                 | OutputStmt
+                 | IfStmt
+                 | CaseStmt
+                 | ForStmt
+                 | RepeatStmt
+                 | WhileStmt
+                 | CallStmt
+                 | ReturnStmt
+                 | OpenFileStmt
+                 | ReadFileStmt
+                 | WriteFileStmt
+                 | CloseFileStmt
+
+
+/* ================================================================== */
+/* 3. DECLARATIONS AND ASSIGNMENT                                     */
+/* ================================================================== */
+
+BasicType      ::= "INTEGER" | "REAL" | "CHAR" | "STRING" | "BOOLEAN"
+
+/* O-DEC-1: every variable must be declared before use (error otherwise).
+ * One identifier per DECLARE. */
+Declaration    ::= "DECLARE" Identifier ":" ( BasicType | ArrayType )
+
+/* 1D or 2D only (topic 8.2). Bounds are literal integers or INTEGER
+ * constants, and lower <= upper (static check). */
+ArrayType      ::= "ARRAY" "[" Bounds ( "," Bounds )? "]" "OF" BasicType
+Bounds         ::= Bound ":" Bound
+Bound          ::= "-"? IntegerLiteral | Identifier
+
+/* O-CON-1/2: the value must be a literal; the operator is the arrow, not "=". */
+ConstantDecl   ::= "CONSTANT" Identifier Assign LiteralValue
+
+/* O-ASG-1: the target is a variable or a single array element.
+ * Constants and loop variables cannot be targets (static check). */
+Assignment     ::= Target Assign Expression
+Target         ::= Identifier ( "[" Expression ( "," Expression )? "]" )?
+
+
+/* ================================================================== */
+/* 4. INPUT / OUTPUT                                                  */
+/* ================================================================== */
+
+InputStmt      ::= "INPUT" Target
+/* O-IO-3: every OUTPUT starts a new line; comma-separated values are
+ * printed next to each other with nothing added between them. */
+OutputStmt     ::= "OUTPUT" Expression ( "," Expression )*
+
+
+/* ================================================================== */
+/* 5. SELECTION                                                       */
+/* ================================================================== */
+
+/* O-IF-1: THEN and ELSE each stand alone on their own line.
+ *   IF <condition>
+ *   →THEN
+ *   →→<statements>
+ *   →ELSE
+ *   →→<statements>
+ *   ENDIF
+ * "IF x THEN" on one line, and ELSEIF, are errors. */
+IfStmt         ::= "IF" Expression Comment? NEWLINE
+                   ( BlankLine )*
+                   "THEN" Comment? NEWLINE Block
+                   ( "ELSE" Comment? NEWLINE Block )?
+                   "ENDIF"
+BlankLine      ::= Comment? NEWLINE
+
+/* O-CASE: the subject is a plain variable identifier.
+ * Labels are literal values or ranges (O-CASE-6, allowed by policy).
+ * The first statement of a branch goes on the label line; extra statements
+ * follow on their own lines, one tab deeper. A line that starts with a
+ * literal, "OTHERWISE" or "ENDCASE" begins the next clause, so this is
+ * unambiguous (no statement starts with a literal).
+ * OTHERWISE may be written with or without a colon (O-CASE-2). */
+CaseStmt       ::= "CASE" "OF" Identifier Comment? NEWLINE
+                   ( CaseClause | BlankLine )*
+                   ( OtherwiseClause ( BlankLine )* )?
+                   "ENDCASE"
+CaseClause     ::= CaseLabel ":" Statement Comment? NEWLINE Block
+CaseLabel      ::= LiteralValue ( "TO" LiteralValue )?
+OtherwiseClause::= "OTHERWISE" ":"? Statement Comment? NEWLINE Block
+
+
+/* ================================================================== */
+/* 6. ITERATION                                                       */
+/* ================================================================== */
+
+/* O-FOR: the loop variable must be a declared INTEGER. NEXT must repeat the
+ * same identifier (proposal P-FOR-1 in README). */
+ForStmt        ::= "FOR" Identifier Assign Expression "TO" Expression
+                   ( "STEP" Expression )? Comment? NEWLINE
+                   Block
+                   "NEXT" Identifier
+
+RepeatStmt     ::= "REPEAT" Comment? NEWLINE
+                   Block
+                   "UNTIL" Expression
+
+/* O-WHL-1: DO is required. */
+WhileStmt      ::= "WHILE" Expression "DO" Comment? NEWLINE
+                   Block
+                   "ENDWHILE"
+
+
+/* ================================================================== */
+/* 7. PROCEDURES AND FUNCTIONS                                        */
+/* ================================================================== */
+
+/* O-PROC-1 / O-FUNC-2: with no parameters, the brackets are optional.
+ * O-SUB-3: there is no BYREF or BYVAL; everything is passed by value.
+ * O-SUB-5: arrays can be passed. The parameter repeats the full array type,
+ * and the argument must be an array variable with the same dimensions,
+ * bounds and element type. Being by value, the subroutine gets a COPY, so
+ * changes inside it do not affect the caller's array. Example:
+ *   PROCEDURE ShowAll(Scores : ARRAY[1:10] OF INTEGER)
+ *   CALL ShowAll(ClassScores)
+ * Parameter names must not match any global name (O-DEC-5). */
+ParamList      ::= Param ( "," Param )*
+Param          ::= Identifier ":" ( BasicType | ArrayType )
+
+ProcedureDef   ::= "PROCEDURE" Identifier ( "(" ParamList? ")" )? Comment? NEWLINE
+                   Block
+                   "ENDPROCEDURE"
+
+FunctionDef    ::= "FUNCTION" Identifier ( "(" ParamList? ")" )?
+                   "RETURNS" BasicType Comment? NEWLINE
+                   Block
+                   "ENDFUNCTION"
+
+/* O-PROC-2: procedures are called only with CALL, as a full statement.
+ * Calling a FUNCTION with CALL is a static error (O-FUNC-3). */
+CallStmt       ::= "CALL" Identifier ( "(" ArgList? ")" )?
+ArgList        ::= Expression ( "," Expression )*
+
+/* Only allowed inside a function (O-SUB-4: RETURN in a procedure is an error).
+ * Takes effect immediately (O-FUNC-5). */
+ReturnStmt     ::= "RETURN" Expression
+
+
+/* ================================================================== */
+/* 8. FILE HANDLING (text files only)                                 */
+/* ================================================================== */
+
+/* The file name is a string literal or a STRING variable or constant.
+ * Open files are GLOBAL program state (O-FILE-7): once OPENFILE has run,
+ * the file can be used from anywhere (main code or any subroutine) until
+ * CLOSEFILE runs. Whether a file is open is checked while running, not
+ * per scope. */
+FileName       ::= StringLiteral | Identifier
+
+OpenFileStmt   ::= "OPENFILE" FileName "FOR" ( "READ" | "WRITE" )
+ReadFileStmt   ::= "READFILE" FileName "," Target
+WriteFileStmt  ::= "WRITEFILE" FileName "," Target      /* syllabus: <Variable> */
+CloseFileStmt  ::= "CLOSEFILE" FileName
+
+
+/* ================================================================== */
+/* 9. EXPRESSIONS – with the strict bracket rule (O-OP-2)             */
+/* ================================================================== */
+
+/* POLICY: the only order of operations a student may rely on is
+ * * and / before + and -. Every other mix of operator groups needs
+ * brackets. Instead of a precedence table, the grammar simply has NO RULE
+ * that mixes those groups without brackets, so a mix fails to parse.
+ *
+ * Operator groups:
+ *   logical  : NOT, AND, OR   (AND and OR never mix with each other)
+ *   relational: = <> < <= > >=   (at most one per bracket level)
+ *   additive  : + -           \  these two may mix freely,
+ *   multiplicative: * /       /  * / binding tighter
+ *   power     : ^             (one per bracket level, never mixed)
+ *   unary minus               (cannot be applied to a power)
+ *
+ *   VALID                         INVALID (parse error + hint)
+ *   A + B * C                     Pi * Radius ^ 2
+ *   Pi * (Radius ^ 2)             Answer < 0 OR Answer > 100
+ *   (Answer < 0) OR (Answer > 100)  NOT Found AND Valid
+ *   (NOT Found) AND Valid         A AND B OR C
+ *   A AND B AND C                 A < B < C
+ *   (-X) ^ 2,  -(X ^ 2)           -X ^ 2,  2 ^ -1
+ */
+
+Expression     ::= AndChain
+                 | OrChain
+                 | NotExpr
+                 | Comparison
+
+AndChain       ::= Atom ( "AND" Atom )+
+OrChain        ::= Atom ( "OR" Atom )+
+NotExpr        ::= "NOT" Atom
+
+/* At most one comparison operator per bracket level. */
+Comparison     ::= Arith ( RelOp Arith )?
+
+Arith          ::= Power | Sum
+Power          ::= Atom "^" Atom
+Sum            ::= Product ( ( "+" | "-" ) Product )*
+Product        ::= Unary ( ( "*" | "/" ) Unary )*
+Unary          ::= "-"? Atom
+
+/* An Atom is anything that needs no operator rules: a value, a name, a
+ * call, an array element, or a bracketed expression. */
+Atom           ::= IntegerLiteral
+                 | RealLiteral
+                 | CharLiteral
+                 | StringLiteral
+                 | BooleanLiteral
+                 | BuiltinCall
+                 | Identifier "(" ArgList? ")"                  /* user function call */
+                 | Identifier "[" Expression ( "," Expression )? "]"   /* array element */
+                 | Identifier            /* variable, constant, or user function with no args (O-FUNC-2) */
+                 | "(" Expression ")"
+
+/* Library routines (topic 8.1.7 and the string operations).
+ * O-DIV-1: DIV and MOD are ONLY written as functions; "10 DIV 3" fails to parse.
+ * RANDOM always needs its empty brackets. */
+BuiltinCall    ::= "LENGTH"    "(" Expression ")"
+                 | "LCASE"     "(" Expression ")"
+                 | "UCASE"     "(" Expression ")"
+                 | "SUBSTRING" "(" Expression "," Expression "," Expression ")"
+                 | "ROUND"     "(" Expression "," Expression ")"
+                 | "RANDOM"    "(" ")"
+                 | "DIV"       "(" Expression "," Expression ")"
+                 | "MOD"       "(" Expression "," Expression ")"
+
+
+/* ================================================================== */
+/* 10. LAYOUT (checked in a separate pass, not by the grammar above)  */
+/* ================================================================== */
+
+/* Indentation uses TABS ONLY: one tab per level (O-FMT-IND-1/2).
+ * Spaces, or a mix of tabs and spaces, at the start of a line are errors.
+ *
+ *   depth(line) = number of leading tabs
+ *
+ * Expected depth, where d is the depth of the construct's opening line:
+ *
+ *   Construct                          Line                           Depth
+ *   ------------------------------------------------------------------------
+ *   PROCEDURE / FUNCTION               header, END line               0
+ *                                      body                           1
+ *   IF                                 IF, ENDIF                      d
+ *                                      THEN, ELSE                     d+1
+ *                                      statements under THEN/ELSE     d+2
+ *   CASE OF                            CASE OF, ENDCASE               d
+ *                                      label line, OTHERWISE line     d+1
+ *                                      extra statements of a branch   d+2
+ *   FOR / WHILE / REPEAT               opening and closing line       d
+ *                                      body                           d+1
+ *   Everything else                    -                              same as the line before it
+ *
+ * Comment-only lines: a different depth from the next code line gives a
+ * WARNING, not an error (O-FMT-COM-3 is good practice).
+ * Blank lines: depth ignored.
+ * Long statements: there are no continuation lines; a statement must fit
+ * on one line.
+ *
+ * Example (→ = one tab):
+ *
+ *   PROCEDURE Check(Score : INTEGER)
+ *   →IF (Score < 0) OR (Score > 100)
+ *   →→THEN
+ *   →→→OUTPUT "Invalid"
+ *   →→ELSE
+ *   →→→CASE OF Score
+ *   →→→→100 : OUTPUT "Perfect"
+ *   →→→→90 TO 99 : OUTPUT "Great"
+ *   →→→→→OUTPUT "Nearly perfect"
+ *   →→→→OTHERWISE OUTPUT "Keep going"
+ *   →→→ENDCASE
+ *   →ENDIF
+ *   ENDPROCEDURE
+ */

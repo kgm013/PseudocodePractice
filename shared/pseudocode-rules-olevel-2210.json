@@ -1,0 +1,398 @@
+{
+  "meta": {
+    "source": "Cambridge O Level Computer Science 2210 Syllabus (697287), Version 5 – section 4 'Pseudocode' and topic 8 'Programming'",
+    "examYears": [2026, 2027, 2028],
+    "companionFile": "pseudocode-rules-as-alevel-9618.json (AS & A Level 9618)",
+    "grammarFile": "pseudocode-grammar-olevel-2210.ebnf",
+    "designNotes": "README.md",
+    "ruleLevels": {
+      "required": "The syllabus says must / must never / is written as – a hard syntax rule.",
+      "goodPractice": "The syllabus calls it good practice / best practice / advisable – a style rule.",
+      "info": "Describes behaviour or exam presentation."
+    },
+    "notation": "Text in <angle brackets> is a meta-variable (placeholder). '...' means 'more of the same'.",
+    "projectPolicy": {
+      "note": "Decisions carried over from the A Level file. Rules changed by these carry \"policy\": true.",
+      "assignmentAlias": "Accept <- as typed input for ←; always display it as ←.",
+      "declarations": "Variables that are not declared are an ERROR, including FOR loop variables.",
+      "keywordCase": "Keywords not written in upper case are an ERROR.",
+      "call": "CALL is used for procedures only, never for functions.",
+      "stringEquality": "Exact, case-sensitive match.",
+      "output": "Each OUTPUT statement prints on a new line.",
+      "uninitialised": "Variables that are never assigned hold a random value of their type.",
+      "scope": "Variables declared inside a procedure or function are local.",
+      "negativeNumbers": "DIV and MOD truncate toward zero.",
+      "stringPositions": "Strings always start at position 1.",
+      "divModForm": "Only the function form DIV(a, b) / MOD(a, b) is allowed.",
+      "precedence": "Parentheses are required wherever the syllabus does not state an order (O-OP-2).",
+      "syntaxForms": "O Level forms only, except CASE: OTHERWISE with or without a colon, and ranges or several statements per branch are allowed. See differencesFromALevel.",
+      "indentation": "One tab per indent level, the same as the A Level file."
+    }
+  },
+
+  "formatting": {
+    "font": { "level": "info", "rule": "Courier New, consistent size throughout." },
+    "indentation": [
+      { "id": "O-FMT-IND-1", "level": "required", "policy": true, "rule": "Each indent level is one tab. The syllabus uses 4 spaces." },
+      { "id": "O-FMT-IND-2", "level": "required", "policy": true, "rule": "THEN and ELSE are one tab in from their IF, and the statements under them are one more tab in. Case clauses are one tab in from CASE OF. The syllabus indents these by 2 spaces." },
+      { "id": "O-FMT-IND-3", "level": "info", "rule": "A statement too long for one line continues on following lines, indented from the margin." },
+      { "id": "O-FMT-IND-4", "level": "info", "rule": "Indentation may be omitted when line numbers are used." }
+    ],
+    "case": [
+      { "id": "O-FMT-CASE-1", "level": "required", "policy": true, "rule": "Keywords are UPPER-CASE, e.g. IF, REPEAT, PROCEDURE. Lower-case keywords are an error." },
+      { "id": "O-FMT-CASE-2", "level": "required", "rule": "Identifiers are mixed case (PascalCase), e.g. NumberOfPlayers." }
+    ],
+    "lineNumbering": [
+      { "id": "O-FMT-LN-1", "level": "info", "rule": "Each statement is numbered; continuation lines are not numbered." }
+    ],
+    "comments": [
+      { "id": "O-FMT-COM-1", "level": "required", "rule": "Comments start with // and run to the end of the line.", "syntax": "// <comment>" },
+      { "id": "O-FMT-COM-2", "level": "required", "rule": "Multi-line comments: every line starts with //." },
+      { "id": "O-FMT-COM-3", "level": "goodPractice", "rule": "A comment normally goes on its own line before the code it refers to, at the same indentation." },
+      { "id": "O-FMT-COM-4", "level": "info", "rule": "A short comment about a single line may go at the end of that line." }
+    ]
+  },
+
+  "dataTypes": [
+    { "name": "INTEGER", "description": "A whole number", "literal": "Written in denary as normal", "examples": ["5", "-3"] },
+    { "name": "REAL", "description": "A number that can have a fractional part", "literal": "Always at least one digit on BOTH sides of the decimal point", "examples": ["4.7", "0.3", "-4.0", "0.0"], "invalidExamples": [".3", "4."] },
+    { "name": "CHAR", "description": "A single character", "literal": "One character between single quotes", "examples": ["'x'", "'c'", "'@'"] },
+    { "name": "STRING", "description": "A sequence of zero or more characters", "literal": "Between double quotes; may be empty", "examples": ["\"This is a string\"", "\"\""] },
+    { "name": "BOOLEAN", "description": "The logical values TRUE and FALSE", "literal": "TRUE or FALSE", "examples": ["TRUE", "FALSE"] }
+  ],
+  "dataTypeNotes": "There is no DATE type at O Level.",
+
+  "identifiers": {
+    "appliesTo": ["variables", "constants", "arrays", "procedures", "functions"],
+    "pattern": "^[A-Za-z][A-Za-z0-9]*$",
+    "rules": [
+      { "id": "O-ID-1", "level": "required", "rule": "Only letters A–Z / a–z and digits 0–9. No underscore, no accented letters, no other characters." },
+      { "id": "O-ID-2", "level": "required", "policy": true, "rule": "Must start with a letter, not a digit. The syllabus says 'a capital letter'; this app only warns about that (O-ID-3)." },
+      { "id": "O-ID-3", "level": "goodPractice", "policy": true, "rule": "PascalCase, e.g. FirstName. A name starting with a lower-case letter gives a WARNING, except conventional single letters such as i, j, n." },
+      { "id": "O-ID-4", "level": "required", "rule": "Keywords must never be used as identifiers." },
+      { "id": "O-ID-5", "level": "required", "rule": "Identifiers are case-insensitive: Countdown and CountDown are the same name." },
+      { "id": "O-ID-6", "level": "goodPractice", "rule": "Use meaningful, descriptive names for variables, constants, arrays, procedures and functions." },
+      { "id": "O-ID-7", "level": "info", "rule": "Conventional single letters are allowed, e.g. i, j for array indices, X, Y for coordinates. These give no warning." }
+    ]
+  },
+
+  "declarations": {
+    "variable": {
+      "syntax": "DECLARE <identifier> : <data type>",
+      "rules": [
+        { "id": "O-DEC-1", "level": "required", "policy": true, "rule": "Every variable must be declared with DECLARE before use, including FOR loop variables." },
+        { "id": "O-DEC-2", "level": "info", "policy": true, "rule": "A variable that is declared but never assigned holds a random value of its declared type. Reading it is not an error, but the result is unpredictable." },
+        { "id": "O-DEC-3", "level": "required", "policy": true, "rule": "Variables declared inside a procedure or function are local to it, and so are parameters." },
+        { "id": "O-DEC-5", "level": "required", "policy": true, "rule": "No shadowing: a local variable or parameter must not have the same name (in any letter case) as a global variable, constant, array or subroutine anywhere in the program. This is an error." },
+        { "id": "O-DEC-4", "level": "info", "rule": "Variables declared in the main program (outside any procedure or function) are global. The syllabus requires learners to understand local and global variables." }
+      ],
+      "examples": ["DECLARE Counter : INTEGER", "DECLARE TotalToPay : REAL", "DECLARE GameOver : BOOLEAN"]
+    },
+    "constant": {
+      "syntax": "CONSTANT <identifier> ← <value>",
+      "rules": [
+        { "id": "O-CON-1", "level": "required", "rule": "The value must be a literal. A variable, another constant or an expression must never be used." },
+        { "id": "O-CON-2", "level": "required", "rule": "Constants use ← (A Level uses =) and have no data type annotation." },
+        { "id": "O-CON-3", "level": "goodPractice", "rule": "Use constants where they make code more readable or easier to update." }
+      ],
+      "examples": ["CONSTANT HourlyRate ← 6.50", "CONSTANT DefaultText ← \"N/A\""]
+    },
+    "assignment": {
+      "operator": { "symbol": "←", "unicode": "U+2190", "acceptedInputAliases": ["<-"], "policy": true },
+      "syntax": "<identifier> ← <value>",
+      "rules": [
+        { "id": "O-ASG-1", "level": "required", "rule": "The left side must be a variable, which can be an array element." },
+        { "id": "O-ASG-2", "level": "required", "rule": "The right side may be any expression that evaluates to the same data type as the variable." }
+      ],
+      "examples": ["Counter ← 0", "Counter ← Counter + 1", "TotalToPay ← NumberOfHours * HourlyRate"]
+    }
+  },
+
+  "arrays": {
+    "description": "Fixed-length structures of elements of the same data type, accessed by consecutive index numbers. 1D and 2D arrays only.",
+    "declaration": {
+      "oneDimensional": "DECLARE <identifier> : ARRAY[<l>:<u>] OF <data type>",
+      "twoDimensional": "DECLARE <identifier> : ARRAY[<l1>:<u1>, <l2>:<u2>] OF <data type>",
+      "examples": ["DECLARE StudentNames : ARRAY[1:30] OF STRING", "DECLARE NoughtsAndCrosses : ARRAY[1:3, 1:3] OF CHAR"]
+    },
+    "rules": [
+      { "id": "O-ARR-1", "level": "required", "rule": "Square brackets [ ] enclose array indices." },
+      { "id": "O-ARR-2", "level": "goodPractice", "rule": "Always state the lower bound explicitly." },
+      { "id": "O-ARR-3", "level": "info", "rule": "The first index can be 0 or 1; generally 1 is used. Valid indices are whatever the declaration says." },
+      { "id": "O-ARR-4", "level": "required", "rule": "Only one index value per dimension inside the brackets; no ranges." },
+      { "id": "O-ARR-5", "level": "info", "rule": "Variables and expressions can be used as indices." },
+      { "id": "O-ARR-6", "level": "required", "rule": "Use a loop to assign a group of elements one at a time." }
+    ],
+    "examples": [
+      "StudentNames[1] ← \"Ali\"",
+      "NoughtsAndCrosses[2,3] ← 'X'",
+      "StudentNames[n+1] ← StudentNames[n]",
+      "FOR Index ← 1 TO 30\n\tStudentNames[Index] ← \"\"\nNEXT Index"
+    ]
+  },
+
+  "inputOutput": {
+    "input": {
+      "syntax": "INPUT <identifier>",
+      "rules": [{ "id": "O-IO-1", "level": "required", "rule": "The target must be a variable, which can be an array element." }]
+    },
+    "output": {
+      "syntax": "OUTPUT <value(s)>",
+      "rules": [
+        { "id": "O-IO-2", "level": "info", "rule": "Several values separated by commas can be output in one statement." },
+        { "id": "O-IO-3", "level": "required", "policy": true, "rule": "Each OUTPUT statement prints on a new line. All values in one OUTPUT stay on that line, with no extra spaces added." }
+      ]
+    },
+    "examples": ["INPUT Answer", "OUTPUT Score", "OUTPUT \"You have \", Lives, \" lives left\""],
+    "notes": "There is no & concatenation operator at O Level. To join output on one line, use commas in a single OUTPUT."
+  },
+
+  "operators": {
+    "arithmetic": [
+      { "symbol": "+", "meaning": "Addition" },
+      { "symbol": "-", "meaning": "Subtraction" },
+      { "symbol": "*", "meaning": "Multiplication" },
+      { "symbol": "/", "meaning": "Division", "resultType": "REAL (assumed, see AMB-O4)" },
+      { "symbol": "^", "meaning": "Raised to the power of", "example": "Pi * Radius ^ 2" }
+    ],
+    "relational": {
+      "resultType": "BOOLEAN",
+      "operators": [
+        { "symbol": "=", "meaning": "Equal to" },
+        { "symbol": "<", "meaning": "Less than" },
+        { "symbol": "<=", "meaning": "Less than or equal to" },
+        { "symbol": ">", "meaning": "Greater than" },
+        { "symbol": ">=", "meaning": "Greater than or equal to" },
+        { "symbol": "<>", "meaning": "Not equal to" }
+      ],
+      "rules": [
+        { "id": "O-REL-1", "level": "required", "policy": true, "rule": "Two strings, or two chars, are equal only if they match exactly (case-sensitive): \"a\" = \"a\" is TRUE, \"a\" = \"A\" is FALSE." },
+        { "id": "O-REL-2", "level": "info", "policy": true, "rule": "< and > compare strings character by character using ASCII codes (assumed, the same open point as in the A Level file)." }
+      ]
+    },
+    "logical": { "operandType": "BOOLEAN", "resultType": "BOOLEAN", "operators": ["AND", "OR", "NOT"], "note": "These are the only logical operators. NAND, NOR and XOR appear only in the logic gates topic, not in pseudocode." },
+    "precedence": {
+      "statedBySyllabus": "* and / bind tighter than + and -.",
+      "impliedBySyllabusExamples": ["^ binds tighter than * (Pi * Radius ^ 2)", "comparisons bind tighter than OR (IF Answer < 0 OR Answer > 100)"],
+      "rules": [
+        { "id": "O-OP-1", "level": "goodPractice", "rule": "Use parentheses to make the order of operations explicit in complex expressions." },
+        { "id": "O-OP-2", "level": "required", "policy": true, "rule": "Without parentheses, the only precedence you may rely on is * / over + -. Mixing any other operator groups without parentheses is an error. This applies even where the syllabus's own examples leave brackets out.", "comment": "Stricter than the syllabus on purpose: brackets are never wrong in an exam, but relying on an unstated order can cost marks. This teaches students the safe habit.", "operatorGroups": { "power": ["^"], "multiplicative": ["*", "/"], "additive": ["+", "-"], "relational": ["=", "<>", "<", "<=", ">", ">="], "logical": ["NOT", "AND", "OR"] }, "allowedWithoutParentheses": ["any mix of multiplicative and additive (* / over + -)", "a chain of one operator group, read left to right, e.g. A + B - C, A AND B AND C"], "invalidExamples": ["Pi * Radius ^ 2", "Answer < 0 OR Answer > 100", "NOT A AND B", "A AND B OR C"], "validExamples": ["Pi * (Radius ^ 2)", "(Answer < 0) OR (Answer > 100)", "(NOT A) AND B", "(A AND B) OR C", "Score * 100 / MaxMark"] }
+      ]
+    }
+  },
+
+  "builtInFunctions": {
+    "note": "These are all the library routines the syllabus names. There is no exam insert at O Level.",
+    "integerDivision": [
+      { "name": "DIV", "signature": "DIV(<identifier1>, <identifier2>)", "params": "INTEGER, INTEGER", "returns": "INTEGER", "description": "Quotient of identifier1 divided by identifier2, with the fractional part discarded (truncates toward zero)", "examples": [{ "call": "DIV(10, 3)", "returns": "3" }, { "call": "DIV(-7, 2)", "returns": "-3", "policy": true }] },
+      { "name": "MOD", "signature": "MOD(<identifier1>, <identifier2>)", "params": "INTEGER, INTEGER", "returns": "INTEGER", "description": "Remainder of identifier1 divided by identifier2; the sign follows the dividend", "examples": [{ "call": "MOD(10, 3)", "returns": "1" }, { "call": "MOD(-7, 2)", "returns": "-1", "policy": true }] }
+    ],
+    "divModRules": [
+      { "id": "O-DIV-1", "level": "required", "policy": true, "rule": "DIV and MOD are written only as functions: DIV(10, 3). The operator form 10 DIV 3 is an error." }
+    ],
+    "string": [
+      { "name": "LENGTH", "signature": "LENGTH(<identifier>)", "params": "STRING", "returns": "INTEGER", "description": "Length of the string", "example": { "call": "LENGTH(\"Happy Days\")", "returns": "10" } },
+      { "name": "LCASE", "signature": "LCASE(<identifier>)", "params": "STRING or CHAR", "returns": "Same type as the input", "description": "Every character converted to lower case", "example": { "call": "LCASE('W')", "returns": "'w'" } },
+      { "name": "UCASE", "signature": "UCASE(<identifier>)", "params": "STRING or CHAR", "returns": "Same type as the input", "description": "Every character converted to upper case", "example": { "call": "UCASE(\"Happy\")", "returns": "\"HAPPY\"" } },
+      { "name": "SUBSTRING", "signature": "SUBSTRING(<identifier>, <start>, <length>)", "params": "STRING, INTEGER, INTEGER", "returns": "STRING", "description": "A string of length <length> starting at position <start>. start and length must be positive integers.", "example": { "call": "SUBSTRING(\"Happy Days\", 1, 5)", "returns": "\"Happy\"" } }
+    ],
+    "stringRules": [
+      { "id": "O-STR-1", "level": "required", "policy": true, "rule": "String positions start at 1. The syllabus allows 0 or 1; this app always uses 1." }
+    ],
+    "other": [
+      { "name": "ROUND", "signature": "ROUND(<identifier>, <places>)", "params": "REAL, INTEGER", "returns": "REAL (assumed)", "description": "The value cut to <places> decimal places by truncation: extra digits are dropped, never rounded up, moving toward zero. The syllabus only says 'rounded'; truncation is this app's policy.", "policy": true, "examples": [{ "call": "ROUND(2.7, 0)", "returns": "2" }, { "call": "ROUND(2.5, 0)", "returns": "2" }, { "call": "ROUND(-2.7, 0)", "returns": "-2" }, { "call": "ROUND(3.14159, 2)", "returns": "3.14" }, { "call": "ROUND(1.999, 2)", "returns": "1.99" }] },
+      { "name": "RANDOM", "signature": "RANDOM()", "params": "none", "returns": "REAL", "description": "A random number between 0 and 1 inclusive (both 0 and 1 can be returned)" }
+    ],
+    "example": "Value ← ROUND(RANDOM() * 6, 0) // a whole number from 0 to 6 (6 only when RANDOM() returns exactly 1)"
+  },
+
+  "selection": {
+    "if": {
+      "syntax": {
+        "withoutElse": "IF <condition>\n\tTHEN\n\t\t<statements>\nENDIF",
+        "withElse": "IF <condition>\n\tTHEN\n\t\t<statements>\n\tELSE\n\t\t<statements>\nENDIF"
+      },
+      "rules": [
+        { "id": "O-IF-1", "level": "required", "rule": "THEN goes on its own line after the condition, one tab in. ELSE is also one tab in. IF x THEN on a single line is an error." },
+        { "id": "O-IF-2", "level": "required", "rule": "ELSE is optional; every IF ends with ENDIF." },
+        { "id": "O-IF-3", "level": "info", "rule": "There is no ELSEIF; nest an IF inside ELSE, or use CASE." }
+      ],
+      "example": "IF ChallengerScore > ChampionScore\n\tTHEN\n\t\tIF ChallengerScore > HighestScore\n\t\t\tTHEN\n\t\t\t\tOUTPUT ChallengerName, \" is champion and highest scorer\"\n\t\t\tELSE\n\t\t\t\tOUTPUT ChallengerName, \" is the new champion\"\n\t\tENDIF\n\tELSE\n\t\tOUTPUT ChampionName, \" is still the champion\"\n\t\tIF ChampionScore > HighestScore\n\t\t\tTHEN\n\t\t\t\tOUTPUT ChampionName, \" is also the highest scorer\"\n\t\tENDIF\nENDIF"
+    },
+    "case": {
+      "syntax": {
+        "basic": "CASE OF <identifier>\n\t<value 1> : <statement>\n\t<value 2> : <statement>\n\t...\nENDCASE",
+        "withOtherwise": "CASE OF <identifier>\n\t<value 1> : <statement>\n\t<value 2> : <statement>\n\t...\n\tOTHERWISE <statement>\nENDCASE",
+        "range": "<value1> TO <value2> : <statement>",
+        "multipleStatements": "<value> : <statement1>\n\t<statement2>"
+      },
+      "rules": [
+        { "id": "O-CASE-1", "level": "required", "rule": "Case clauses are one tab in from CASE OF." },
+        { "id": "O-CASE-2", "level": "required", "policy": true, "rule": "OTHERWISE may be written with or without a colon: OTHERWISE <statement> (syllabus) or OTHERWISE : <statement> (A Level)." },
+        { "id": "O-CASE-6", "level": "info", "policy": true, "rule": "A branch may use a range (1 TO 5 : ...) and may hold several statements; extra statements go on following lines, one tab further in than the clause. This is allowed even though the syllabus recommends single values and single statements." },
+        { "id": "O-CASE-3", "level": "required", "rule": "OTHERWISE is optional; if present, it must be the last case." },
+        { "id": "O-CASE-4", "level": "goodPractice", "rule": "Keep each branch to a single statement and a single value. For more complex cases, use IF." },
+        { "id": "O-CASE-5", "level": "info", "rule": "Cases are tested in order; the first match runs, then control goes to the line after ENDCASE (no fall-through)." }
+      ],
+      "example": "INPUT Move\nCASE OF Move\n\t'W' : Position ← Position - 10\n\t'E' : Position ← Position + 10\n\t'A' : Position ← Position - 1\n\t'D' : Position ← Position + 1\n\tOTHERWISE OUTPUT \"Beep\"\nENDCASE"
+    }
+  },
+
+  "iteration": {
+    "for": {
+      "kind": "count-controlled",
+      "syntax": {
+        "basic": "FOR <identifier> ← <value1> TO <value2>\n\t<statements>\nNEXT <identifier>",
+        "withStep": "FOR <identifier> ← <value1> TO <value2> STEP <increment>\n\t<statements>\nNEXT <identifier>"
+      },
+      "rules": [
+        { "id": "O-FOR-1", "level": "required", "policy": true, "rule": "The loop variable must be a declared INTEGER variable." },
+        { "id": "O-FOR-2", "level": "required", "rule": "value1, value2 and the STEP increment must evaluate to integers." },
+        { "id": "O-FOR-3", "level": "info", "rule": "Bounds are inclusive. If value1 = value2 the body runs once; if value1 > value2 (with no STEP) it runs zero times." },
+        { "id": "O-FOR-4", "level": "info", "rule": "With STEP, the variable changes by the increment each time and the loop stops once it goes past value2. STEP can be negative." }
+      ],
+      "example": "Total ← 0\nFOR Row ← 1 TO MaxRow\n\tRowTotal ← 0\n\tFOR Column ← 1 TO 10\n\t\tRowTotal ← RowTotal + Amount[Row, Column]\n\tNEXT Column\n\tOUTPUT \"Total for Row \", Row, \" is \", RowTotal\n\tTotal ← Total + RowTotal\nNEXT Row\nOUTPUT \"The grand total is \", Total"
+    },
+    "repeat": {
+      "kind": "post-condition",
+      "syntax": "REPEAT\n\t<statements>\nUNTIL <condition>",
+      "rules": [
+        { "id": "O-REP-1", "level": "required", "rule": "The condition must evaluate to BOOLEAN." },
+        { "id": "O-REP-2", "level": "info", "rule": "The body runs at least once; the loop stops when the condition is TRUE." }
+      ],
+      "example": "REPEAT\n\tOUTPUT \"Please enter the password\"\n\tINPUT Password\nUNTIL Password = \"Secret\""
+    },
+    "while": {
+      "kind": "pre-condition",
+      "syntax": "WHILE <condition> DO\n\t<statements>\nENDWHILE",
+      "rules": [
+        { "id": "O-WHL-1", "level": "required", "rule": "DO is required after the condition (A Level has no DO)." },
+        { "id": "O-WHL-2", "level": "required", "rule": "The condition must evaluate to BOOLEAN." },
+        { "id": "O-WHL-3", "level": "info", "rule": "The condition is tested before each pass; the body may run zero times." }
+      ],
+      "example": "WHILE Number > 9 DO\n\tNumber ← Number - 9\nENDWHILE"
+    },
+    "limits": { "id": "O-NEST-1", "level": "info", "rule": "Candidates will not need to write more than three levels of nested statements." }
+  },
+
+  "subroutines": {
+    "general": [
+      { "id": "O-SUB-1", "level": "required", "policy": true, "rule": "Define before use. Code inside a subroutine may call subroutines defined anywhere in the file, including ones further down. A statement outside any subroutine may only call subroutine X if X, and every subroutine X calls directly or indirectly, is defined above that statement. Otherwise it is an error. This replaces the syllabus's 'at the start of the code'; the syllabus's own example follows this rule.", "validExample": "PROCEDURE A\n\tCALL B\nENDPROCEDURE\n\nPROCEDURE B\n\tOUTPUT \"Hi\"\nENDPROCEDURE\n\nCALL A", "invalidExample": "PROCEDURE A\n\tCALL B\nENDPROCEDURE\n\nCALL A   // error: B is not defined yet\n\nPROCEDURE B\n\tOUTPUT \"Hi\"\nENDPROCEDURE" },
+      { "id": "O-SUB-4", "level": "required", "policy": true, "rule": "Using RETURN inside a procedure is an error." },
+      { "id": "O-SUB-6", "level": "goodPractice", "policy": true, "rule": "More than 3 parameters gives a WARNING (not an error), because exam questions never use more than 3." },
+      { "id": "O-SUB-2", "level": "info", "rule": "Procedures and functions have at most three parameters in exam questions." },
+      { "id": "O-SUB-3", "level": "required", "rule": "There is no BYREF or BYVAL at O Level; all parameters are passed by value. Writing BYREF or BYVAL is an error." },
+      { "id": "O-SUB-5", "level": "required", "policy": true, "rule": "Arrays can be passed as parameters. The parameter repeats the full array type, e.g. Scores : ARRAY[1:10] OF INTEGER. The argument must be an array with the same dimensions, bounds and element type. Being by value, the subroutine works on a copy, so the caller's array is not changed.", "example": "PROCEDURE ShowAll(Scores : ARRAY[1:10] OF INTEGER)\n\tDECLARE i : INTEGER\n\tFOR i ← 1 TO 10\n\t\tOUTPUT Scores[i]\n\tNEXT i\nENDPROCEDURE\n\nDECLARE ClassScores : ARRAY[1:10] OF INTEGER\nCALL ShowAll(ClassScores)" }
+    ],
+    "procedure": {
+      "syntax": {
+        "noParams": "PROCEDURE <identifier>\n\t<statements>\nENDPROCEDURE",
+        "withParams": "PROCEDURE <identifier>(<param1> : <datatype>, <param2> : <datatype>, ...)\n\t<statements>\nENDPROCEDURE",
+        "callNoParams": "CALL <identifier>",
+        "callWithParams": "CALL <identifier>(Value1, Value2, ...)"
+      },
+      "rules": [
+        { "id": "O-PROC-1", "level": "required", "policy": true, "rule": "With no parameters, the brackets are optional in both the definition and the call: PROCEDURE Beep or PROCEDURE Beep(), and CALL Beep or CALL Beep(). The syllabus form has no brackets." },
+        { "id": "O-PROC-2", "level": "required", "rule": "Procedures are called with CALL; the call is a complete statement." },
+        { "id": "O-PROC-3", "level": "required", "rule": "Arguments must have the data types given in the definition." },
+        { "id": "O-PROC-4", "level": "info", "rule": "After the procedure runs, control returns to the line after the CALL." }
+      ],
+      "example": "PROCEDURE DefaultLine\n\tCALL Line(60)\nENDPROCEDURE\n\nPROCEDURE Line(Size : INTEGER)\n\tDECLARE Count : INTEGER\n\tFOR Count ← 1 TO Size\n\t\tOUTPUT '-'\n\tNEXT Count\nENDPROCEDURE\n\nIF MySize = Default\n\tTHEN\n\t\tCALL DefaultLine\n\tELSE\n\t\tCALL Line(MySize)\nENDIF"
+    },
+    "function": {
+      "syntax": {
+        "noParams": "FUNCTION <identifier> RETURNS <data type>\n\t<statements>\nENDFUNCTION",
+        "withParams": "FUNCTION <identifier>(<param1> : <datatype>, <param2> : <datatype>, ...) RETURNS <data type>\n\t<statements>\nENDFUNCTION",
+        "return": "RETURN <value>"
+      },
+      "rules": [
+        { "id": "O-FUNC-1", "level": "required", "rule": "The header gives the return type with RETURNS; the body uses RETURN <value>." },
+        { "id": "O-FUNC-2", "level": "required", "policy": true, "rule": "With no parameters, the brackets are optional in both the definition and the call: FUNCTION GetScore RETURNS INTEGER or FUNCTION GetScore() RETURNS INTEGER, used as X ← GetScore or X ← GetScore()." },
+        { "id": "O-FUNC-3", "level": "required", "rule": "Never use CALL with a function; only use a function call inside an expression." },
+        { "id": "O-FUNC-4", "level": "info", "rule": "RETURN is normally the last statement." },
+        { "id": "O-FUNC-5", "level": "info", "policy": true, "rule": "RETURN takes effect immediately wherever it appears; any code after it in the function is skipped. This matches the A Level guide." }
+      ],
+      "example": "FUNCTION SumSquare(Number1 : INTEGER, Number2 : INTEGER) RETURNS INTEGER\n\tRETURN Number1 * Number1 + Number2 * Number2\nENDFUNCTION\n\nOUTPUT \"Sum of squares = \", SumSquare(10, 20)"
+    }
+  },
+
+  "fileHandling": {
+    "description": "Text files only. Read or write a single data item or a line of text.",
+    "syntax": {
+      "open": "OPENFILE <File identifier> FOR <File mode>",
+      "read": "READFILE <File identifier>, <Variable>",
+      "write": "WRITEFILE <File identifier>, <Variable>",
+      "close": "CLOSEFILE <File identifier>"
+    },
+    "modes": [
+      { "mode": "READ", "meaning": "Read data from the file" },
+      { "mode": "WRITE", "meaning": "Write data to the file. Creates a new file; any existing data is lost." }
+    ],
+    "rules": [
+      { "id": "O-FILE-1", "level": "goodPractice", "rule": "Open a file and state its mode before reading or writing it." },
+      { "id": "O-FILE-2", "level": "info", "rule": "The file identifier is the file name as a STRING." },
+      { "id": "O-FILE-3", "level": "required", "rule": "A file is open in only one mode at a time." },
+      { "id": "O-FILE-4", "level": "required", "rule": "READFILE needs READ mode; WRITEFILE writes after the file has been opened." },
+      { "id": "O-FILE-5", "level": "goodPractice", "rule": "Close files with CLOSEFILE when they are no longer needed." },
+      { "id": "O-FILE-6", "level": "info", "rule": "There is no APPEND mode, no EOF function and no random-access file handling at O Level." },
+      { "id": "O-FILE-7", "level": "required", "policy": true, "rule": "Open files are global. Once OPENFILE has run, the file can be used anywhere (main code or any subroutine) until CLOSEFILE runs. Reading, writing or closing a file that has not been opened in the right mode is a runtime error." }
+    ],
+    "example": "DECLARE LineOfText : STRING\nOPENFILE \"FileA.txt\" FOR READ\nOPENFILE \"FileB.txt\" FOR WRITE\nREADFILE \"FileA.txt\", LineOfText\nWRITEFILE \"FileB.txt\", LineOfText\nCLOSEFILE \"FileA.txt\"\nCLOSEFILE \"FileB.txt\""
+  },
+
+  "notInOLevel": ["DATE type", "& concatenation", "RIGHT / MID / LEFT and other insert functions", "INT / RAND", "BYREF / BYVAL", "TYPE (records, enums, pointers, sets)", "APPEND / EOF", "RANDOM files (SEEK, GETRECORD, PUTRECORD)", "CLASS / OOP"],
+
+  "keywords": [
+    "AND", "ARRAY", "BOOLEAN", "CALL", "CASE", "CHAR", "CLOSEFILE", "CONSTANT", "DECLARE", "DIV", "DO", "ELSE",
+    "ENDCASE", "ENDFUNCTION", "ENDIF", "ENDPROCEDURE", "ENDWHILE", "FALSE", "FOR", "FUNCTION", "IF", "INPUT",
+    "INTEGER", "LCASE", "LENGTH", "MOD", "NEXT", "NOT", "OF", "OPENFILE", "OR", "OTHERWISE", "OUTPUT",
+    "PROCEDURE", "RANDOM", "READ", "READFILE", "REAL", "REPEAT", "RETURN", "RETURNS", "ROUND", "STEP", "STRING",
+    "SUBSTRING", "THEN", "TO", "TRUE", "UCASE", "UNTIL", "WHILE", "WRITE", "WRITEFILE"
+  ],
+  "symbols": ["←", "+", "-", "*", "/", "^", "=", "<>", "<", "<=", ">", ">=", "//", ":", ",", "[", "]", "(", ")", "'", "\""],
+
+  "differencesFromALevel": {
+    "status": "All decided.",
+    "items": [
+      { "id": "DIFF-1", "construct": "IF layout", "oLevel": "IF <condition>\n\tTHEN\n\t\t...\n\tELSE\n\t\t...\nENDIF", "aLevel": "IF <condition> THEN\n\t...\nELSE\n\t...\nENDIF", "acceptALevelForm": false, "decided": true },
+      { "id": "DIFF-2", "construct": "WHILE header", "oLevel": "WHILE <condition> DO", "aLevel": "WHILE <condition>", "acceptALevelForm": false, "decided": true },
+      { "id": "DIFF-3", "construct": "Procedure with no parameters", "oLevel": "PROCEDURE Name / CALL Name", "aLevel": "PROCEDURE Name() / CALL Name()", "acceptALevelForm": true, "decided": true },
+      { "id": "DIFF-4", "construct": "Function with no parameters", "oLevel": "FUNCTION Name RETURNS INTEGER", "aLevel": "FUNCTION Name() RETURNS INTEGER", "acceptALevelForm": true, "decided": true },
+      { "id": "DIFF-5", "construct": "OTHERWISE", "oLevel": "OTHERWISE <statement>", "aLevel": "OTHERWISE : <statement>", "acceptALevelForm": true, "decided": true },
+      { "id": "DIFF-6", "construct": "CASE branch contents", "oLevel": "Single value, single statement (best practice)", "aLevel": "Ranges (1 TO 5) and several statements per branch", "acceptALevelForm": true, "decided": true },
+      { "id": "DIFF-7", "construct": "CONSTANT", "oLevel": "CONSTANT Rate ← 6.50", "aLevel": "CONSTANT Rate = 6.50", "acceptALevelForm": false, "decided": true },
+      { "id": "DIFF-8", "construct": "Indent size", "oLevel": "4 spaces (THEN/ELSE/case clauses 2)", "aLevel": "3 spaces (THEN/ELSE may be 2)", "resolution": "Both levels use one tab per indent level.", "decided": true },
+      { "id": "DIFF-9", "construct": "Identifiers", "oLevel": "Letters and digits only; must start with a letter (lower-case start is a warning)", "aLevel": "Underscore allowed; any letter first", "acceptALevelForm": false, "decided": true },
+      { "id": "DIFF-10", "construct": "DIV / MOD", "oLevel": "DIV(10, 3)", "aLevel": "10 DIV 3", "acceptALevelForm": false, "decided": true },
+      { "id": "DIFF-11", "construct": "Substring function", "oLevel": "SUBSTRING(s, start, length)", "aLevel": "MID(s, x, y)", "acceptALevelForm": false },
+      { "id": "DIFF-12", "construct": "LCASE / UCASE input", "oLevel": "STRING or CHAR", "aLevel": "CHAR only (guide); insert uses TO_LOWER / TO_UPPER", "acceptALevelForm": false },
+      { "id": "DIFF-13", "construct": "Random", "oLevel": "RANDOM() → 0 to 1 inclusive; ROUND exists", "aLevel": "RAND(x) → 0 to x exclusive; INT exists", "acceptALevelForm": false },
+      { "id": "DIFF-14", "construct": "^ symbol", "oLevel": "Power operator", "aLevel": "Pointer type / dereference", "acceptALevelForm": false },
+      { "id": "DIFF-15", "construct": "Subroutine placement", "oLevel": "Syllabus: at the start of the code", "aLevel": "No rule", "resolution": "Both levels: define before use (O-SUB-1 / SUB-1).", "decided": true },
+      { "id": "DIFF-16", "construct": "OPENFILE", "oLevel": "Good practice", "aLevel": "Required", "acceptALevelForm": false }
+    ]
+  },
+
+  "sourceErrata": [
+    { "section": "Comments example", "issue": "SWAP takes X and Y by value, and O Level has no BYREF, so the swap has no effect outside the procedure. Temp is also undeclared, and SWAP is all upper case." },
+    { "section": "Nested IF example", "issue": "One branch outputs Player1Name, which appears nowhere else; it should be ChallengerName. This file uses ChallengerName." },
+    { "section": "Procedures example", "issue": "Calls CALL LINE(60) but defines Line. That works because names are case-insensitive, but it is inconsistent." },
+    { "section": "Procedures example", "issue": "Uses DECLARE Length, which is the same name as the LENGTH function and breaks 'keywords should never be used as identifiers'. This file renames it to Count." },
+    { "section": "Procedures example", "issue": "MySize and Default are never declared. Under the OUTPUT policy, OUTPUT '-' in a loop prints each dash on its own line rather than one line of dashes." },
+    { "section": "Identifiers", "issue": "Identifiers 'must start with a capital letter', yet the same section allows the lower-case conventions i and j, and the array examples use n." },
+    { "section": "Topic 8.1 vs Pseudocode section", "issue": "The topic content lists MOD and DIV under arithmetic operators, but the pseudocode section defines them only as functions." },
+    { "section": "Topic 8.1 vs Pseudocode section", "issue": "The topic content says a string's first character can be position 0 or 1; the pseudocode section says 'generally 1'." },
+    { "section": "Examples (typography)", "issue": "Some examples use an en-dash (–) for minus and curly quotes (“ ”) around strings. This file uses plain - and \"." }
+  ],
+
+  "ambiguities": [
+    { "id": "AMB-O1", "topic": "Operator precedence", "issue": "The syllabus only says * / bind tighter than + -, but its own examples rely on ^ binding tighter than * and on comparisons binding tighter than OR.", "resolution": "Parentheses are required wherever no order is stated, even where the syllabus's own examples leave them out (O-OP-2).", "status": "resolved" },
+    { "id": "AMB-O2", "topic": "Accepting A Level syntax forms", "issue": "See differencesFromALevel.", "resolution": "All items decided; see differencesFromALevel.", "status": "resolved" },
+    { "id": "AMB-O3", "topic": "Lower-case identifiers", "issue": "i, j and n break 'must start with a capital letter'.", "resolution": "Names only need to start with a letter. A lower-case first letter gives a warning, except for single letters (O-ID-2, O-ID-3).", "status": "resolved" },
+    { "id": "AMB-O4", "topic": "Result types", "issue": "The syllabus does not give a result type for /, ^ or ROUND.", "resolution": "/ always gives REAL. ^ gives INTEGER when both sides are INTEGER (a negative exponent is then a runtime error), otherwise REAL. ROUND(x, 0) gives INTEGER and ROUND(x, n > 0) gives REAL (README P-TYPE-2, P-TYPE-3).", "status": "resolved" },
+    { "id": "AMB-O5", "topic": "ROUND half-way values", "issue": "Does ROUND(2.5, 0) give 3 or 2? Neither source covers this (the only truncation wording is for DIV and INT).", "resolution": "ROUND always truncates toward zero: 2.7 → 2, 2.5 → 2, -2.7 → -2.", "status": "resolved" },
+    { "id": "AMB-O6", "topic": "READFILE unit", "issue": "READFILE reads 'the data item'; the syllabus covers both single items and lines of text.", "resolution": "Each READFILE reads the next line and converts it to the target's type (README P-FILE-1).", "status": "resolved" },
+    { "id": "AMB-O7", "topic": "OPENFILE strictness", "issue": "Opening a file is only 'good practice' at O Level.", "resolution": "Using a file works as long as OPENFILE has run earlier, from anywhere in the program; otherwise it is a runtime error (O-FILE-7).", "status": "resolved" },
+    { "id": "AMB-O8", "topic": "String ordering with < and >", "issue": "Same open point as the A Level file.", "assumedDefault": "Character by character using ASCII codes.", "status": "open" }
+  ]
+}

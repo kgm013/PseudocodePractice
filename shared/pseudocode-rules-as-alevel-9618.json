@@ -1,0 +1,519 @@
+{
+  "meta": {
+    "source": "Cambridge International AS & A Level Computer Science 9618 – Pseudocode Guide for Teachers (697401), Version 1",
+    "examYear": 2026,
+    "companionFile": "pseudocode-rules-olevel-2210.json (O Level 2210)",
+    "publishedBy": "Cambridge University Press & Assessment, September 2023",
+    "secondarySources": [
+      { "id": "insert-2025-21", "title": "9618/21 Paper 2 INSERT, May/June 2025 (UCLES)", "usedFor": "Exam-insert built-in functions, CHAR/STRING rules, operator and comparison notes" },
+      { "id": "insert-2024-21", "title": "9618/21 Paper 2 INSERT, May/June 2024 (UCLES, 673618)", "usedFor": "Cross-check: its content is word-for-word identical to the 2025 insert, so every rule tagged insert-2025-21 is confirmed by both." }
+    ],
+    "projectPolicy": {
+      "note": "Decisions for this practice app where the guide is silent or only says 'good practice'. Rules changed by this policy carry \"policy\": true.",
+      "assignmentAlias": "Accept <- as typed input for ←; always display it as ←.",
+      "declarations": "Variables that are not declared are an ERROR. This includes FOR loop variables, even though the guide's examples never declare them.",
+      "keywordCase": "Keywords not written in upper case are an ERROR.",
+      "precedence": "Only * / binding tighter than + - may be relied on. Any other mix of operator groups without parentheses is an ERROR.",
+      "negativeNumbers": "INT, DIV and MOD truncate toward zero.",
+      "functionSet": "The guide's functions plus the 2025 exam-insert functions.",
+      "indentation": "One tab per indent level, the same as the O Level file."
+    },
+    "ruleLevels": {
+      "required": "The guide says must / must never / is written as – a hard syntax rule.",
+      "goodPractice": "The guide calls it good practice / advisable – a style rule, not a syntax error.",
+      "info": "Describes behaviour or exam presentation."
+    },
+    "notation": "Text in <angle brackets> is a meta-variable (placeholder), as in Backus-Naur Form. '...' means 'more of the same'."
+  },
+
+  "formatting": {
+    "font": { "level": "info", "rule": "Monospaced (fixed-width) font such as Courier New, consistent size throughout." },
+    "indentation": [
+      { "id": "FMT-IND-1", "level": "required", "policy": true, "rule": "Lines contained within a statement on a previous line are indented by one tab per level. The guide uses 3 spaces." },
+      { "id": "FMT-IND-2", "level": "info", "rule": "The guide says THEN and ELSE may be indented by only 2 spaces. In this file, ELSE lines up with its IF and statements are one tab in." },
+      { "id": "FMT-IND-3", "level": "info", "rule": "Indentation may be omitted when line numbers are used." },
+      { "id": "FMT-IND-4", "level": "info", "rule": "Statements should fit on one line where possible; continuation lines are aligned for readability." }
+    ],
+    "case": [
+      { "id": "FMT-CASE-1", "level": "required", "rule": "Keywords are UPPER-CASE, e.g. IF, REPEAT, PROCEDURE. Lower-case keywords (if, endif) are an error.", "policy": true },
+      { "id": "FMT-CASE-2", "level": "required", "rule": "Identifiers are mixed case (PascalCase), capital letter at the start of each word, e.g. NumberOfPlayers." }
+    ],
+    "lineNumbering": [
+      { "id": "FMT-LN-1", "level": "info", "rule": "Line numbers appear to the left, clearly separated from the code." },
+      { "id": "FMT-LN-2", "level": "info", "rule": "Line numbers are consecutive; gaps mean code is missing and this will be stated." },
+      { "id": "FMT-LN-3", "level": "info", "rule": "Each statement is numbered; continuation lines of a statement are not numbered." }
+    ],
+    "comments": [
+      { "id": "FMT-COM-1", "level": "required", "rule": "Comments start with // and run to the end of the line.", "syntax": "// <comment>" },
+      { "id": "FMT-COM-2", "level": "required", "rule": "Multi-line comments: every line starts with //. There is no block-comment syntax." },
+      { "id": "FMT-COM-3", "level": "goodPractice", "rule": "A comment normally goes on its own line before the code it refers to, at the same indentation." },
+      { "id": "FMT-COM-4", "level": "info", "rule": "A short comment about a single line may go at the end of that line." }
+    ],
+    "example": "// this procedure swaps\n// values of X and Y\nPROCEDURE SWAP(BYREF X : INTEGER, Y : INTEGER)\n\tTemp ← X // temporarily store X\n\tX ← Y\n\tY ← Temp\nENDPROCEDURE"
+  },
+
+  "dataTypes": [
+    { "name": "INTEGER", "description": "A whole number", "literal": "Written in denary as normal", "examples": ["5", "-3"] },
+    { "name": "REAL", "description": "A number that can have a fractional part", "literal": "Always at least one digit on BOTH sides of the decimal point, adding zeros if needed", "examples": ["4.7", "0.3", "-4.0", "0.0"], "invalidExamples": [".3", "4.", "4"] },
+    { "name": "CHAR", "description": "A single character", "literal": "One character between single quotes", "examples": ["'x'", "'C'", "'@'"] },
+    { "name": "STRING", "description": "A sequence of zero or more characters", "literal": "Between double quotes; may be empty", "examples": ["\"This is a string\"", "\"\""] },
+    { "name": "BOOLEAN", "description": "The logical values TRUE and FALSE", "literal": "TRUE or FALSE", "examples": ["TRUE", "FALSE"] },
+    { "name": "DATE", "description": "A valid calendar date", "literal": "Normally dd/mm/yyyy; good practice to state that the value is a DATE and explain the format", "examples": ["02/01/2005"] }
+  ],
+
+  "identifiers": {
+    "appliesTo": ["variables", "constants", "procedures", "functions"],
+    "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+    "rules": [
+      { "id": "ID-1", "level": "required", "rule": "Only letters A–Z / a–z, digits 0–9 and underscore _." },
+      { "id": "ID-2", "level": "required", "rule": "Must start with a letter, not a digit." },
+      { "id": "ID-3", "level": "required", "rule": "No accented letters." },
+      { "id": "ID-4", "level": "required", "rule": "Keywords must never be used as identifiers." },
+      { "id": "ID-5", "level": "required", "rule": "Identifiers are case-insensitive: Countdown and CountDown are the same name and must not be used as separate variables." },
+      { "id": "ID-6", "level": "goodPractice", "rule": "Use descriptive names." },
+      { "id": "ID-7", "level": "info", "rule": "Conventional single letters are allowed, e.g. i, j for array indices, X, Y for coordinates." },
+      { "id": "ID-8", "level": "required", "rule": "Use mixed case (PascalCase)." }
+    ]
+  },
+
+  "declarations": {
+    "variable": {
+      "syntax": "DECLARE <identifier> : <data type>",
+      "rules": [
+        { "id": "DEC-1", "level": "required", "rule": "Every variable must be declared with DECLARE before use, including FOR loop variables. The guide only calls this good practice; this app makes it an error.", "policy": true },
+        { "id": "DEC-2", "level": "info", "policy": true, "rule": "A variable that is declared but never assigned holds a random value of its declared type. Reading it is not an error, but the result is unpredictable." },
+        { "id": "DEC-3", "level": "required", "policy": true, "rule": "Variables declared inside a procedure, function or method are local to it. Parameters are local too." }
+      ],
+      "examples": ["DECLARE Counter : INTEGER", "DECLARE TotalToPay : REAL", "DECLARE GameOver : BOOLEAN"]
+    },
+    "constant": {
+      "syntax": "CONSTANT <identifier> = <value>",
+      "rules": [
+        { "id": "CON-1", "level": "required", "rule": "The value must be a literal. A variable, another constant or an expression must never be used." },
+        { "id": "CON-2", "level": "required", "rule": "Constants use = (not ←) and have no data type annotation." },
+        { "id": "CON-3", "level": "goodPractice", "rule": "Use constants where they make code more readable or easier to update." },
+        { "id": "CON-4", "level": "goodPractice", "rule": "Declare constants at the start of the code, unless you want to limit their scope." }
+      ],
+      "examples": ["CONSTANT HourlyRate = 6.50", "CONSTANT DefaultText = \"N/A\""]
+    },
+    "assignment": {
+      "operator": { "symbol": "←", "unicode": "U+2190", "acceptedInputAliases": ["<-"], "policy": true },
+      "syntax": "<identifier> ← <value>",
+      "rules": [
+        { "id": "ASG-1", "level": "required", "rule": "The left side must be a variable, which can be an array element or a field of a user-defined type." },
+        { "id": "ASG-2", "level": "required", "rule": "The right side may be any expression that evaluates to the same data type as the variable." }
+      ],
+      "examples": ["Counter ← 0", "Counter ← Counter + 1", "TotalToPay ← NumberOfHours * HourlyRate"]
+    }
+  },
+
+  "arrays": {
+    "description": "Fixed-length structures of elements of the same data type, accessed by consecutive integer indices. The syllabus requires 1D and 2D arrays.",
+    "declaration": {
+      "oneDimensional": "DECLARE <identifier> : ARRAY[<lower>:<upper>] OF <data type>",
+      "twoDimensional": "DECLARE <identifier> : ARRAY[<lower1>:<upper1>, <lower2>:<upper2>] OF <data type>",
+      "examples": ["DECLARE StudentNames : ARRAY[1:30] OF STRING", "DECLARE NoughtsAndCrosses : ARRAY[1:3,1:3] OF CHAR"]
+    },
+    "rules": [
+      { "id": "ARR-1", "level": "required", "rule": "Square brackets [ ] enclose array indices." },
+      { "id": "ARR-2", "level": "goodPractice", "rule": "Always state the lower bound explicitly; it defaults to 0 or 1 depending on the system." },
+      { "id": "ARR-3", "level": "info", "rule": "A lower bound of 1 is generally used." },
+      { "id": "ARR-4", "level": "required", "rule": "An index may be a literal or any expression that evaluates to a valid integer." },
+      { "id": "ARR-5", "level": "required", "rule": "2D elements are accessed as Name[row, column] (one pair of brackets, comma-separated)." },
+      { "id": "ARR-6", "level": "info", "rule": "A whole array can be assigned to another of the same size and data type, e.g. SavedGame ← NoughtsAndCrosses." },
+      { "id": "ARR-7", "level": "required", "rule": "Do not refer to a group of elements in one statement (e.g. StudentNames[1 TO 30] ← \"\"). Use a loop to assign them one at a time." }
+    ],
+    "examples": [
+      "StudentNames[1] ← \"Ali\"",
+      "NoughtsAndCrosses[2,3] ← 'X'",
+      "StudentNames[n+1] ← StudentNames[n]",
+      "FOR Index ← 1 TO 30\n\tStudentNames[Index] ← \"\"\nNEXT Index"
+    ],
+    "invalidExamples": ["StudentNames[1 TO 30] ← \"\""]
+  },
+
+  "userDefinedTypes": {
+    "enumerated": {
+      "category": "non-composite",
+      "syntax": "TYPE <identifier> = (value1, value2, value3, ...)",
+      "examples": ["TYPE Season = (Spring, Summer, Autumn, Winter)"],
+      "rules": [
+        { "id": "ENUM-1", "level": "info", "rule": "Values are ordered as listed. + n and - n move forward or back through the list: Spring + 1 = Summer." },
+        { "id": "ENUM-2", "level": "required", "policy": true, "rule": "Values do not wrap. Going past either end is an error: Winter + 1 and Spring - 1 are errors." }
+      ]
+    },
+    "pointer": {
+      "category": "non-composite",
+      "syntax": "TYPE <identifier> = ^<data type>",
+      "rules": [
+        { "id": "PTR-1", "level": "required", "rule": "In a TYPE definition, ^ before a data type means 'pointer to that type'." },
+        { "id": "PTR-2", "level": "required", "rule": "Declaring a variable of a pointer type does not use ^, e.g. DECLARE MyPointer : TIntPointer." },
+        { "id": "PTR-3", "level": "info", "rule": "^Variable (caret before) gives the address of that variable." },
+        { "id": "PTR-4", "level": "info", "rule": "Pointer^ (caret after) dereferences: it reads the value stored at the address." }
+      ],
+      "examples": ["TYPE TIntPointer = ^INTEGER", "TYPE TCharPointer = ^CHAR", "DECLARE MyPointer : TIntPointer", "MyPointer ← ^ThisSeason", "NextSeason ← MyPointer^ + 1"]
+    },
+    "record": {
+      "category": "composite",
+      "syntax": "TYPE <identifier1>\n\tDECLARE <identifier2> : <data type>\n\tDECLARE <identifier3> : <data type>\n\t...\nENDTYPE",
+      "examples": ["TYPE StudentRecord\n\tDECLARE LastName : STRING\n\tDECLARE FirstName : STRING\n\tDECLARE DateOfBirth : DATE\n\tDECLARE YearGroup : INTEGER\n\tDECLARE FormGroup : CHAR\nENDTYPE"]
+    },
+    "set": {
+      "category": "composite",
+      "syntax": "TYPE <identifier1> = SET OF <data type>\nDEFINE <identifier2> (value1, value2, value3, ...) : <identifier1>",
+      "examples": ["TYPE LetterSet = SET OF CHAR\nDEFINE Vowels ('A','E','I','O','U') : LetterSet"]
+    },
+    "otherCompositeTypesNamedInSyllabus": ["class/object", "stack", "queue", "linked list", "dictionary", "binary tree"],
+    "usageRules": [
+      { "id": "UDT-1", "level": "info", "rule": "Once defined, a user-defined type can be used in declarations like any built-in type, including as an array element type." },
+      { "id": "UDT-2", "level": "info", "rule": "Variables of the same user-defined type can be assigned to each other, e.g. Pupil2 ← Pupil1." },
+      { "id": "UDT-3", "level": "required", "rule": "Fields are accessed with dot notation, e.g. Pupil1.LastName, Form[Index].YearGroup." }
+    ]
+  },
+
+  "operators": {
+    "arithmetic": [
+      { "symbol": "+", "meaning": "Addition" },
+      { "symbol": "-", "meaning": "Subtraction" },
+      { "symbol": "*", "meaning": "Multiplication" },
+      { "symbol": "/", "meaning": "Division", "resultType": "REAL", "note": "The result is REAL even when both operands are INTEGER." },
+      { "symbol": "DIV", "meaning": "Integer division: the whole-number quotient", "example": "10 DIV 3 → 3", "negatives": "Truncates toward zero: -7 DIV 2 → -3", "policy": true },
+      { "symbol": "MOD", "meaning": "Modulus: the remainder after division", "example": "10 MOD 3 → 1", "negatives": "Remainder has the sign of the dividend: -7 MOD 2 → -1", "policy": true }
+    ],
+    "typeErrors": { "id": "OP-TYPE-1", "level": "required", "source": "insert-2025-21", "rule": "Using an operator with a value of the wrong type is an error." },
+    "relational": {
+      "resultType": "BOOLEAN",
+      "operators": [
+        { "symbol": ">", "meaning": "Greater than" },
+        { "symbol": "<", "meaning": "Less than" },
+        { "symbol": ">=", "meaning": "Greater than or equal to" },
+        { "symbol": "<=", "meaning": "Less than or equal to" },
+        { "symbol": "=", "meaning": "Equal to" },
+        { "symbol": "<>", "meaning": "Not equal to" }
+      ],
+      "rules": [
+        { "id": "REL-1", "level": "required", "source": "insert-2025-21", "rule": "= compares two items of the same type." },
+        { "id": "REL-2", "level": "info", "source": "insert-2025-21", "rule": "REAL and INTEGER can be compared with each other." },
+        { "id": "REL-3", "level": "info", "source": "insert-2025-21", "rule": "CHAR and STRING can be compared with each other." },
+        { "id": "REL-4", "level": "required", "source": "insert-2025-21", "rule": "Comparing CHAR or STRING values is case-sensitive: \"Program\" = \"program\" is FALSE." },
+        { "id": "REL-5", "level": "required", "source": "insert-2025-21", "rule": "Two records cannot be compared." },
+        { "id": "REL-6", "level": "required", "policy": true, "rule": "Two strings, or two chars, are equal only if they have the same length and the same characters in the same positions (case-sensitive). \"a\" = \"a\" and 'a' = 'a' are TRUE; \"a\" = \"A\" and \"a\" = \"a \" are FALSE." }
+      ]
+    },
+    "logical": {
+      "operandType": "BOOLEAN",
+      "resultType": "BOOLEAN",
+      "operators": ["AND", "OR", "NOT"],
+      "note": "These are the only logic operators.",
+      "examples": [
+        { "source": "insert-2025-21", "expression": "TRUE AND FALSE", "result": "FALSE" },
+        { "source": "insert-2025-21", "expression": "TRUE OR FALSE", "result": "TRUE" },
+        { "source": "insert-2025-21", "expression": "NOT TRUE", "result": "FALSE" }
+      ]
+    },
+    "string": [
+      { "symbol": "&", "meaning": "Concatenation", "example": "\"Summer\" & \" \" & \"Pudding\" → \"Summer Pudding\"", "note": "Can also join a CHAR with a STRING (insert-2025-21)." }
+    ],
+    "precedence": {
+      "statedByGuide": "* and / bind tighter than + and - (normal maths convention).",
+      "notStated": ["DIV", "MOD", "&", "relational operators", "AND / OR / NOT"],
+      "rules": [
+        { "id": "OP-1", "level": "goodPractice", "rule": "Use parentheses to make the order of operations explicit in complex arithmetic, relational and logical expressions." },
+        { "id": "OP-2", "level": "required", "policy": true, "rule": "Without parentheses, the only precedence you may rely on is * / over + -. Mixing any other operator groups without parentheses is an error.", "comment": "Stricter than the guide on purpose: brackets are never wrong in an exam, but relying on an unstated order can cost marks. This teaches students the safe habit.", "operatorGroups": { "multiplicative": ["*", "/"], "additive": ["+", "-"], "integer": ["DIV", "MOD"], "concatenation": ["&"], "relational": ["=", "<>", "<", "<=", ">", ">="], "logical": ["NOT", "AND", "OR"] }, "allowedWithoutParentheses": ["any mix of multiplicative and additive (* / over + -)", "a chain of one operator group (left to right), e.g. A + B - C, A & B & C, A AND B AND C"], "invalidExamples": ["A + B MOD C", "X > 5 AND Y < 3", "NOT A AND B", "A AND B OR C", "\"Total: \" & A + B"], "validExamples": ["A + B * C", "A + (B MOD C)", "(X > 5) AND (Y < 3)", "(NOT A) AND B", "(A AND B) OR C"] }
+      ]
+    }
+  },
+
+  "builtInFunctions": {
+    "note": "Functions without a \"source\" field come from the guide. Functions tagged \"source\": \"insert-2025-21\" come from the May/June 2025 exam insert. The insert does not list LCASE or UCASE; it uses TO_LOWER and TO_UPPER instead.",
+    "rules": [
+      { "id": "FN-1", "level": "info", "rule": "Each function returns an error if the call is not properly formed." },
+      { "id": "FN-1b", "level": "required", "source": "insert-2025-21", "rule": "Passing parameters of the wrong type or with an invalid value is also an error." },
+      { "id": "FN-CHAR-1", "level": "info", "source": "insert-2025-21", "rule": "A string of length 1 can be treated as either CHAR or STRING." },
+      { "id": "FN-CHAR-2", "level": "info", "source": "insert-2025-21", "rule": "A CHAR can be assigned to, or concatenated with, a STRING." },
+      { "id": "FN-CHAR-3", "level": "required", "source": "insert-2025-21", "rule": "A STRING longer than 1 character cannot be assigned to a CHAR." },
+      { "id": "FN-2", "level": "info", "rule": "String functions are always provided in the exam; the ones below are a basic set." },
+      { "id": "FN-4", "level": "info", "source": "insert-2025-21", "rule": "In Paper 2 the insert is the authority on function names. It has no LCASE or UCASE; use TO_LOWER and TO_UPPER, which take a CHAR or a STRING. LCASE and UCASE (guide, CHAR only) are kept for completeness." },
+      { "id": "FN-3", "level": "goodPractice", "rule": "Explain any language-specific string operations (searching, splitting) or number-to-string formatting, since they vary between systems." }
+    ],
+    "string": [
+      { "name": "RIGHT", "signature": "RIGHT(ThisString : STRING, x : INTEGER) RETURNS STRING", "description": "Returns the rightmost x characters of ThisString", "example": { "call": "RIGHT(\"ABCDEFGH\", 3)", "returns": "\"FGH\"" } },
+      { "name": "LENGTH", "signature": "LENGTH(ThisString : STRING) RETURNS INTEGER", "description": "Returns the length of ThisString", "example": { "call": "LENGTH(\"Happy Days\")", "returns": "10" } },
+      { "name": "MID", "signature": "MID(ThisString : STRING, x : INTEGER, y : INTEGER) RETURNS STRING", "description": "Returns a string of length y starting at position x (positions start at 1)", "example": { "call": "MID(\"ABCDEFGH\", 2, 3)", "returns": "\"BCD\"" } },
+      { "name": "LCASE", "signature": "LCASE(ThisChar : CHAR) RETURNS CHAR", "description": "Returns the lower-case version of ThisChar; anything that is not an upper-case letter is returned unchanged", "example": { "call": "LCASE('W')", "returns": "'w'" } },
+      { "name": "UCASE", "signature": "UCASE(ThisChar : CHAR) RETURNS CHAR", "description": "Returns the upper-case version of ThisChar; anything that is not a lower-case letter is returned unchanged", "example": { "call": "UCASE('h')", "returns": "'H'" } },
+      { "name": "LEFT", "source": "insert-2025-21", "signature": "LEFT(ThisString : STRING, x : INTEGER) RETURNS STRING", "description": "Returns the leftmost x characters of ThisString", "example": { "call": "LEFT(\"ABCDEFGH\", 3)", "returns": "\"ABC\"" } },
+      { "name": "TO_UPPER", "source": "insert-2025-21", "signature": "TO_UPPER(x : <datatype>) RETURNS <datatype>", "typeParams": { "datatype": ["CHAR", "STRING"] }, "description": "Returns x with every character converted to upper case, keeping the same type", "examples": [{ "call": "TO_UPPER(\"Error 803\")", "returns": "\"ERROR 803\"" }, { "call": "TO_UPPER('a')", "returns": "'A'" }] },
+      { "name": "TO_LOWER", "source": "insert-2025-21", "signature": "TO_LOWER(x : <datatype>) RETURNS <datatype>", "typeParams": { "datatype": ["CHAR", "STRING"] }, "description": "Returns x with every character converted to lower case, keeping the same type", "examples": [{ "call": "TO_LOWER(\"JIM 803\")", "returns": "\"jim 803\"" }, { "call": "TO_LOWER('W')", "returns": "'w'" }] },
+      { "name": "NUM_TO_STR", "source": "insert-2025-21", "signature": "NUM_TO_STR(x : <datatype1>) RETURNS <datatype2>", "typeParams": { "datatype1": ["REAL", "INTEGER"], "datatype2": ["CHAR", "STRING"] }, "description": "Returns the string form of a number; a negative number gives a string starting with '-'", "example": { "call": "NUM_TO_STR(87.5)", "returns": "\"87.5\"" } },
+      { "name": "STR_TO_NUM", "source": "insert-2025-21", "signature": "STR_TO_NUM(x : <datatype1>) RETURNS <datatype2>", "typeParams": { "datatype1": ["CHAR", "STRING"], "datatype2": ["REAL", "INTEGER"] }, "description": "Returns the number a string represents; a string starting with '-' gives a negative value", "example": { "call": "STR_TO_NUM(\"23.45\")", "returns": "23.45" } },
+      { "name": "IS_NUM", "source": "insert-2025-21", "signature": "IS_NUM(ThisString : <datatype>) RETURNS BOOLEAN", "typeParams": { "datatype": ["CHAR", "STRING"] }, "description": "Returns TRUE if ThisString is a valid number", "example": { "call": "IS_NUM(\"-12.36\")", "returns": "TRUE" } },
+      { "name": "ASC", "source": "insert-2025-21", "signature": "ASC(ThisChar : CHAR) RETURNS INTEGER", "description": "Returns the ASCII value of ThisChar", "examples": [{ "call": "ASC('A')", "returns": "65" }, { "call": "ASC('B')", "returns": "66" }] },
+      { "name": "CHR", "source": "insert-2025-21", "signature": "CHR(x : INTEGER) RETURNS CHAR", "description": "Returns the character with ASCII value x", "examples": [{ "call": "CHR(65)", "returns": "'A'" }, { "call": "CHR(66)", "returns": "'B'" }] }
+    ],
+    "numeric": [
+      { "name": "INT", "signature": "INT(x : REAL) RETURNS INTEGER", "description": "Returns the integer part of x, truncating toward zero (policy for negatives)", "examples": [{ "call": "INT(27.5415)", "returns": "27" }, { "call": "INT(-2.5)", "returns": "-2", "policy": true }] },
+      { "name": "RAND", "signature": "RAND(x : INTEGER) RETURNS REAL", "description": "Returns a random REAL from 0 up to but not including x", "example": { "call": "RAND(87)", "returns": "e.g. 35.430729" } }
+    ],
+    "date": [
+      { "name": "DAY", "source": "insert-2025-21", "signature": "DAY(ThisDate : DATE) RETURNS INTEGER", "description": "Returns the day number", "example": { "call": "DAY(04/10/2003)", "returns": "4" } },
+      { "name": "MONTH", "source": "insert-2025-21", "signature": "MONTH(ThisDate : DATE) RETURNS INTEGER", "description": "Returns the month number", "example": { "call": "MONTH(04/10/2003)", "returns": "10" } },
+      { "name": "YEAR", "source": "insert-2025-21", "signature": "YEAR(ThisDate : DATE) RETURNS INTEGER", "description": "Returns the year number", "example": { "call": "YEAR(04/10/2003)", "returns": "2003" } },
+      { "name": "DAYINDEX", "source": "insert-2025-21", "signature": "DAYINDEX(ThisDate : DATE) RETURNS INTEGER", "description": "Returns the day of the week, where Sunday = 1, Monday = 2, and so on", "example": { "call": "DAYINDEX(09/05/2023)", "returns": "3" } },
+      { "name": "SETDATE", "source": "insert-2025-21", "signature": "SETDATE(Day, Month, Year : INTEGER) RETURNS DATE", "description": "Returns the DATE Day/Month/Year", "example": { "call": "SETDATE(26, 10, 2003)", "returns": "26/10/2003" } },
+      { "name": "TODAY", "source": "insert-2025-21", "signature": "TODAY() RETURNS DATE", "description": "Returns the current date" }
+    ],
+    "dateFormat": { "source": "insert-2025-21", "rule": "Dates are DD/MM/YYYY unless stated otherwise." },
+    "file": [
+      { "name": "EOF", "signature": "EOF(FileName : STRING) RETURNS BOOLEAN", "guideSignature": "EOF(<file identifier>)", "description": "TRUE if there are no more lines to read (or an empty file is open for READ), otherwise FALSE. The insert adds that calling EOF on a file not open in READ mode is an error." }
+    ]
+  },
+
+  "inputOutput": {
+    "input": {
+      "syntax": "INPUT <identifier>",
+      "rules": [{ "id": "IO-1", "level": "required", "rule": "The target must be a variable, which can be an array element or a field of a user-defined type." }]
+    },
+    "output": {
+      "syntax": "OUTPUT <value(s)>",
+      "rules": [
+        { "id": "IO-2", "level": "info", "rule": "Several values separated by commas can be output in one statement." },
+        { "id": "IO-3", "level": "required", "policy": true, "rule": "Each OUTPUT statement prints on a new line. All values in one OUTPUT (joined with commas or &) stay on that line, with no extra spaces added." }
+      ],
+      "behaviourExample": { "code": "OUTPUT \"You have \", 3, \" lives\"\nOUTPUT \"Game\" & \"Over\"", "prints": "You have 3 lives\nGameOver" }
+    },
+    "examples": ["INPUT Answer", "OUTPUT Score", "OUTPUT \"You have \", Lives, \" lives left\""]
+  },
+
+  "selection": {
+    "if": {
+      "syntax": {
+        "withoutElse": "IF <condition> THEN\n\t<statement(s)>\nENDIF",
+        "withElse": "IF <condition> THEN\n\t<statement(s)>\nELSE\n\t<statement(s)>\nENDIF"
+      },
+      "rules": [
+        { "id": "IF-1", "level": "required", "rule": "ELSE is optional." },
+        { "id": "IF-2", "level": "required", "rule": "Every IF ends with ENDIF, including nested IFs." },
+        { "id": "IF-3", "level": "info", "rule": "There is no ELSEIF keyword in the guide; use a nested IF inside ELSE, or a CASE statement." }
+      ],
+      "example": "IF ChallengerScore > ChampionScore THEN\n\tIF ChallengerScore > HighestScore THEN\n\t\tOUTPUT ChallengerName, \" is champion and highest scorer\"\n\tELSE\n\t\tOUTPUT ChallengerName, \" is the new champion\"\n\tENDIF\nELSE\n\tOUTPUT ChampionName, \" is still the champion\"\n\tIF ChampionScore > HighestScore THEN\n\t\tOUTPUT ChampionName, \" is also the highest scorer\"\n\tENDIF\nENDIF"
+    },
+    "case": {
+      "syntax": {
+        "basic": "CASE OF <identifier>\n\t<value 1> : <statement1>\n\t\t<statement2>\n\t\t...\n\t<value 2> : <statement1>\n\t\t...\nENDCASE",
+        "withOtherwise": "CASE OF <identifier>\n\t<value 1> : <statement(s)>\n\t<value 2> : <statement(s)>\n\tOTHERWISE : <statement(s)>\nENDCASE",
+        "range": "<value1> TO <value2> : <statement(s)>"
+      },
+      "rules": [
+        { "id": "CASE-1", "level": "required", "rule": "The subject is a variable identifier: CASE OF <identifier>." },
+        { "id": "CASE-2", "level": "required", "rule": "Each branch is written <value> : <statement(s)>; extra statements go on following lines, one tab further in than the clause." },
+        { "id": "CASE-3", "level": "required", "rule": "A branch value can be a range: <value1> TO <value2>." },
+        { "id": "CASE-4", "level": "required", "rule": "OTHERWISE is optional; if present, it must be the last case." },
+        { "id": "CASE-5", "level": "info", "rule": "Cases are tested in order. The first match runs, then control goes to the line after ENDCASE; later cases are not tested (no fall-through)." },
+        { "id": "CASE-6", "level": "info", "rule": "OTHERWISE runs only if no earlier case matched." }
+      ],
+      "example": "INPUT Move\nCASE OF Move\n\t'W' : Position ← Position - 10\n\t'S' : Position ← Position + 10\n\t'A' : Position ← Position - 1\n\t'D' : Position ← Position + 1\n\tOTHERWISE : CALL Beep\nENDCASE"
+    }
+  },
+
+  "iteration": {
+    "for": {
+      "kind": "count-controlled",
+      "syntax": {
+        "basic": "FOR <identifier> ← <value1> TO <value2>\n\t<statement(s)>\nNEXT <identifier>",
+        "withStep": "FOR <identifier> ← <value1> TO <value2> STEP <increment>\n\t<statement(s)>\nNEXT <identifier>"
+      },
+      "rules": [
+        { "id": "FOR-1", "level": "required", "rule": "The loop variable must be an INTEGER variable, and (policy) it must be declared." },
+        { "id": "FOR-2", "level": "required", "rule": "value1, value2 and the STEP increment must be expressions that evaluate to integers." },
+        { "id": "FOR-3", "level": "info", "rule": "Bounds are inclusive: the variable takes every value from value1 to value2." },
+        { "id": "FOR-4", "level": "info", "rule": "If value1 = value2 the body runs once; if value1 > value2 (with no STEP) it runs zero times." },
+        { "id": "FOR-5", "level": "info", "rule": "With STEP, the variable starts at value1 and changes by increment each time; the loop stops once it goes past value2." },
+        { "id": "FOR-6", "level": "info", "rule": "STEP can be negative, e.g. FOR Position ← 20 TO 10 STEP -1." },
+        { "id": "FOR-7", "level": "goodPractice", "rule": "Repeat the loop variable after NEXT, especially in nested loops." }
+      ],
+      "example": "Total ← 0\nFOR Row ← 1 TO MaxRow\n\tRowTotal ← 0\n\tFOR Column ← 1 TO 10\n\t\tRowTotal ← RowTotal + Amount[Row, Column]\n\tNEXT Column\n\tOUTPUT \"Total for Row \", Row, \" is \", RowTotal\n\tTotal ← Total + RowTotal\nNEXT Row\nOUTPUT \"The grand total is \", Total"
+    },
+    "repeat": {
+      "kind": "post-condition",
+      "syntax": "REPEAT\n\t<statement(s)>\nUNTIL <condition>",
+      "rules": [
+        { "id": "REP-1", "level": "required", "rule": "The condition must evaluate to BOOLEAN." },
+        { "id": "REP-2", "level": "info", "rule": "The body always runs at least once." },
+        { "id": "REP-3", "level": "info", "rule": "The condition is tested after the body; the loop stops when it is TRUE." }
+      ],
+      "example": "REPEAT\n\tOUTPUT \"Please enter the password\"\n\tINPUT Password\nUNTIL Password = \"Secret\""
+    },
+    "while": {
+      "kind": "pre-condition",
+      "syntax": "WHILE <condition>\n\t<statement(s)>\nENDWHILE",
+      "rules": [
+        { "id": "WHL-1", "level": "required", "rule": "The condition must evaluate to BOOLEAN." },
+        { "id": "WHL-2", "level": "required", "rule": "There is no DO keyword after the condition." },
+        { "id": "WHL-3", "level": "info", "rule": "The condition is tested before each pass; the loop stops when it is FALSE." },
+        { "id": "WHL-4", "level": "info", "rule": "If the condition is FALSE on the first test, the body never runs." }
+      ],
+      "example": "WHILE Number > 9\n\tNumber ← Number - 9\nENDWHILE"
+    }
+  },
+
+  "subroutines": {
+    "general": [
+      { "id": "SUB-1", "level": "required", "policy": true, "rule": "Define before use. Code inside a subroutine may call subroutines defined anywhere in the file, including ones further down. A statement outside any subroutine may only call subroutine X if X, and every subroutine X calls directly or indirectly, is defined above that statement. Otherwise it is an error. The guide has no rule about placement; its 8.1 example follows this rule.", "validExample": "PROCEDURE A()\n\tCALL B()\nENDPROCEDURE\n\nPROCEDURE B()\n\tOUTPUT \"Hi\"\nENDPROCEDURE\n\nCALL A()", "invalidExample": "PROCEDURE A()\n\tCALL B()\nENDPROCEDURE\n\nCALL A()   // error: B is not defined yet\n\nPROCEDURE B()\n\tOUTPUT \"Hi\"\nENDPROCEDURE" },
+      { "id": "SUB-2", "level": "required", "policy": true, "rule": "Using RETURN inside a procedure is an error." }
+    ],
+    "procedure": {
+      "syntax": {
+        "noParams": "PROCEDURE <identifier>()\n\t<statement(s)>\nENDPROCEDURE",
+        "withParams": "PROCEDURE <identifier>(<param1> : <data type>, <param2> : <data type>, ...)\n\t<statement(s)>\nENDPROCEDURE",
+        "callNoParams": "CALL <identifier>()",
+        "callWithParams": "CALL <identifier>(value1, value2, ...)"
+      },
+      "rules": [
+        { "id": "PROC-1", "level": "required", "rule": "Procedures are called with the CALL keyword; a call is a complete statement." },
+        { "id": "PROC-2", "level": "required", "rule": "Arguments must have the correct data types and be in the same order as the parameters in the definition." },
+        { "id": "PROC-3", "level": "info", "rule": "Parameters act as variables inside the procedure body." },
+        { "id": "PROC-4", "level": "required", "rule": "Empty parentheses () are written even when there are no parameters, in both the definition and the call." }
+      ],
+      "example": "PROCEDURE DefaultSquare()\n\tCALL Square(100)\nENDPROCEDURE\n\nPROCEDURE Square(Size : INTEGER)\n\tFOR Side ← 1 TO 4\n\t\tCALL MoveForward(Size)\n\t\tCALL Turn(90)\n\tNEXT Side\nENDPROCEDURE\n\nIF Size = Default THEN\n\tCALL DefaultSquare()\nELSE\n\tCALL Square(Size)\nENDIF"
+    },
+    "function": {
+      "syntax": {
+        "noParams": "FUNCTION <identifier>() RETURNS <data type>\n\t<statement(s)>\nENDFUNCTION",
+        "withParams": "FUNCTION <identifier>(<param1> : <data type>, <param2> : <data type>, ...) RETURNS <data type>\n\t<statement(s)>\nENDFUNCTION",
+        "return": "RETURN <value>"
+      },
+      "rules": [
+        { "id": "FUNC-1", "level": "required", "rule": "The header states the return type with RETURNS <data type>. Note RETURNS in the header and RETURN in the body." },
+        { "id": "FUNC-2", "level": "required", "rule": "A function returns exactly one value." },
+        { "id": "FUNC-3", "level": "info", "rule": "RETURN is normally the last statement, but runs immediately wherever it appears; any code after it is skipped." },
+        { "id": "FUNC-4", "level": "required", "rule": "Never use CALL with a function. A function call is not a complete statement; it is only used inside an expression." },
+        { "id": "FUNC-5", "level": "info", "rule": "The returned value replaces the call in the expression, which is then evaluated." },
+        { "id": "FUNC-6", "level": "required", "rule": "Do not pass parameters to a function by reference (no BYREF in functions)." },
+        { "id": "FUNC-7", "level": "info", "rule": "Any function used in an exam will be defined in the question." }
+      ],
+      "example": "FUNCTION Max(Number1 : INTEGER, Number2 : INTEGER) RETURNS INTEGER\n\tIF Number1 > Number2 THEN\n\t\tRETURN Number1\n\tELSE\n\t\tRETURN Number2\n\tENDIF\nENDFUNCTION\n\nOUTPUT \"Penalty Fine = \", Max(10, Distance*2)"
+    },
+    "parameterPassing": {
+      "keywords": ["BYVAL", "BYREF"],
+      "syntax": "PROCEDURE <identifier>(BYREF <param1> : <data type>, <param2> : <data type>)",
+      "rules": [
+        { "id": "PARAM-1", "level": "required", "rule": "BYVAL or BYREF goes before the parameter in the definition, not in the call." },
+        { "id": "PARAM-2", "level": "required", "rule": "If several parameters use the same method, the keyword need not be repeated. In SWAP(BYREF X : INTEGER, Y : INTEGER), both X and Y are BYREF." },
+        { "id": "PARAM-3", "level": "required", "rule": "BYVAL is the default: if no method is given, parameters are passed BYVAL." }
+      ],
+      "example": "PROCEDURE SWAP(BYREF X : INTEGER, Y : INTEGER)\n\tTemp ← X\n\tX ← Y\n\tY ← Temp\nENDPROCEDURE"
+    }
+  },
+
+  "fileHandling": {
+    "text": {
+      "description": "Text files are lines of text, read or written one after another as strings.",
+      "syntax": {
+        "open": "OPENFILE <file identifier> FOR <file mode>",
+        "read": "READFILE <file identifier>, <variable>",
+        "write": "WRITEFILE <file identifier>, <data>",
+        "eof": "EOF(<file identifier>)",
+        "close": "CLOSEFILE <file identifier>"
+      },
+      "modes": [
+        { "mode": "READ", "meaning": "Read data from the file" },
+        { "mode": "WRITE", "meaning": "Write data to the file. Creates a new file; any existing data is lost." },
+        { "mode": "APPEND", "meaning": "Add data after any existing data" }
+      ],
+      "rules": [
+        { "id": "FILE-1", "level": "required", "rule": "A file must be opened in a mode before any other file operation." },
+        { "id": "FILE-2", "level": "info", "rule": "The file identifier is a string literal of the file name, or a STRING variable holding it." },
+        { "id": "FILE-3", "level": "required", "rule": "A file is open in only one mode at a time." },
+        { "id": "FILE-4", "level": "required", "rule": "READFILE needs READ mode and reads the next line into a STRING variable." },
+        { "id": "FILE-5", "level": "required", "rule": "WRITEFILE needs WRITE or APPEND mode." },
+        { "id": "FILE-6", "level": "goodPractice", "rule": "Close files with CLOSEFILE when they are no longer needed." },
+        { "id": "FILE-7", "level": "info", "rule": "The usual read loop is WHILE NOT EOF(<file>)." }
+      ],
+      "example": "DECLARE LineOfText : STRING\nOPENFILE \"FileA.txt\" FOR READ\nOPENFILE \"FileB.txt\" FOR WRITE\nWHILE NOT EOF(\"FileA.txt\")\n\tREADFILE \"FileA.txt\", LineOfText\n\tIF LineOfText = \"\" THEN\n\t\tWRITEFILE \"FileB.txt\", \"-------------------------\"\n\tELSE\n\t\tWRITEFILE \"FileB.txt\", LineOfText\n\tENDIF\nENDWHILE\nCLOSEFILE \"FileA.txt\"\nCLOSEFILE \"FileB.txt\""
+    },
+    "random": {
+      "description": "Random files hold fixed-length records. A file pointer can be moved to any record, which can then be read or written.",
+      "syntax": {
+        "open": "OPENFILE <file identifier> FOR RANDOM",
+        "seek": "SEEK <file identifier>, <address>",
+        "read": "GETRECORD <file identifier>, <variable>",
+        "write": "PUTRECORD <file identifier>, <variable>"
+      },
+      "rules": [
+        { "id": "RAND-1", "level": "required", "rule": "Random files are opened with mode RANDOM." },
+        { "id": "RAND-2", "level": "required", "rule": "The SEEK address must evaluate to an integer, usually the number of records from the start of the file." },
+        { "id": "RAND-3", "level": "goodPractice", "rule": "Explain how addresses are calculated." },
+        { "id": "RAND-4", "level": "required", "rule": "GETRECORD reads the record at the file pointer into a variable of the matching type (usually a user-defined type)." },
+        { "id": "RAND-5", "level": "info", "rule": "PUTRECORD writes the variable at the file pointer, replacing any data already there." }
+      ],
+      "example": "OPENFILE \"StudentFile.Dat\" FOR RANDOM\nFOR Position ← 20 TO 10 STEP -1\n\tSEEK \"StudentFile.Dat\", Position\n\tGETRECORD \"StudentFile.Dat\", Pupil\n\tSEEK \"StudentFile.Dat\", Position + 1\n\tPUTRECORD \"StudentFile.Dat\", Pupil\nNEXT Position\nSEEK \"StudentFile.Dat\", 10\nPUTRECORD \"StudentFile.Dat\", NewPupil\nCLOSEFILE \"StudentFile.Dat\""
+    }
+  },
+
+  "oop": {
+    "class": {
+      "syntax": "CLASS <class name>\n\t<PUBLIC|PRIVATE> <attribute> : <data type>\n\t<PUBLIC|PRIVATE> PROCEDURE NEW(<params>)\n\t\t<statement(s)>\n\tENDPROCEDURE\n\t...\nENDCLASS",
+      "inheritanceSyntax": "CLASS <class name> INHERITS <parent class name>\n\t...\nENDCLASS",
+      "instantiation": "<object name> ← NEW <class name>(<param1>, <param2>, ...)",
+      "methodCall": "<object>.<method>(<args>)",
+      "superCall": "SUPER.<method>(<args>)"
+    },
+    "rules": [
+      { "id": "OOP-1", "level": "info", "rule": "Methods and properties are PUBLIC unless stated otherwise." },
+      { "id": "OOP-2", "level": "info", "rule": "When access matters, PUBLIC or PRIVATE is written explicitly before the attribute or method." },
+      { "id": "OOP-3", "level": "info", "rule": "Attributes are written <PUBLIC|PRIVATE> <name> : <type>, with no DECLARE keyword." },
+      { "id": "OOP-4", "level": "required", "rule": "The constructor is a procedure named NEW." },
+      { "id": "OOP-5", "level": "required", "rule": "Inheritance uses INHERITS; parent-class methods are called with SUPER, e.g. SUPER.NEW(GivenName)." },
+      { "id": "OOP-6", "level": "required", "rule": "Objects are created with <object> ← NEW <ClassName>(<args>)." },
+      { "id": "OOP-7", "level": "required", "rule": "Methods are called with dot notation, e.g. Player.GetAttempts()." },
+      { "id": "OOP-8", "level": "required", "policy": true, "rule": "CALL follows the same rule as ordinary subroutines. Procedure methods (including SUPER.NEW) need CALL; function methods never use CALL and only appear inside an expression. The guide's own examples leave CALL out for procedure methods, so those examples would be errors under this rule." }
+    ],
+    "examples": [
+      "CLASS Pet\n\tPRIVATE Name : STRING\n\tPUBLIC PROCEDURE NEW(GivenName : STRING)\n\t\tName ← GivenName\n\tENDPROCEDURE\nENDCLASS",
+      "CLASS Cat INHERITS Pet\n\tPRIVATE Breed : STRING\n\tPUBLIC PROCEDURE NEW(GivenName : STRING, GivenBreed : STRING)\n\t\tCALL SUPER.NEW(GivenName)\n\t\tBreed ← GivenBreed\n\tENDPROCEDURE\nENDCLASS",
+      "MyCat ← NEW Cat(\"Kitty\", \"Shorthaired\")",
+      "CALL Player.SetAttempts(5)\nOUTPUT Player.GetAttempts()"
+    ],
+    "invalidExamples": ["Player.SetAttempts(5)", "SUPER.NEW(GivenName)", "CALL Player.GetAttempts()"]
+  },
+
+  "keywords": [
+    "AND", "APPEND", "ARRAY", "BOOLEAN", "BYREF", "BYVAL", "CALL", "CASE", "CHAR", "CLASS", "CLOSEFILE",
+    "CONSTANT", "DATE", "DECLARE", "DEFINE", "DIV", "ELSE", "ENDCASE", "ENDCLASS", "ENDFUNCTION", "ENDIF",
+    "ENDPROCEDURE", "ENDTYPE", "ENDWHILE", "EOF", "FALSE", "FOR", "FUNCTION", "GETRECORD", "INHERITS",
+    "INPUT", "INT", "INTEGER", "LCASE", "LENGTH", "MID", "MOD", "NEW", "NEXT", "NOT", "OF", "OPENFILE", "OR",
+    "OTHERWISE", "OUTPUT", "PRIVATE", "PROCEDURE", "PUBLIC", "PUTRECORD", "RAND", "RANDOM", "READ",
+    "READFILE", "REAL", "REPEAT", "RETURN", "RETURNS", "RIGHT", "SEEK", "SET", "STEP", "STRING", "SUPER",
+    "THEN", "TO", "TRUE", "TYPE", "UCASE", "UNTIL", "WHILE", "WRITE", "WRITEFILE"
+  ],
+  "insertFunctionNames": ["LEFT", "TO_UPPER", "TO_LOWER", "NUM_TO_STR", "STR_TO_NUM", "IS_NUM", "ASC", "CHR", "DAY", "MONTH", "YEAR", "DAYINDEX", "SETDATE", "TODAY"],
+  "symbols": ["←", "+", "-", "*", "/", "&", "=", "<>", "<", "<=", ">", ">=", "^", "//", ":", ",", ".", "[", "]", "(", ")", "'", "\""],
+
+  "sourceErrata": [
+    { "section": "4.2", "issue": "TIntPointer is declared as ^INTEGER but is then given the address of ThisSeason, which is a Season." },
+    { "section": "4.2", "issue": "The record field is declared as FirstName but assigned as Pupil1.Firstname. This is valid because identifiers are case-insensitive, but inconsistent." },
+    { "section": "5.2", "issue": "MOD is described as 'MOD or Modulus'. Only MOD is a keyword." },
+    { "section": "5.4", "issue": "Logic operators are described as 'also called relational operators'. That is wrong: relational operators are the comparisons in 5.3." },
+    { "section": "8.1 / 8.3", "issue": "The SWAP example uses Temp without declaring it, and the identifier SWAP is all upper case instead of mixed case." },
+    { "section": "8.1", "issue": "MoveForward and Turn are never defined; treat them as given library procedures." },
+    { "section": "9.2", "issue": "The example uses type Student, 'defined in Section 4.1', but 4.1 defines StudentRecord." },
+    { "section": "9.2", "issue": "The file is opened as \"StudentFile.Dat\" but closed as \"StudentFile.dat\"." },
+    { "section": "10.1 / 10.2", "issue": "Player.SetAttempts(5) and SUPER.NEW(GivenName) call procedure methods without CALL. Under rule OOP-8 this file writes them as CALL Player.SetAttempts(5) and CALL SUPER.NEW(GivenName)." },
+    { "section": "10.2", "issue": "Cat declares PRIVATE Breed: INTEGER but assigns it GivenBreed : STRING. This file corrects Breed to STRING in its example." }
+  ],
+
+  "ambiguities": [
+    { "id": "AMB-1", "topic": "Operator precedence", "issue": "The guide only says * and / bind tighter than + and -. It does not place DIV, MOD, &, the relational operators, or NOT / AND / OR.", "resolution": "Require parentheses for any other mix of operator groups (see OP-2).", "status": "resolved" },
+    { "id": "AMB-2", "topic": "Built-in function list", "issue": "The guide only lists 8 functions; exam inserts add more.", "resolution": "Added the functions from the 9618/21 May/June 2025 insert, tagged with source insert-2025-21.", "status": "resolved" },
+    { "id": "AMB-3", "topic": "DIV / MOD / INT with negative numbers", "issue": "The guide does not say whether these truncate or floor.", "resolution": "All truncate toward zero: INT(-2.5) = -2, -7 DIV 2 = -3, -7 MOD 2 = -1.", "status": "resolved" },
+    { "id": "AMB-4", "topic": "Enumerated arithmetic", "issue": "The example NextSeason ← MyPointer^ + 1 suggests that adding 1 to an enumerated value gives the next value. The guide does not say what happens after the last value (Winter + 1).", "resolution": "No wrapping; going past either end is an error (ENUM-2).", "status": "resolved" },
+    { "id": "AMB-5", "topic": "Method calls and CALL", "issue": "Procedures need CALL, but the OOP examples leave CALL out for procedure methods.", "resolution": "Procedure methods need CALL; function methods never use it (OOP-8).", "status": "resolved" },
+    { "id": "AMB-6", "topic": "Declarations required?", "issue": "Declaring variables is only 'good practice' in the guide.", "resolution": "A missing DECLARE is an error, including for FOR loop variables (see DEC-1).", "status": "resolved" },
+    { "id": "AMB-7", "topic": "ASCII assignment operator", "issue": "The guide only uses ←.", "resolution": "<- is accepted as input and displayed as ←.", "status": "resolved" },
+    { "id": "AMB-8a", "topic": "String comparison", "issue": "The guide does not say whether string comparison is case-sensitive.", "resolution": "The 2025 insert says comparison is case-sensitive, and CHAR and STRING can be compared (REL-3, REL-4).", "status": "resolved" },
+    { "id": "AMB-8b", "topic": "OUTPUT, uninitialised variables, scope, string equality", "resolution": "Each OUTPUT goes on a new line (IO-3). Unassigned variables hold random values (DEC-2). Subroutine variables are local (DEC-3). String and char equality is an exact, case-sensitive match (REL-6).", "status": "resolved" },
+    { "id": "AMB-8c", "topic": "String ordering with < and >", "issue": "No source says how strings are ordered, e.g. whether \"apple\" < \"banana\" or \"Z\" < \"a\".", "assumedDefault": "Compare character by character using ASCII codes; a shorter string that is a prefix of a longer one comes first. So \"Z\" < \"a\" is TRUE.", "status": "open" },
+    { "id": "AMB-9", "topic": "Keyword case strictness", "issue": "The guide does not say whether lower-case keywords are invalid.", "resolution": "They are an error, the same strictness as missing declarations (FMT-CASE-1).", "status": "resolved" }
+  ]
+}
