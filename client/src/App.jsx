@@ -1,52 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { LEVEL } from "./config.js";
-import { compile, LEVEL_NAMES } from "@shared/interpreter/index.ts";
-import CodeEditor from "./components/CodeEditor.jsx";
-import ProblemsList from "./components/ProblemsList.jsx";
-import ConsolePanel from "./components/ConsolePanel.jsx";
-import FilesPanel from "./components/FilesPanel.jsx";
-import { usePseudoRunner } from "./interpreter/usePseudoRunner.js";
-import { EXAMPLES } from "./examples.js";
+import { LEVEL_NAMES } from "@shared/interpreter/index.ts";
+import SiteHeader from "./components/SiteHeader.jsx";
+import LevelSwitch from "./components/LevelSwitch.jsx";
+import LandingPage from "./pages/LandingPage.jsx";
+import CompilerPage from "./pages/CompilerPage.jsx";
+import PracticePage from "./pages/PracticePage.jsx";
+import { useHashRoute } from "./useHashRoute.js";
+import { load, save } from "./storage.js";
 
 const LEVEL_KEY = "pseudo-practice:level";
 const DEFAULT_LEVEL = LEVEL === "AS Levels" ? "AS" : "O";
-
-// Each level keeps its own code and files.
-const STORAGE = {
-  O: { code: "pseudo-practice:olevel:code", files: "pseudo-practice:olevel:files" },
-  AS: { code: "pseudo-practice:aslevel:code", files: "pseudo-practice:aslevel:files" },
-};
-
-// Code and settings are kept between visits (localStorage). Files are only kept for
-// this browser session (sessionStorage): they survive a refresh but are cleared when
-// the tab is closed. Students download a file to keep it.
-function load(key, fallback, store = localStorage) {
-  try {
-    const v = store.getItem(key);
-    return v == null ? fallback : JSON.parse(v);
-  } catch {
-    return fallback;
-  }
-}
-
-/** Returns false when the browser refused to save (storage full or blocked). */
-function save(key, value, store = localStorage) {
-  try {
-    store.setItem(key, JSON.stringify(value));
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Older versions kept files in localStorage; remove those copies.
-try {
-  for (const k of Object.values(STORAGE)) localStorage.removeItem(k.files);
-} catch {
-  // Storage blocked: nothing to clean up.
-}
-
 const THEME_KEY = "pseudo-practice:theme";
+const SITE = "Pseudocode Practice | Zainematics";
 
 // index.html has already set data-theme (saved choice, else the system setting).
 function useTheme() {
@@ -62,169 +28,43 @@ function useTheme() {
 
 export default function App() {
   const [theme, toggleTheme] = useTheme();
+  const path = useHashRoute();
+  // The compiler's O Level / AS Level choice, remembered between visits.
   const [level, setLevel] = useState(() => {
     const saved = load(LEVEL_KEY, DEFAULT_LEVEL);
     return saved === "O" || saved === "AS" ? saved : DEFAULT_LEVEL;
   });
 
   useEffect(() => {
-    document.title = `Pseudocode Practice | ${LEVEL_NAMES[level]}`;
     save(LEVEL_KEY, level);
   }, [level]);
 
+  const page = pageFor(path, level);
+
+  useEffect(() => {
+    document.title = page.title ? `${page.title} | ${SITE}` : SITE;
+  }, [page.title]);
+
   return (
     <main className="page">
-      <header className="header">
-        <h1>Pseudocode Practice</h1>
-        <LevelSwitch level={level} onChange={setLevel} />
-        <button type="button" className="theme-toggle" onClick={toggleTheme}>
-          <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span> {theme === "dark" ? "Light" : "Dark"} mode
-        </button>
-      </header>
-      {/* A new key gives each level a fresh editor, console and runner. */}
-      <Playground key={level} level={level} />
+      <SiteHeader theme={theme} onToggleTheme={toggleTheme}>
+        {page.id === "compiler" && <LevelSwitch level={level} onChange={setLevel} />}
+      </SiteHeader>
+      {page.element}
     </main>
   );
 }
 
-function LevelSwitch({ level, onChange }) {
-  const options = [
-    { id: "O", label: "O Level", detail: "2210" },
-    { id: "AS", label: "AS Level", detail: "9618" },
-  ];
-  const onKeyDown = (e) => {
-    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-      e.preventDefault();
-      onChange(level === "O" ? "AS" : "O");
-    }
-  };
-  return (
-    <div className="level-switch" role="radiogroup" aria-label="Pseudocode level" onKeyDown={onKeyDown}>
-      {options.map((o) => (
-        <button
-          key={o.id}
-          type="button"
-          role="radio"
-          aria-checked={level === o.id}
-          tabIndex={level === o.id ? 0 : -1}
-          className={level === o.id ? "active" : ""}
-          onClick={() => onChange(o.id)}
-        >
-          {o.label} <span className="level-code">{o.detail}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function Playground({ level }) {
-  const keys = STORAGE[level];
-  const examples = EXAMPLES[level];
-  const editorRef = useRef(null);
-  const [initialCode] = useState(() => load(keys.code, examples[0].code));
-  const [diagnostics, setDiagnostics] = useState([]);
-  const [files, setFiles] = useState(() => load(keys.files, {}, sessionStorage));
-  const [filesSaved, setFilesSaved] = useState(true);
-  const [example, setExample] = useState("");
-  const saveTimer = useRef(null);
-
-  const runner = usePseudoRunner({
-    onFinished(msg) {
-      if (msg.files) setFiles(msg.files);
-      if (msg.status === "error" && msg.error) editorRef.current?.showErrorLine(msg.error.line);
-      if (msg.diagnostics) setDiagnostics(msg.diagnostics);
-    },
-  });
-  const running = runner.status === "running" || runner.status === "input";
-
-  useEffect(() => setFilesSaved(save(keys.files, files, sessionStorage)), [keys.files, files]);
-
-  const handleChange = useCallback((text) => {
-    clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => save(keys.code, text), 400);
-  }, [keys.code]);
-
-  const handleRun = () => {
-    if (running) return;
-    const editor = editorRef.current;
-    const source = editor.getValue();
-    editor.showErrorLine(null);
-    const result = compile(source, level);
-    setDiagnostics(result.diagnostics);
-    if (!result.program) {
-      const n = result.diagnostics.filter((d) => d.severity === "error").length;
-      runner.refuse(`Your code has ${n} error${n === 1 ? "" : "s"}. Fix ${n === 1 ? "it" : "them"} (see Problems) and press Run again.`);
-      return;
-    }
-    runner.run(source, files, level);
-  };
-
-  const goTo = (line, col) => editorRef.current?.goTo(line, col);
-
-  const loadExample = (id) => {
-    const ex = examples.find((e) => e.id === id);
-    setExample("");
-    if (!ex) return;
-    const current = editorRef.current.getValue();
-    const isExample = examples.some((e) => e.code === current);
-    if (current.trim() && !isExample && !window.confirm("Replace your code with this example? Your current code will be lost.")) return;
-    runner.stop();
-    editorRef.current.setValue(ex.code);
-    editorRef.current.showErrorLine(null);
-    editorRef.current.focus();
-  };
-
-  return (
-    <div className="workspace">
-      <div className="toolbar">
-        <label className="example-picker">
-          <span className="visually-hidden">Load an example</span>
-          <select value={example} onChange={(e) => loadExample(e.target.value)}>
-            <option value="">Examples…</option>
-            {examples.map((ex) => (
-              <option key={ex.id} value={ex.id}>{ex.title}</option>
-            ))}
-          </select>
-        </label>
-        <p className="shortcuts">
-          <kbd>Tab</kbd> indents · type <code>&lt;-</code> for <code>←</code> · <kbd>Ctrl</kbd>+<kbd>Enter</kbd> runs
-        </p>
-        {running ? (
-          <button type="button" className="run-button stop" onClick={runner.stop}>
-            <span aria-hidden="true">■</span> Stop
-          </button>
-        ) : (
-          <button type="button" className="run-button" onClick={handleRun}>
-            <span aria-hidden="true">▶</span> Run
-          </button>
-        )}
-      </div>
-
-      <div className="column main-column">
-        <div className="editor-card">
-          <CodeEditor
-            ref={editorRef}
-            level={level}
-            initialValue={initialCode}
-            onChange={handleChange}
-            onDiagnostics={setDiagnostics}
-            onRun={handleRun}
-          />
-        </div>
-        <ProblemsList diagnostics={diagnostics} onSelect={(d) => goTo(d.line, d.col)} />
-      </div>
-
-      <div className="column side-column">
-        <ConsolePanel
-          status={runner.status}
-          entries={runner.entries}
-          inputRequest={runner.inputRequest}
-          onInput={runner.sendInput}
-          onSelectLine={(line) => goTo(line)}
-          onClear={runner.clear}
-        />
-        <FilesPanel files={files} onChange={setFiles} disabled={running} saved={filesSaved} />
-      </div>
-    </div>
-  );
+/** Picks the page for a path such as "/compiler". Unknown paths show the landing page. */
+function pageFor(path, level) {
+  switch (path.replace(/\/+$/, "")) {
+    case "/compiler":
+      return { id: "compiler", title: `Compiler (${LEVEL_NAMES[level]})`, element: <CompilerPage level={level} /> };
+    case "/practice/ol":
+      return { id: "practice-ol", title: "O Level Practice", element: <PracticePage title="O Level Practice" /> };
+    case "/practice/as":
+      return { id: "practice-as", title: "AS Level Practice", element: <PracticePage title="AS Level Practice" /> };
+    default:
+      return { id: "home", title: "", element: <LandingPage /> };
+  }
 }

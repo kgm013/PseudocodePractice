@@ -112,9 +112,182 @@ body {
   gap: 12px;
 }
 
-.header h1 {
+.brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.brand:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+
+.brand-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.brand-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.social-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.social-link:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .social-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* ---- Landing page ---------------------------------------------------- */
+
+.landing-intro {
+  margin: 48px 0 28px;
+}
+
+.landing-intro h1 {
+  margin: 0 0 8px;
+  font-size: 2.25rem;
+}
+
+.landing-intro p {
   margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.landing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.landing-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.landing-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.landing-card:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.landing-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.landing-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.landing-card-code {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.landing-card-text {
+  color: var(--muted);
+  font-size: 0.95rem;
+  flex: 1;
+}
+
+.landing-card-go {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-card {
+    transition: none;
+  }
+  .landing-card:hover {
+    transform: none;
+  }
+}
+
+/* ---- Practice pages -------------------------------------------------- */
+
+.practice-page {
+  margin-top: 32px;
+}
+
+.practice-page h1 {
+  margin: 12px 0 0;
   font-size: 2rem;
+}
+
+.back-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back-link:hover {
+  text-decoration: underline;
 }
 
 .level-switch {
@@ -125,7 +298,6 @@ body {
 }
 
 .theme-toggle {
-  margin-left: auto;
   font: inherit;
   font-size: 0.9rem;
   padding: 6px 14px;
