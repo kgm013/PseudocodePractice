@@ -112,9 +112,66 @@ body {
   gap: 12px;
 }
 
-.header h1 {
+.brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.brand-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.brand-title {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.social-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.social-link:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .social-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
 }
 
 .level-switch {
@@ -125,7 +182,6 @@ body {
 }
 
 .theme-toggle {
-  margin-left: auto;
   font: inherit;
   font-size: 0.9rem;
   padding: 6px 14px;
@@ -175,6 +231,17 @@ body {
 .level-code {
   font-weight: 400;
   opacity: 0.75;
+}
+
+.level-switch button {
+  white-space: nowrap;
+}
+
+/* The syllabus codes are dropped on phones so the longer O Level / IGCSE label fits. */
+@media (max-width: 640px) {
+  .level-code {
+    display: none;
+  }
 }
 
 .notice {

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LEVEL } from "./config.js";
 import { compile, LEVEL_NAMES } from "@shared/interpreter/index.ts";
+import SiteHeader from "./components/SiteHeader.jsx";
 import CodeEditor from "./components/CodeEditor.jsx";
 import ProblemsList from "./components/ProblemsList.jsx";
 import ConsolePanel from "./components/ConsolePanel.jsx";
@@ -74,13 +75,9 @@ export default function App() {
 
   return (
     <main className="page">
-      <header className="header">
-        <h1>Pseudocode Practice</h1>
+      <SiteHeader theme={theme} onToggleTheme={toggleTheme}>
         <LevelSwitch level={level} onChange={setLevel} />
-        <button type="button" className="theme-toggle" onClick={toggleTheme}>
-          <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span> {theme === "dark" ? "Light" : "Dark"} mode
-        </button>
-      </header>
+      </SiteHeader>
       {/* A new key gives each level a fresh editor, console and runner. */}
       <Playground key={level} level={level} />
     </main>
@@ -89,7 +86,7 @@ export default function App() {
 
 function LevelSwitch({ level, onChange }) {
   const options = [
-    { id: "O", label: "O Level", detail: "2210" },
+    { id: "O", label: "O Level / IGCSE", detail: "2210 · 0478" },
     { id: "AS", label: "AS Level", detail: "9618" },
   ];
   const onKeyDown = (e) => {

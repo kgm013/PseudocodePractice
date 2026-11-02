@@ -93,7 +93,7 @@ function lexLine(text: string, lineNo: number, diags: Diagnostics, spec: LevelSp
         err(`A name must start with a letter, so "${word}" can't be used.`, i + 1, j + 1);
         push("ident", word, i, j);
       } else if (!isAS && word.includes("_")) {
-        err(`Names can only use letters and digits at O Level (no underscore), so "${word}" isn't allowed. Try ${word.split("_").filter(Boolean).map((p) => p[0].toUpperCase() + p.slice(1)).join("")} instead.`, i + 1, j + 1);
+        err(`Names can only use letters and digits at O Level / IGCSE (no underscore), so "${word}" isn't allowed. Try ${word.split("_").filter(Boolean).map((p) => p[0].toUpperCase() + p.slice(1)).join("")} instead.`, i + 1, j + 1);
         push("ident", word, i, j);
       } else if (/[^A-Za-z0-9_]/.test(word)) {
         err(`Names can only use the letters A–Z, the digits 0–9${isAS ? " and _" : ""}, so "${word}" isn't allowed.`, i + 1, j + 1);
@@ -208,7 +208,7 @@ function lexLine(text: string, lineNo: number, diags: Diagnostics, spec: LevelSp
     }
     if (c === "&") {
       if (isAS) { push("op", "&", i, i + 1); i++; continue; }
-      err("& is A Level only. O Level has no way to join strings: to print values on one line, separate them with commas, for example OUTPUT Name, \" scored \", Score.", i + 1, i + 2);
+      err("& is A Level only. O Level / IGCSE has no way to join strings: to print values on one line, separate them with commas, for example OUTPUT Name, \" scored \", Score.", i + 1, i + 2);
       push("op", "+", i, i + 1); i++; continue;
     }
     if (c === "^" && isAS) {
