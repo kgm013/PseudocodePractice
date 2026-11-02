@@ -7,6 +7,9 @@ import LevelSwitch from "./components/LevelSwitch.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import CompilerPage from "./pages/CompilerPage.jsx";
 import PracticePage from "./pages/PracticePage.jsx";
+import TopicPage from "./pages/TopicPage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
+import { getLevel, getTopic, levelHref } from "./practice/topics.js";
 import { useHashRoute } from "./useHashRoute.js";
 import { load, save } from "./storage.js";
 
@@ -40,7 +43,13 @@ export default function App() {
     save(LEVEL_KEY, level);
   }, [level]);
 
-  const page = pageFor(path, level);
+  // From a topic page: open the compiler at that topic's level.
+  const openCompiler = (compilerLevel) => {
+    setLevel(compilerLevel);
+    window.location.hash = "#/compiler";
+  };
+
+  const page = pageFor(path, level, openCompiler);
 
   useEffect(() => {
     document.title = page.title ? `${page.title} | ${SITE}` : SITE;
@@ -57,16 +66,41 @@ export default function App() {
   );
 }
 
-/** Picks the page for a path such as "/compiler". Unknown paths show the landing page. */
-function pageFor(path, level) {
-  switch (path.replace(/\/+$/, "")) {
-    case "/compiler":
-      return { id: "compiler", title: `Compiler (${LEVEL_NAMES[level]})`, element: <CompilerPage level={level} /> };
-    case "/practice/ol":
-      return { id: "practice-ol", title: "O Level / IGCSE Practice", element: <PracticePage title="O Level / IGCSE Practice" /> };
-    case "/practice/as":
-      return { id: "practice-as", title: "AS Level Practice", element: <PracticePage title="AS Level Practice" /> };
-    default:
-      return { id: "home", title: "", element: <LandingPage /> };
+/**
+ * Picks the page for a path such as "/compiler" or "/practice/ol/variables".
+ * The bare home path shows the landing page; anything unknown shows "not found".
+ */
+function pageFor(path, level, openCompiler) {
+  const parts = path.split("/").filter(Boolean);
+
+  if (parts.length === 0) return { id: "home", title: "", element: <LandingPage /> };
+
+  if (parts[0] === "compiler" && parts.length === 1) {
+    return { id: "compiler", title: `Compiler (${LEVEL_NAMES[level]})`, element: <CompilerPage level={level} /> };
   }
+
+  if (parts[0] === "practice") {
+    const practiceLevel = getLevel(parts[1]);
+    if (practiceLevel && parts.length === 2) {
+      return {
+        id: `practice-${practiceLevel.id}`,
+        title: `${practiceLevel.name} Practice`,
+        element: <PracticePage level={practiceLevel} />,
+      };
+    }
+    const entry = parts.length === 3 ? getTopic(parts[1], parts[2]) : null;
+    if (entry) {
+      return {
+        id: `topic-${entry.level.id}-${entry.topic.id}`,
+        title: `${entry.topic.title} | ${entry.level.name} Practice`,
+        element: <TopicPage entry={entry} onOpenCompiler={openCompiler} />,
+      };
+    }
+    if (practiceLevel) {
+      const back = { backHref: levelHref(practiceLevel.id), backLabel: `See all ${practiceLevel.name} topics` };
+      return { id: "not-found", title: "Page not found", element: <NotFoundPage {...back} /> };
+    }
+  }
+
+  return { id: "not-found", title: "Page not found", element: <NotFoundPage /> };
 }
