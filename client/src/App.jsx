@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { LEVEL } from "./config.js";
 import { LEVEL_NAMES } from "@shared/interpreter/index.ts";
 import SiteHeader from "./components/SiteHeader.jsx";
+import FeedbackFooter from "./components/FeedbackFooter.jsx";
 import LevelSwitch from "./components/LevelSwitch.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import CompilerPage from "./pages/CompilerPage.jsx";
@@ -51,6 +52,7 @@ export default function App() {
         {page.id === "compiler" && <LevelSwitch level={level} onChange={setLevel} />}
       </SiteHeader>
       {page.element}
+      <FeedbackFooter />
     </main>
   );
 }

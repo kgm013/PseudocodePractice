@@ -57,6 +57,8 @@ function Playground({ level }) {
   const handleChange = useCallback((text) => {
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => save(keys.code, text), 400);
+    // Problems describe the code that was run, so editing clears them.
+    setDiagnostics((d) => (d.length ? [] : d));
   }, [keys.code]);
 
   const handleRun = () => {
@@ -66,6 +68,7 @@ function Playground({ level }) {
     editor.showErrorLine(null);
     const result = compile(source, level);
     setDiagnostics(result.diagnostics);
+    editor.showDiagnostics(result.diagnostics);
     if (!result.program) {
       const n = result.diagnostics.filter((d) => d.severity === "error").length;
       runner.refuse(`Your code has ${n} error${n === 1 ? "" : "s"}. Fix ${n === 1 ? "it" : "them"} (see Problems) and press Run again.`);
@@ -122,7 +125,6 @@ function Playground({ level }) {
             level={level}
             initialValue={initialCode}
             onChange={handleChange}
-            onDiagnostics={setDiagnostics}
             onRun={handleRun}
           />
         </div>
