@@ -733,3 +733,56 @@ kbd,
   color: var(--muted);
   cursor: default;
 }
+
+/* ---- Feedback ---------------------------------------------------------- */
+
+.feedback {
+  margin-top: 40px;
+  padding: 32px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.feedback-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.feedback-button {
+  display: inline-block;
+  width: 100%;
+  max-width: 420px;
+  padding: 18px 32px;
+  border-radius: 14px;
+  background: var(--accent-fill);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(47, 91, 234, 0.3);
+  transition: background 0.15s, transform 0.15s;
+}
+
+.feedback-button:hover {
+  background: var(--accent-fill-hover);
+  transform: translateY(-2px);
+}
+
+.feedback-button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feedback-button {
+    transition: none;
+  }
+  .feedback-button:hover {
+    transform: none;
+  }
+}

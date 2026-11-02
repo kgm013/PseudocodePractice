@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { LEVEL } from "./config.js";
 import { compile, LEVEL_NAMES } from "@shared/interpreter/index.ts";
 import SiteHeader from "./components/SiteHeader.jsx";
+import FeedbackFooter from "./components/FeedbackFooter.jsx";
 import CodeEditor from "./components/CodeEditor.jsx";
 import ProblemsList from "./components/ProblemsList.jsx";
 import ConsolePanel from "./components/ConsolePanel.jsx";
@@ -80,6 +81,7 @@ export default function App() {
       </SiteHeader>
       {/* A new key gives each level a fresh editor, console and runner. */}
       <Playground key={level} level={level} />
+      <FeedbackFooter />
     </main>
   );
 }
