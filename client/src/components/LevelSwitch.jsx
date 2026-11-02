@@ -1,6 +1,6 @@
 export default function LevelSwitch({ level, onChange }) {
   const options = [
-    { id: "O", label: "O Level", detail: "2210" },
+    { id: "O", label: "O Level / IGCSE", detail: "2210 · 0478" },
     { id: "AS", label: "AS Level", detail: "9618" },
   ];
   const onKeyDown = (e) => {

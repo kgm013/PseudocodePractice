@@ -2,7 +2,7 @@
 
 export type Level = "O" | "AS";
 
-export const LEVEL_NAMES: Record<Level, string> = { O: "O Level", AS: "AS Level" };
+export const LEVEL_NAMES: Record<Level, string> = { O: "O Level / IGCSE", AS: "AS Level" };
 
 export interface BuiltinSpec {
   arity: number;
@@ -57,20 +57,20 @@ const O_BUILTINS: Record<string, BuiltinSpec> = {
 
 const O_REJECTED: Record<string, Rejected> = {
   ...COMMON_REJECTED,
-  ELSEIF: { ...COMMON_REJECTED.ELSEIF, message: "There is no ELSEIF at O Level. Put a new IF inside the ELSE, or use CASE OF." },
-  BYREF: { anyCase: true, message: "BYREF is A Level only. At O Level every parameter is passed by value, so just write the name and type." },
-  BYVAL: { anyCase: true, message: "BYVAL is A Level only. At O Level every parameter is passed by value, so just write the name and type." },
-  MID: { anyCase: false, message: "MID is A Level only. At O Level use SUBSTRING(Text, Start, Length)." },
-  LEFT: { anyCase: false, message: "LEFT is A Level only. At O Level use SUBSTRING(Text, 1, Length)." },
-  RIGHT: { anyCase: false, message: "RIGHT is A Level only. At O Level use SUBSTRING(Text, Start, Length)." },
-  INT: { anyCase: false, message: "INT is A Level only. At O Level use ROUND(Value, 0) or DIV(A, B)." },
-  RAND: { anyCase: false, message: "RAND is A Level only. At O Level use RANDOM(), which gives a number from 0 to 1." },
-  EOF: { anyCase: false, message: "There is no EOF function at O Level. Read a known number of lines instead." },
-  APPEND: { anyCase: false, message: "There is no APPEND mode at O Level. Files are opened FOR READ or FOR WRITE." },
+  ELSEIF: { ...COMMON_REJECTED.ELSEIF, message: "There is no ELSEIF at O Level / IGCSE. Put a new IF inside the ELSE, or use CASE OF." },
+  BYREF: { anyCase: true, message: "BYREF is A Level only. At O Level / IGCSE every parameter is passed by value, so just write the name and type." },
+  BYVAL: { anyCase: true, message: "BYVAL is A Level only. At O Level / IGCSE every parameter is passed by value, so just write the name and type." },
+  MID: { anyCase: false, message: "MID is A Level only. At O Level / IGCSE use SUBSTRING(Text, Start, Length)." },
+  LEFT: { anyCase: false, message: "LEFT is A Level only. At O Level / IGCSE use SUBSTRING(Text, 1, Length)." },
+  RIGHT: { anyCase: false, message: "RIGHT is A Level only. At O Level / IGCSE use SUBSTRING(Text, Start, Length)." },
+  INT: { anyCase: false, message: "INT is A Level only. At O Level / IGCSE use ROUND(Value, 0) or DIV(A, B)." },
+  RAND: { anyCase: false, message: "RAND is A Level only. At O Level / IGCSE use RANDOM(), which gives a number from 0 to 1." },
+  EOF: { anyCase: false, message: "There is no EOF function at O Level / IGCSE. Read a known number of lines instead." },
+  APPEND: { anyCase: false, message: "There is no APPEND mode at O Level / IGCSE. Files are opened FOR READ or FOR WRITE." },
   TYPE: { anyCase: false, message: "TYPE (records and enumerated types) is A Level only." },
   CLASS: { anyCase: false, message: "CLASS (object-oriented programming) is A Level only." },
-  TO_UPPER: { anyCase: true, message: "TO_UPPER is A Level only. At O Level use UCASE(...)." },
-  TO_LOWER: { anyCase: true, message: "TO_LOWER is A Level only. At O Level use LCASE(...)." },
+  TO_UPPER: { anyCase: true, message: "TO_UPPER is A Level only. At O Level / IGCSE use UCASE(...)." },
+  TO_LOWER: { anyCase: true, message: "TO_LOWER is A Level only. At O Level / IGCSE use LCASE(...)." },
 };
 
 // ---- AS Level 9618 ----------------------------------------------------------
@@ -104,7 +104,7 @@ const A2_ONLY = "is A Level only (Paper 4), so it isn't part of AS Level pseudoc
 
 const AS_REJECTED: Record<string, Rejected> = {
   ...COMMON_REJECTED,
-  SUBSTRING: { anyCase: false, message: "SUBSTRING is O Level. At AS Level use MID(ThisString, x, y)." },
+  SUBSTRING: { anyCase: false, message: "SUBSTRING is O Level / IGCSE. At AS Level use MID(ThisString, x, y)." },
   ROUND: { anyCase: false, message: "There is no ROUND at AS Level. Use INT(x) to cut off the decimal part." },
   RANDOM: { anyCase: false, message: "RANDOM is only a file mode, and random files are A Level only. For a random number use RAND(x)." },
   CLASS: { anyCase: false, message: `CLASS ${A2_ONLY}` },
@@ -137,7 +137,7 @@ const AS_KEYWORDS = [
 export const LEVELS: Record<Level, LevelSpec> = {
   O: {
     level: "O",
-    name: "O Level",
+    name: "O Level / IGCSE",
     keywords: new Set(O_KEYWORDS),
     builtins: O_BUILTINS,
     rejected: O_REJECTED,

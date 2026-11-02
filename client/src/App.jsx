@@ -29,7 +29,7 @@ function useTheme() {
 export default function App() {
   const [theme, toggleTheme] = useTheme();
   const path = useHashRoute();
-  // The compiler's O Level / AS Level choice, remembered between visits.
+  // The compiler's O Level / IGCSE or AS Level choice, remembered between visits.
   const [level, setLevel] = useState(() => {
     const saved = load(LEVEL_KEY, DEFAULT_LEVEL);
     return saved === "O" || saved === "AS" ? saved : DEFAULT_LEVEL;
@@ -61,7 +61,7 @@ function pageFor(path, level) {
     case "/compiler":
       return { id: "compiler", title: `Compiler (${LEVEL_NAMES[level]})`, element: <CompilerPage level={level} /> };
     case "/practice/ol":
-      return { id: "practice-ol", title: "O Level Practice", element: <PracticePage title="O Level Practice" /> };
+      return { id: "practice-ol", title: "O Level / IGCSE Practice", element: <PracticePage title="O Level / IGCSE Practice" /> };
     case "/practice/as":
       return { id: "practice-as", title: "AS Level Practice", element: <PracticePage title="AS Level Practice" /> };
     default:

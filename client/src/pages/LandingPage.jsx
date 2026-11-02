@@ -1,8 +1,8 @@
 const SECTIONS = [
   {
     href: "#/practice/ol",
-    title: "O Level Practice",
-    code: "2210",
+    title: "O Level / IGCSE Practice",
+    code: "2210 · 0478",
     text: "Questions by topic, from variables and output to arrays and files. Write your answer and check it.",
   },
   {
@@ -14,7 +14,7 @@ const SECTIONS = [
   {
     href: "#/compiler",
     title: "Compiler",
-    code: "O & AS",
+    code: "All levels",
     text: "Write and run any pseudocode program, with input, output and text files.",
   },
 ];
@@ -24,15 +24,16 @@ export default function LandingPage() {
     <div className="landing">
       <div className="landing-intro">
         <h1>Practise Cambridge pseudocode</h1>
-        <p>Questions by topic for O Level (2210) and AS Level (9618), plus a compiler to run your own programs.</p>
+        <p>
+          Questions by topic for O Level / IGCSE (2210, 0478) and AS Level (9618), plus a compiler to run your own
+          programs.
+        </p>
       </div>
       <nav className="landing-cards" aria-label="Sections">
         {SECTIONS.map((s) => (
           <a key={s.href} href={s.href} className="landing-card">
-            <span className="landing-card-head">
-              <span className="landing-card-title">{s.title}</span>
-              <span className="landing-card-code">{s.code}</span>
-            </span>
+            <span className="landing-card-code">{s.code}</span>
+            <span className="landing-card-title">{s.title}</span>
             <span className="landing-card-text">{s.text}</span>
             <span className="landing-card-go" aria-hidden="true">
               Open →

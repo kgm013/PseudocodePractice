@@ -536,7 +536,7 @@ class Parser {
       const t = this.peek();
       if (this.isKw(t, "THEN")) {
         this.checkCase(t);
-        if (!this.isAS) this.reportAt(t, "At O Level, THEN goes on its own line, one tab in from IF.");
+        if (!this.isAS) this.reportAt(t, "At O Level / IGCSE, THEN goes on its own line, one tab in from IF.");
         this.ti++;
         sawThen = true;
         if (this.isAS && !this.atEol()) {
@@ -572,7 +572,7 @@ class Parser {
         const t = this.peek();
         node.elseBody = [];
         if (this.isKw(t, "IF")) {
-          this.reportAt(t, `There is no ELSE IF${this.isAS ? "" : " at O Level"}. Put the IF on its own line under ELSE, with its own ENDIF.`);
+          this.reportAt(t, `There is no ELSE IF${this.isAS ? "" : " at O Level / IGCSE"}. Put the IF on its own line under ELSE, with its own ENDIF.`);
           const nested = this.parseStatementSafe(this.child(ctx));
           if (nested) node.elseBody.push(nested);
         } else {
@@ -774,7 +774,7 @@ class Parser {
         if (this.isDo(t)) throw this.errAt(t, "At AS Level, WHILE has no DO. Write just WHILE Count < 10.");
       } else if (!this.acceptKw("DO")) {
         throw this.errAt(t, this.atEol()
-          ? "At O Level, WHILE needs DO at the end of the line: WHILE Count < 10 DO."
+          ? "At O Level / IGCSE, WHILE needs DO at the end of the line: WHILE Count < 10 DO."
           : `Expected DO, but found "${t!.text}".`);
       }
       this.expectEol();
@@ -1047,7 +1047,7 @@ class Parser {
       if (t.value === "AND" || t.value === "OR") return t.value;
       if (t.value === "DIV" || t.value === "MOD") {
         if (this.isAS) return t.value;
-        throw this.errAt(t, `At O Level, ${t.value} is written as a function: ${t.value}(A, B).`);
+        throw this.errAt(t, `At O Level / IGCSE, ${t.value} is written as a function: ${t.value}(A, B).`);
       }
     }
     return null;

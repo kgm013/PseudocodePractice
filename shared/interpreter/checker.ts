@@ -204,7 +204,7 @@ class Checker {
       } else {
         const global = this.describe(key);
         if (global) {
-          this.error(`${name} is already the name of ${global}. At O Level a local variable or parameter can't share a name with anything global, so choose a different name.`, pos);
+          this.error(`${name} is already the name of ${global}. At O Level / IGCSE a local variable or parameter can't share a name with anything global, so choose a different name.`, pos);
           return;
         }
       }
@@ -893,7 +893,7 @@ class Checker {
         if (op === "+" && (TEXT.has(l) || TEXT.has(r))) {
           this.error(this.isAS
             ? "+ adds numbers. To join strings use &, for example Name & \" is \" & NUM_TO_STR(Age)."
-            : "+ can't join text at O Level. To print values on one line, separate them with commas: OUTPUT Name, \" is \", Age.", e.pos);
+            : "+ can't join text at O Level / IGCSE. To print values on one line, separate them with commas: OUTPUT Name, \" is \", Age.", e.pos);
         } else {
           this.error(`${op} needs numbers on both sides, but this has ${a(l)} and ${a(r)}.`, e.pos);
         }
