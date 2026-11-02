@@ -1,12 +1,11 @@
 // CodeMirror support for O Level pseudocode: highlighting, tab indentation,
-// live error checking and typing <- as ←.
+// marking problems and typing <- as ←.
 
 import { EditorState, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, EditorView } from "@codemirror/view";
 import { HighlightStyle, StreamLanguage, indentService, indentUnit, syntaxHighlighting } from "@codemirror/language";
-import { linter, lintGutter } from "@codemirror/lint";
+import { lintGutter } from "@codemirror/lint";
 import { tags } from "@lezer/highlight";
-import { compile } from "@shared/interpreter/index.ts";
 import { LEVELS } from "@shared/interpreter/levels.ts";
 
 function pseudocodeLanguage(level) {
@@ -99,7 +98,7 @@ const arrowInput = EditorState.transactionFilter.of((tr) => {
   return changes.length ? [tr, { changes, sequential: true }] : tr;
 });
 
-// ---- live checking -----------------------------------------------------------
+// ---- problems (shown only after Run is pressed) ----------------------------
 
 export function toEditorDiagnostic(state, d) {
   const n = Math.min(Math.max(d.line, 1), state.doc.lines);
@@ -112,17 +111,6 @@ export function toEditorDiagnostic(state, d) {
   }
   if (to < from) to = from;
   return { from, to, severity: d.severity, message: d.message };
-}
-
-function pseudoLinter(level, onDiagnostics) {
-  return linter(
-    (view) => {
-      const { diagnostics } = compile(view.state.doc.toString(), level);
-      onDiagnostics?.(diagnostics);
-      return diagnostics.map((d) => toEditorDiagnostic(view.state, d));
-    },
-    { delay: 300 },
-  );
 }
 
 // ---- highlighting the line of a runtime error ----------------------------
@@ -185,7 +173,7 @@ const theme = EditorView.theme({
   "&.cm-focused": { outline: "none" },
 });
 
-export function pseudocodeExtensions({ level = "O", onDiagnostics } = {}) {
+export function pseudocodeExtensions({ level = "O" } = {}) {
   return [
     pseudocodeLanguage(level),
     syntaxHighlighting(highlightStyle),
@@ -193,7 +181,6 @@ export function pseudocodeExtensions({ level = "O", onDiagnostics } = {}) {
     EditorState.tabSize.of(4),
     smartIndent,
     arrowInput,
-    pseudoLinter(level, onDiagnostics),
     lintGutter(),
     errorLineField,
     theme,
