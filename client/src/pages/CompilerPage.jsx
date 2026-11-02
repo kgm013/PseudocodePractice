@@ -28,6 +28,9 @@ export default function CompilerPage({ level }) {
     <>
       <h1 className="visually-hidden">Compiler</h1>
       <Playground key={level} level={level} />
+      <p className="footnote">
+        There's no autocomplete or suggested text here on purpose: you won't have it in your exam either. :)
+      </p>
     </>
   );
 }
