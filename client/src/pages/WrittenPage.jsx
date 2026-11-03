@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import Breadcrumbs from "../components/Breadcrumbs.jsx";
-import ModeTabs from "../components/ModeTabs.jsx";
 import Segmented from "../components/Segmented.jsx";
 import McqPanel from "../components/mcq/McqPanel.jsx";
 import SingleStepper from "../components/mcq/SingleStepper.jsx";
@@ -8,7 +7,7 @@ import McqSummary from "../components/mcq/McqSummary.jsx";
 import ReviewChips from "../components/mcq/ReviewChips.jsx";
 import WrittenQuestion from "../components/written/WrittenQuestion.jsx";
 import RevealDialog from "../components/written/RevealDialog.jsx";
-import { countMcqs, countWritten, getWrittenQuestions } from "@shared/practice/bank.ts";
+import { countWritten, getWrittenQuestions } from "@shared/practice/bank.ts";
 import { levelHref, topicHref } from "../practice/routes.js";
 import { summariseWritten, useWrittenProgress, writtenStatus } from "../practice/progressStore.js";
 import { useWrittenChecker } from "../practice/useWrittenChecker.js";
@@ -180,8 +179,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
 
   const hasProgress = questions.some((q) => entries[q.id]);
   const nextTopic = next && countWritten(next.id) > 0 ? { title: next.title, href: `${topicHref(level.id, next.slug)}/written` } : null;
-  const mcqCount = countMcqs(topic.id);
-  const other = mcqCount > 0 ? { otherHref: `${base}/mcq`, otherLabel: "Multiple choice" } : { otherHref: base, otherLabel: "Topic overview" };
+  const other = { otherHref: base, otherLabel: "Topic overview" };
 
   const card = (q, nav) => (
     <WrittenQuestion
@@ -224,8 +222,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
     </div>
   );
 
-  // "One at a time" on wide screens: head on the left, the question in the middle, progress
-  // on the right (single-view.css). Narrower screens stack them: head, progress, question.
+  // Both views share the heading and toolbar. Single view keeps progress beside the question.
   return (
     <div className={`practice mcq-page written-page${single ? " is-single" : " is-list"}`}>
       <div className="page-head">
@@ -238,21 +235,23 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
         ]}
       />
       <header className="practice-intro compact">
-        <h1>{topic.title}</h1>
+        <h1>{topic.title} <span className="question-mode">Written</span></h1>
       </header>
-      <ModeTabs levelId={level.id} topicSlug={topic.slug} current="written" mcqCount={mcqCount} writtenCount={questions.length} />
 
       <p className="written-intro">
         Write your answer, then check it. You'll only find out whether it's right, just like in the exam, where you can't
         run your code.
       </p>
 
-      {single && viewSwitch}
       </div>
 
-      {single ? (
+      <div className="mcq-toolbar">
+        {viewSwitch}
+        {actions}
+      </div>
+
+      {single && (
         <aside className="page-side" aria-label="Your progress">
-          {actions}
           <SingleStepper
             counts={counts}
             questions={questions}
@@ -264,11 +263,6 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
             labels={{ correct: "solved", wrong: "not right yet", skipped: "skipped", flagged: "" }}
           />
         </aside>
-      ) : (
-        <div className="mcq-toolbar">
-          {viewSwitch}
-          {actions}
-        </div>
       )}
 
       <div className="page-main">
@@ -346,7 +340,6 @@ function NoWritten({ entry, onOpenCompiler }) {
       <header className="practice-intro compact">
         <h1>{topic.title}</h1>
       </header>
-      <ModeTabs levelId={level.id} topicSlug={topic.slug} current="written" mcqCount={countMcqs(topic.id)} writtenCount={0} />
       <div className="empty-state">
         <svg className="empty-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
           <rect x="8" y="6" width="32" height="36" rx="5" fill="none" stroke="currentColor" strokeWidth="2.5" />

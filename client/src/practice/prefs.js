@@ -4,7 +4,6 @@ import { load, save } from "../storage.js";
 // Preferences are remembered between visits (localStorage). Answers are not: see mcqSession.js.
 
 const MCQ_PREFS_KEY = "pseudo-practice:mcq-prefs";
-const QUESTION_TYPE_KEY = "pseudo-practice:question-type";
 
 export const AUTO_ADVANCE_DELAYS = [1.5, 2, 3, 5, 8];
 export const PER_PAGE_OPTIONS = [3, 5, 10, 20, 0]; // 0 = all
@@ -40,16 +39,6 @@ export function useMcqPrefs() {
     });
   }, []);
   return [prefs, update];
-}
-
-/** Which kind of question the topic list links to: "mcq" or "written". */
-export function useQuestionType() {
-  const [type, setType] = useState(() => (load(QUESTION_TYPE_KEY, "mcq") === "written" ? "written" : "mcq"));
-  const update = useCallback((next) => {
-    setType(next);
-    save(QUESTION_TYPE_KEY, next);
-  }, []);
-  return [type, update];
 }
 
 const WRITTEN_PREFS_KEY = "pseudo-practice:written-prefs";

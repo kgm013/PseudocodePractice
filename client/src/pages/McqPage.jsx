@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import Breadcrumbs from "../components/Breadcrumbs.jsx";
-import ModeTabs from "../components/ModeTabs.jsx";
 import Segmented from "../components/Segmented.jsx";
 import McqQuestion, { FlagIcon } from "../components/mcq/McqQuestion.jsx";
 import McqSettings from "../components/mcq/McqSettings.jsx";
@@ -8,7 +7,7 @@ import McqSummary from "../components/mcq/McqSummary.jsx";
 import McqPanel from "../components/mcq/McqPanel.jsx";
 import SingleStepper from "../components/mcq/SingleStepper.jsx";
 import ReviewChips from "../components/mcq/ReviewChips.jsx";
-import { countMcqs, countWritten, getMcqs } from "@shared/practice/bank.ts";
+import { countMcqs, getMcqs } from "@shared/practice/bank.ts";
 import { levelHref, topicHref } from "../practice/routes.js";
 import { statusOf, summarise, useMcqSession } from "../practice/mcqSession.js";
 import { useMcqPrefs } from "../practice/prefs.js";
@@ -51,7 +50,7 @@ export default function McqPage({ entry }) {
   const summaryRef = useRef(null);
   const focusTarget = useRef(null); // question id or "summary", focused after the next render
 
-  const base = topicHref(level.id, topic.id);
+  const base = topicHref(level.id, topic.slug);
   const counts = summarise(questions, answers);
   const sequence = review ? questions.filter((q) => review.ids.includes(q.id)) : questions;
   const single = prefs.view === "single";
@@ -294,7 +293,8 @@ export default function McqPage({ entry }) {
       onRestart={clearAnswers}
       onBack={() => goTo((sequence.find((q) => statusOf(q, answers[q.id]) === "unanswered") ?? sequence[0]).id)}
       next={nextTopic}
-      otherHref={`${base}/written`}
+      otherHref={base}
+      otherLabel="Topic overview"
     />
   );
 
@@ -335,8 +335,7 @@ export default function McqPage({ entry }) {
     </div>
   );
 
-  // "One at a time" on wide screens: head on the left, the question in the middle, progress
-  // on the right (single-view.css). Narrower screens stack them: head, progress, question.
+  // Both views share the heading and toolbar. Single view keeps progress beside the question.
   return (
     <div className={`practice mcq-page${single ? " is-single" : " is-list"}`}>
       <div className="page-head">
@@ -349,22 +348,19 @@ export default function McqPage({ entry }) {
         ]}
       />
       <header className="practice-intro compact">
-        <h1>{topic.title}</h1>
+        <h1>{topic.title} <span className="question-mode">Multiple choice</span></h1>
       </header>
-      <ModeTabs levelId={level.id} topicSlug={topic.slug} current="mcq" mcqCount={questions.length} writtenCount={countWritten(topic.id)} />
-      {single && viewSwitch}
       </div>
 
-      {single ? (
+      <div className="mcq-toolbar">
+        {viewSwitch}
+        {actions}
+      </div>
+
+      {single && (
         <aside className="page-side" aria-label="Your progress">
-          {actions}
           {overview}
         </aside>
-      ) : (
-        <div className="mcq-toolbar">
-          {viewSwitch}
-          {actions}
-        </div>
       )}
 
       <div className="page-main">
@@ -413,7 +409,7 @@ export default function McqPage({ entry }) {
             firstOnPage={shown[0]?.id}
             checkAll={{ show: !prefs.instantCheck, pending: pending.length, onClick: checkAll }}
             filters={<ReviewChips counts={counts} onReview={reviewBy} active={review?.kind} />}
-            results={{ onRetryWrong: retryWrong, onRestart: clearAnswers, next: nextTopic, otherHref: `${base}/written` }}
+            results={{ onRetryWrong: retryWrong, onRestart: clearAnswers, next: nextTopic, otherHref: base, otherLabel: "Topic overview" }}
           />
           <div className="mcq-split-main">
             <div className="mcq-list-head">
@@ -573,7 +569,7 @@ function Pagination({ page, pageCount, onPage }) {
 
 function NoMcqs({ entry }) {
   const { level, topic } = entry;
-  const base = topicHref(level.id, topic.id);
+  const base = topicHref(level.id, topic.slug);
   return (
     <div className="practice">
       <Breadcrumbs
@@ -587,12 +583,11 @@ function NoMcqs({ entry }) {
       <header className="practice-intro compact">
         <h1>{topic.title}</h1>
       </header>
-      <ModeTabs levelId={level.id} topicSlug={topic.slug} current="mcq" mcqCount={0} writtenCount={countWritten(topic.id)} />
       <div className="empty-state">
         <h2>No multiple-choice questions yet</h2>
-        <p>This topic doesn't have multiple-choice questions. You can practise it with written questions instead.</p>
-        <a className="button-secondary" href={`${base}/written`}>
-          Go to written questions
+        <p>This topic doesn't have multiple-choice questions yet.</p>
+        <a className="button-secondary" href={base}>
+          Back to topic overview
         </a>
       </div>
     </div>
