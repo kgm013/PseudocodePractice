@@ -14,7 +14,7 @@ export const PER_PAGE_OPTIONS = [3, 5, 10, 20, 0]; // 0 = all
 const DEFAULT_MCQ_PREFS = {
   view: "single", // "single" (one at a time) | "list"
   instantCheck: false,
-  autoAdvance: false,
+  autoAdvance: true,
   delay: 3,
   waitWhenWrong: true,
   perPage: 5,

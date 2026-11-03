@@ -301,8 +301,23 @@ export default function McqPage({ entry }) {
     />
   );
 
+  // Progress, question numbers and "go back to". "One at a time" shows it above the question;
+  // "several at once" keeps it in a side column that stays in view on wide screens.
+  const overview = (
+    <div className="mcq-overview">
+      <McqProgress counts={counts} />
+      <McqNavigator
+        questions={questions}
+        answers={answers}
+        currentId={single ? current?.id : null}
+        onGo={goToQuestion}
+      />
+      <ReviewChips counts={counts} onReview={reviewBy} active={review?.kind} />
+    </div>
+  );
+
   return (
-    <div className="practice mcq-page">
+    <div className={`practice mcq-page${single ? "" : " is-list"}`}>
       <Breadcrumbs
         items={[
           { label: "Home", href: "#/" },
@@ -330,16 +345,7 @@ export default function McqPage({ entry }) {
       </div>
       {settingsOpen && <McqSettings id="mcq-settings" prefs={prefs} onChange={changePrefs} onClear={clearAnswers} />}
 
-      <div className="mcq-overview">
-        <McqProgress counts={counts} />
-        <McqNavigator
-          questions={questions}
-          answers={answers}
-          currentId={single ? current?.id : null}
-          onGo={goToQuestion}
-        />
-        <ReviewChips counts={counts} onReview={reviewBy} active={review?.kind} />
-      </div>
+      {single && overview}
 
       {review && (
         <div className="review-banner" role="status">
@@ -374,74 +380,74 @@ export default function McqPage({ entry }) {
           />
         )
       ) : (
-        <>
-          {(showResults || counts.finished) && summary}
-          <div className="mcq-list-head">
-            <p>
-              {sequence.length > perPage
-                ? `Questions ${safePage * perPage + 1}–${safePage * perPage + shown.length} of ${sequence.length}`
-                : `${sequence.length} question${sequence.length === 1 ? "" : "s"}`}
-            </p>
-            {!prefs.instantCheck && (
-              <button type="button" className="button-secondary" disabled={pendingOnPage.length === 0} onClick={checkAll}>
-                Check all{pendingOnPage.length ? ` (${pendingOnPage.length})` : ""}
-              </button>
-            )}
-          </div>
-          <div className="mcq-list">
-            {shown.map((q) => {
-              const e = answers[q.id];
-              return (
-                <McqQuestion
-                  key={q.id}
-                  question={q}
-                  number={questions.indexOf(q) + 1}
-                  entry={e}
-                  onChoose={(c) => choose(q, c)}
-                  actions={
-                    <>
-                      {!e?.checked && !prefs.instantCheck && (
-                        <button type="button" className="button-primary" disabled={!e?.choice} onClick={() => check(q)}>
-                          Check
-                        </button>
-                      )}
-                      {!e?.checked && (
-                        <button type="button" className="button-quiet" disabled={e?.skipped} onClick={() => skip(q)}>
-                          {e?.skipped ? "Skipped" : "Skip"}
-                        </button>
-                      )}
-                      <FlagButton flagged={e?.flagged} onClick={() => toggleFlag(q)} />
-                    </>
-                  }
-                />
-              );
-            })}
-          </div>
-          <div className="mcq-list-foot">
-            {pageCount > 1 ? (
-              <Pagination page={safePage} pageCount={pageCount} onPage={(p) => { setPage(p); focusTarget.current = sequence[p * perPage]?.id; }} />
-            ) : (
-              <span />
-            )}
-            <div className="mcq-list-foot-actions">
-              {!prefs.instantCheck && pendingOnPage.length > 0 && (
-                <button type="button" className="button-secondary" onClick={checkAll}>
-                  Check all ({pendingOnPage.length})
-                </button>
+        <div className="mcq-split">
+          <aside className="mcq-aside" aria-label="Your progress">
+            {overview}
+          </aside>
+          <div className="mcq-split-main">
+            {(showResults || counts.finished) && summary}
+            <div className="mcq-list-head">
+              <p>
+                {sequence.length > perPage
+                  ? `Questions ${safePage * perPage + 1}–${safePage * perPage + shown.length} of ${sequence.length}`
+                  : `${sequence.length} question${sequence.length === 1 ? "" : "s"}`}
+              </p>
+            </div>
+            <div className="mcq-list">
+              {shown.map((q) => {
+                const e = answers[q.id];
+                return (
+                  <McqQuestion
+                    key={q.id}
+                    question={q}
+                    number={questions.indexOf(q) + 1}
+                    entry={e}
+                    onChoose={(c) => choose(q, c)}
+                    actions={
+                      <>
+                        {!e?.checked && !prefs.instantCheck && (
+                          <button type="button" className="button-primary" disabled={!e?.choice} onClick={() => check(q)}>
+                            Check
+                          </button>
+                        )}
+                        {!e?.checked && (
+                          <button type="button" className="button-quiet" disabled={e?.skipped} onClick={() => skip(q)}>
+                            {e?.skipped ? "Skipped" : "Skip"}
+                          </button>
+                        )}
+                        <FlagButton flagged={e?.flagged} onClick={() => toggleFlag(q)} />
+                      </>
+                    }
+                  />
+                );
+              })}
+            </div>
+            <div className="mcq-list-foot">
+              {pageCount > 1 ? (
+                <Pagination page={safePage} pageCount={pageCount} onPage={(p) => { setPage(p); focusTarget.current = sequence[p * perPage]?.id; }} />
+              ) : (
+                <span />
               )}
-              {safePage === pageCount - 1 && !(showResults || counts.finished) && (
-                <button type="button" className="button-primary" onClick={showSummary}>
-                  See results
-                </button>
-              )}
-              {(showResults || counts.finished) && (
-                <button type="button" className="button-secondary" onClick={scrollToSummary}>
-                  Back to results ↑
-                </button>
-              )}
+              <div className="mcq-list-foot-actions">
+                {!prefs.instantCheck && (
+                  <button type="button" className="button-secondary" disabled={pendingOnPage.length === 0} onClick={checkAll}>
+                    Check all{pendingOnPage.length ? ` (${pendingOnPage.length})` : ""}
+                  </button>
+                )}
+                {safePage === pageCount - 1 && !(showResults || counts.finished) && (
+                  <button type="button" className="button-primary" onClick={showSummary}>
+                    See results
+                  </button>
+                )}
+                {(showResults || counts.finished) && (
+                  <button type="button" className="button-secondary" onClick={scrollToSummary}>
+                    Back to results ↑
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
