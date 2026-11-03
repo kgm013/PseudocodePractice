@@ -1,0 +1,68 @@
+[
+  {
+    "id": "as-input-mcq-001",
+    "order": 1,
+    "prompt": "Which statement stores a value typed by the user in `Answer`?",
+    "options": [
+      { "id": "a", "text": "`INPUT Answer`" },
+      { "id": "b", "text": "`Answer ← INPUT`" },
+      { "id": "c", "text": "`INPUT(\"Answer\")`" },
+      { "id": "d", "text": "`READ Answer`" }
+    ],
+    "answer": "a",
+    "explanation": "`INPUT` is followed by the variable that receives the value."
+  },
+  {
+    "id": "as-input-mcq-002",
+    "order": 2,
+    "prompt": "What does `STR_TO_NUM(\"42\")` return?",
+    "options": [
+      { "id": "a", "text": "The number 42" },
+      { "id": "b", "text": "The string `\"42\"`" },
+      { "id": "c", "text": "`4`" },
+      { "id": "d", "text": "An error" }
+    ],
+    "answer": "a",
+    "explanation": "`STR_TO_NUM` turns a string that holds a number into that number, so it can be used in calculations."
+  },
+  {
+    "id": "as-input-mcq-003",
+    "order": 3,
+    "prompt": "What does `IS_NUM(\"12a\")` return?",
+    "options": [
+      { "id": "a", "text": "`FALSE`" },
+      { "id": "b", "text": "`TRUE`" },
+      { "id": "c", "text": "`12`" },
+      { "id": "d", "text": "An error" }
+    ],
+    "answer": "a",
+    "explanation": "`\"12a\"` isn't a valid number. `IS_NUM` is useful for checking input before converting it."
+  },
+  {
+    "id": "as-input-mcq-004",
+    "order": 4,
+    "prompt": "The user types `Sam`. What is displayed?",
+    "code": "DECLARE Name : STRING\nINPUT Name\nOUTPUT \"Hello \" & Name",
+    "options": [
+      { "id": "a", "text": "`Hello Sam`" },
+      { "id": "b", "text": "`Hello Name`" },
+      { "id": "c", "text": "`Hello & Sam`" },
+      { "id": "d", "text": "`Sam`" }
+    ],
+    "answer": "a",
+    "explanation": "`INPUT Name` stores `Sam`, and `&` joins it to `\"Hello \"`."
+  },
+  {
+    "id": "as-input-mcq-005",
+    "order": 5,
+    "prompt": "Which function turns the string `\"7\"` into the number 7?",
+    "options": [
+      { "id": "a", "text": "`STR_TO_NUM`" },
+      { "id": "b", "text": "`NUM_TO_STR`" },
+      { "id": "c", "text": "`INT`" },
+      { "id": "d", "text": "`IS_NUM`" }
+    ],
+    "answer": "a",
+    "explanation": "`STR_TO_NUM` goes from string to number; `NUM_TO_STR` goes the other way."
+  }
+]

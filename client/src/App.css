@@ -25,6 +25,7 @@
   --warning: #9a5b00;
   --warning-bg: #fff6e0;
   --ok: #1a7f4b;
+  --ok-bg: #e7f6ee;
   --mono: ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace;
 
   /* Code editor */
@@ -71,6 +72,7 @@
   --warning: #f0b45a;
   --warning-bg: #2b2210;
   --ok: #5fd193;
+  --ok-bg: #10261a;
 
   --cm-bg: #0d0d0d;
   --cm-gutter-bg: #121212;

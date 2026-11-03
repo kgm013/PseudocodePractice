@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { LEVEL } from "./config.js";
 import { LEVEL_NAMES } from "@shared/interpreter/index.ts";
 import SiteHeader from "./components/SiteHeader.jsx";
@@ -8,6 +8,8 @@ import LandingPage from "./pages/LandingPage.jsx";
 import CompilerPage from "./pages/CompilerPage.jsx";
 import PracticePage from "./pages/PracticePage.jsx";
 import TopicPage from "./pages/TopicPage.jsx";
+import McqPage from "./pages/McqPage.jsx";
+import WrittenPage from "./pages/WrittenPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import { getLevel, getTopic, levelHref } from "./practice/topics.js";
 import { useHashRoute } from "./useHashRoute.js";
@@ -60,7 +62,8 @@ export default function App() {
       <SiteHeader theme={theme} onToggleTheme={toggleTheme}>
         {page.id === "compiler" && <LevelSwitch level={level} onChange={setLevel} />}
       </SiteHeader>
-      {page.element}
+      {/* A new key per page, so moving between topics never carries one topic's state into another. */}
+      <Fragment key={page.id}>{page.element}</Fragment>
       <FeedbackFooter />
     </main>
   );
@@ -88,12 +91,26 @@ function pageFor(path, level, openCompiler) {
         element: <PracticePage level={practiceLevel} />,
       };
     }
-    const entry = parts.length === 3 ? getTopic(parts[1], parts[2]) : null;
-    if (entry) {
+    const entry = parts.length === 3 || parts.length === 4 ? getTopic(parts[1], parts[2]) : null;
+    if (entry && parts.length === 3) {
       return {
         id: `topic-${entry.level.id}-${entry.topic.id}`,
         title: `${entry.topic.title} | ${entry.level.name} Practice`,
-        element: <TopicPage entry={entry} onOpenCompiler={openCompiler} />,
+        element: <TopicPage entry={entry} />,
+      };
+    }
+    if (entry && parts[3] === "mcq") {
+      return {
+        id: `mcq-${entry.level.id}-${entry.topic.id}`,
+        title: `Multiple choice: ${entry.topic.title} | ${entry.level.name} Practice`,
+        element: <McqPage entry={entry} />,
+      };
+    }
+    if (entry && parts[3] === "written") {
+      return {
+        id: `written-${entry.level.id}-${entry.topic.id}`,
+        title: `Written: ${entry.topic.title} | ${entry.level.name} Practice`,
+        element: <WrittenPage entry={entry} onOpenCompiler={openCompiler} />,
       };
     }
     if (practiceLevel) {

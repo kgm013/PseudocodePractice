@@ -1,0 +1,70 @@
+[
+  {
+    "id": "ol-output-mcq-001",
+    "order": 1,
+    "prompt": "Which statement displays the word Hello on screen?",
+    "options": [
+      { "id": "a", "text": "`OUTPUT \"Hello\"`" },
+      { "id": "b", "text": "`PRINT \"Hello\"`" },
+      { "id": "c", "text": "`OUTPUT Hello`" },
+      { "id": "d", "text": "`DISPLAY(\"Hello\")`" }
+    ],
+    "answer": "a",
+    "explanation": "`OUTPUT` is the keyword and text goes in double quotes. Without quotes, `Hello` would be read as a variable name."
+  },
+  {
+    "id": "ol-output-mcq-002",
+    "order": 2,
+    "prompt": "What is displayed?",
+    "code": "Name ← \"Ali\"\nOUTPUT \"Hi \", Name",
+    "options": [
+      { "id": "a", "text": "`Hi Name`" },
+      { "id": "b", "text": "`Hi Ali`" },
+      { "id": "c", "text": "`\"Hi \", Ali`" },
+      { "id": "d", "text": "Nothing: it's an error" }
+    ],
+    "answer": "b",
+    "explanation": "Commas separate the values to output, and `Name` is replaced by its value."
+  },
+  {
+    "id": "ol-output-mcq-003",
+    "order": 3,
+    "prompt": "At O Level / IGCSE, how do you output some text and a number on the same line?",
+    "options": [
+      { "id": "a", "text": "Separate them with commas in one `OUTPUT`" },
+      { "id": "b", "text": "Join them with `+`" },
+      { "id": "c", "text": "Join them with `&`" },
+      { "id": "d", "text": "Use two `OUTPUT` statements" }
+    ],
+    "answer": "a",
+    "explanation": "One `OUTPUT` with commas prints everything on one line. Each `OUTPUT` starts a new line, and neither `+` nor `&` joins text at this level."
+  },
+  {
+    "id": "ol-output-mcq-004",
+    "order": 4,
+    "prompt": "What is displayed?",
+    "code": "OUTPUT 7 + 3",
+    "options": [
+      { "id": "a", "text": "`7 + 3`" },
+      { "id": "b", "text": "`10`" },
+      { "id": "c", "text": "`73`" },
+      { "id": "d", "text": "Nothing: it's an error" }
+    ],
+    "answer": "b",
+    "explanation": "Without quotes, `7 + 3` is a calculation, so its result is output."
+  },
+  {
+    "id": "ol-output-mcq-005",
+    "order": 5,
+    "prompt": "How many lines does this display?",
+    "code": "OUTPUT \"A\"\nOUTPUT \"B\"",
+    "options": [
+      { "id": "a", "text": "1" },
+      { "id": "b", "text": "2" },
+      { "id": "c", "text": "0" },
+      { "id": "d", "text": "3" }
+    ],
+    "answer": "b",
+    "explanation": "Each `OUTPUT` statement prints on a new line."
+  }
+]

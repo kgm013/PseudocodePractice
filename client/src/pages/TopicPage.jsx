@@ -1,10 +1,15 @@
 import Breadcrumbs from "../components/Breadcrumbs.jsx";
 import InlineCode from "../components/InlineCode.jsx";
 import { levelHref, topicHref } from "../practice/topics.js";
+import { getMcqs } from "../practice/mcqs.js";
+import { readTopicSummary } from "../practice/mcqSession.js";
 
-/** One topic's practice page. Questions aren't written yet, so it shows a placeholder. */
-export default function TopicPage({ entry, onOpenCompiler }) {
-  const { level, topic, number, total, previous, next } = entry;
+/** A topic's home: pick multiple choice or written questions. */
+export default function TopicPage({ entry }) {
+  const { level, topic, number, total } = entry;
+  const base = topicHref(level.id, topic.id);
+  const mcqs = getMcqs(level.id, topic.id);
+  const progress = mcqs.length ? readTopicSummary(level.id, topic.id, mcqs) : null;
 
   return (
     <div className="practice">
@@ -26,47 +31,99 @@ export default function TopicPage({ entry, onOpenCompiler }) {
         </p>
       </header>
 
-      <div className="empty-state">
-        <svg className="empty-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
-          <rect x="8" y="6" width="32" height="36" rx="5" fill="none" stroke="currentColor" strokeWidth="2.5" />
-          <path d="M16 17h16M16 24h16M16 31h9" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-        </svg>
-        <h2>Questions coming soon</h2>
-        <p>
-          Practice questions for {topic.title.toLowerCase()} are being written. Until then, you can try ideas out in the
-          compiler.
-        </p>
-        <button type="button" className="button-secondary" onClick={() => onOpenCompiler(level.interpreterLevel)}>
-          Open the compiler
-        </button>
+      <div className="mode-cards">
+        {mcqs.length > 0 ? (
+          <a className="mode-card" href={`${base}/mcq`}>
+            <ModeIcon kind="mcq" />
+            <span className="mode-card-title">Multiple choice</span>
+            <span className="mode-card-text">Quick questions with instant feedback and an explanation for each answer.</span>
+            <span className="mode-card-foot">
+              <span className="meta-quiet">{mcqs.length} questions</span>
+              {progress?.done > 0 && (
+                <span className={`meta-pill${progress.finished ? " is-done" : ""}`}>
+                  {progress.finished ? `${progress.correct}/${progress.total} correct` : `${progress.done}/${progress.total} done`}
+                </span>
+              )}
+              <span className="mode-card-go" aria-hidden="true">
+                {progress?.finished ? "Review →" : progress?.done > 0 ? "Continue →" : "Start →"}
+              </span>
+            </span>
+          </a>
+        ) : (
+          <div className="mode-card is-disabled" aria-disabled="true">
+            <ModeIcon kind="mcq" />
+            <span className="mode-card-title">Multiple choice</span>
+            <span className="mode-card-text">There are no multiple-choice questions for this topic yet.</span>
+          </div>
+        )}
+
+        <a className="mode-card" href={`${base}/written`}>
+          <ModeIcon kind="written" />
+          <span className="mode-card-title">Written</span>
+          <span className="mode-card-text">Write pseudocode in the editor and check whether it gives the right result.</span>
+          <span className="mode-card-foot">
+            <span className="meta-quiet">Coming soon</span>
+            <span className="mode-card-go" aria-hidden="true">
+              Open →
+            </span>
+          </span>
+        </a>
       </div>
 
-      <nav className="topic-pager" aria-label="Topics">
-        {previous ? (
-          <a className="pager-link" href={topicHref(level.id, previous.id)}>
-            <span className="pager-label">← Previous</span>
-            <span className="pager-title">{previous.title}</span>
-          </a>
-        ) : (
-          <a className="pager-link" href={levelHref(level.id)}>
-            <span className="pager-label">← Back to</span>
+      <TopicPager entry={entry} />
+    </div>
+  );
+}
+
+/** Previous / next topic links, shared by the topic pages. */
+export function TopicPager({ entry, suffix = "" }) {
+  const { level, previous, next } = entry;
+  return (
+    <nav className="topic-pager" aria-label="Topics">
+      {previous ? (
+        <a className="pager-link" href={topicHref(level.id, previous.id) + suffix}>
+          <span className="pager-label">← Previous topic</span>
+          <span className="pager-title">{previous.title}</span>
+        </a>
+      ) : (
+        <a className="pager-link" href={levelHref(level.id)}>
+          <span className="pager-label">← Back to</span>
+          <span className="pager-title">All topics</span>
+        </a>
+      )}
+      {next ? (
+        <a className="pager-link pager-next" href={topicHref(level.id, next.id) + suffix}>
+          <span className="pager-label">Next topic →</span>
+          <span className="pager-title">{next.title}</span>
+        </a>
+      ) : (
+        previous && (
+          <a className="pager-link pager-next" href={levelHref(level.id)}>
+            <span className="pager-label">Back to</span>
             <span className="pager-title">All topics</span>
           </a>
-        )}
-        {next ? (
-          <a className="pager-link pager-next" href={topicHref(level.id, next.id)}>
-            <span className="pager-label">Next →</span>
-            <span className="pager-title">{next.title}</span>
-          </a>
-        ) : (
-          previous && (
-            <a className="pager-link pager-next" href={levelHref(level.id)}>
-              <span className="pager-label">Back to</span>
-              <span className="pager-title">All topics</span>
-            </a>
-          )
-        )}
-      </nav>
-    </div>
+        )
+      )}
+    </nav>
+  );
+}
+
+function ModeIcon({ kind }) {
+  return (
+    <svg className="mode-icon" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
+      {kind === "mcq" ? (
+        <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <circle cx="8" cy="9" r="3" />
+          <circle cx="8" cy="23" r="3" />
+          <circle cx="8" cy="16" r="3" fill="currentColor" />
+          <path d="M15 9h12M15 16h12M15 23h12" />
+        </g>
+      ) : (
+        <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="4" y="5" width="24" height="22" rx="4" />
+          <path d="M10 12l4 4-4 4M17 20h5" />
+        </g>
+      )}
+    </svg>
   );
 }
