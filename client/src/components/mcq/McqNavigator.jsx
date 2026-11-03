@@ -43,13 +43,13 @@ export default function McqNavigator({ questions, answers, currentId, onGo, onPa
 }
 
 /** What the colours on the question numbers mean. */
-export function McqLegend() {
+export function McqLegend({ flagged = true }) {
   return (
     <ul className="mcq-legend" aria-hidden="true">
       <li><span className="swatch is-correct" /> Correct</li>
       <li><span className="swatch is-wrong" /> Wrong</li>
       <li><span className="swatch is-skipped" /> Skipped</li>
-      <li><span className="swatch is-flagged" /> Not sure</li>
+      {flagged && <li><span className="swatch is-flagged" /> Not sure</li>}
     </ul>
   );
 }

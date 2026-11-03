@@ -3,10 +3,10 @@ import Breadcrumbs from "../components/Breadcrumbs.jsx";
 import ModeTabs from "../components/ModeTabs.jsx";
 import Segmented from "../components/Segmented.jsx";
 import McqQuestion, { FlagIcon } from "../components/mcq/McqQuestion.jsx";
-import McqNavigator, { McqProgress } from "../components/mcq/McqNavigator.jsx";
 import McqSettings from "../components/mcq/McqSettings.jsx";
 import McqSummary from "../components/mcq/McqSummary.jsx";
 import McqPanel from "../components/mcq/McqPanel.jsx";
+import SingleStepper from "../components/mcq/SingleStepper.jsx";
 import ReviewChips from "../components/mcq/ReviewChips.jsx";
 import { countMcqs, countWritten, getMcqs } from "@shared/practice/bank.ts";
 import { levelHref, topicHref } from "../practice/routes.js";
@@ -300,15 +300,18 @@ export default function McqPage({ entry }) {
 
   // "One at a time": progress, question numbers and "go back to", above the question.
   const overview = (
-    <div className="mcq-overview">
-      <McqProgress counts={counts} />
-      <McqNavigator questions={questions} answers={answers} currentId={current?.id} onGo={goToQuestion} />
-      <ReviewChips counts={counts} onReview={reviewBy} active={review?.kind} />
-    </div>
+    <SingleStepper
+      counts={counts}
+      questions={questions}
+      answers={answers}
+      currentId={atResults ? null : current?.id}
+      onGo={goToQuestion}
+      filters={<ReviewChips counts={counts} onReview={reviewBy} active={review?.kind} />}
+    />
   );
 
   return (
-    <div className={`practice mcq-page${single ? "" : " is-list"}`}>
+    <div className={`practice mcq-page${single ? " is-single" : " is-list"}`}>
       <Breadcrumbs
         items={[
           { label: "Home", href: "#/" },

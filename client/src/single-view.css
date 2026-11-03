@@ -1,0 +1,192 @@
+/* "One at a time" (multiple choice and written): a centred column with a slim progress
+   strip above one roomy question card, so the question is the focus. */
+
+.practice.is-single {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.is-single .mcq-toolbar {
+  margin-bottom: 18px;
+}
+
+/* ---- Progress strip --------------------------------------------------- */
+
+.stepper {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* lets the row of numbers scroll instead of widening the page */
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.stepper-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+
+.stepper-done {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.stepper-done strong {
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.stepper-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stepper-stats li {
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: var(--switch-bg);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.stepper-stats .is-correct {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.stepper-stats .is-wrong {
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+.stepper-stats .is-flagged {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.stepper .mcq-progress-text {
+  display: none;
+}
+
+.stepper .mcq-progress-bar {
+  height: 6px;
+}
+
+/* One row of numbers; scrolls sideways when there are many. Padding leaves room for
+   the current number's outline and the "Not sure" dots. */
+.stepper .mcq-nav-list {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 6px 4px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.stepper .mcq-nav-list li {
+  flex: none;
+}
+
+.stepper .mcq-nav-item {
+  width: 34px;
+  height: 34px;
+}
+
+.stepper-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.stepper-foot .review-chips {
+  padding-top: 0;
+  border-top: none;
+}
+
+.stepper-foot .mcq-legend {
+  margin: 0 0 0 auto;
+}
+
+/* ---- The question card ---------------------------------------------- */
+
+.is-single .mcq {
+  padding: 28px 32px 22px;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 28px rgba(0, 0, 0, 0.07);
+}
+
+.is-single .mcq-prompt {
+  margin: 10px 0 16px;
+  font-size: 1.25rem;
+}
+
+.is-single .mcq-options {
+  gap: 10px;
+}
+
+.is-single .mcq-option {
+  padding: 13px 16px;
+}
+
+/* Buttons sit in a footer: Previous on the left, the main action on the right. */
+.is-single .mcq-actions {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.is-single .mcq > .mcq-keys {
+  margin-top: 14px;
+  text-align: center;
+}
+
+/* ---- Results ------------------------------------------------------------ */
+
+.is-single .mcq-summary {
+  padding: 32px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.is-single .summary-score,
+.is-single .summary-stats,
+.is-single .summary-actions {
+  justify-content: center;
+}
+
+.is-single .summary-verdict {
+  max-width: 46ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.is-single .summary-next {
+  text-align: left;
+}
+
+@media (max-width: 640px) {
+  .is-single .mcq {
+    padding: 18px 16px 16px;
+  }
+
+  .is-single .mcq-prompt {
+    font-size: 1.1rem;
+  }
+
+  .is-single .mcq-summary {
+    padding: 22px 16px;
+  }
+
+  .stepper-foot .mcq-legend {
+    margin-left: 0;
+  }
+}
