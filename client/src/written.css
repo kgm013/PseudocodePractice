@@ -3,10 +3,12 @@
 
 .written-intro {
   margin: 0 0 14px;
-  max-width: 64ch;
+  max-width: none;
   color: var(--muted);
   font-size: 0.93rem;
   line-height: 1.5;
+  white-space: nowrap;
+  overflow-x: auto;
 }
 
 .written-title {
