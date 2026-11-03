@@ -6,6 +6,7 @@ import McqQuestion, { FlagIcon } from "../components/mcq/McqQuestion.jsx";
 import McqNavigator, { McqProgress } from "../components/mcq/McqNavigator.jsx";
 import McqSettings from "../components/mcq/McqSettings.jsx";
 import McqSummary from "../components/mcq/McqSummary.jsx";
+import McqPanel from "../components/mcq/McqPanel.jsx";
 import { levelHref, topicHref } from "../practice/topics.js";
 import { getMcqs } from "../practice/mcqs.js";
 import { statusOf, summarise, useMcqSession } from "../practice/mcqSession.js";
@@ -46,7 +47,6 @@ export default function McqPage({ entry }) {
   const [page, setPage] = useState(0); // "several at once" page
   const [countdown, setCountdown] = useState(null); // { id, ms, key }: auto-advance in progress
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [showResults, setShowResults] = useState(false); // "several at once": results before finishing
   const summaryRef = useRef(null);
   const focusTarget = useRef(null); // question id or "summary", focused after the next render
 
@@ -70,7 +70,8 @@ export default function McqPage({ entry }) {
   const pageCount = Math.max(1, Math.ceil(sequence.length / perPage));
   const safePage = Math.min(page, pageCount - 1);
   const shown = sequence.slice(safePage * perPage, safePage * perPage + perPage);
-  const pendingOnPage = shown.filter((q) => statusOf(q, answers[q.id]) === "answered");
+  // Picked but not checked yet, across the whole topic (what "Check all" checks).
+  const pending = questions.filter((q) => statusOf(q, answers[q.id]) === "answered");
 
   // Move focus (and scroll if needed) after navigation, so keyboard and screen reader users follow along.
   useEffect(() => {
@@ -82,7 +83,12 @@ export default function McqPage({ entry }) {
     el.focus({ preventScroll: true });
     const box = el.closest("article, section") ?? el;
     const top = box.getBoundingClientRect().top;
-    if (top < 0 || top > window.innerHeight * 0.5) box.scrollIntoView({ block: "start", behavior: reducedMotion() ? "auto" : "smooth" });
+    // On narrow screens the progress bar is pinned to the top and covers what's under it.
+    const panel = document.querySelector(".mcq-panel");
+    const covered = panel && getComputedStyle(panel).position === "sticky" && panel.getBoundingClientRect().top < 40
+      ? panel.getBoundingClientRect().bottom
+      : 0;
+    if (top < covered || top > window.innerHeight * 0.5) box.scrollIntoView({ block: "start", behavior: reducedMotion() ? "auto" : "smooth" });
   });
 
   // Auto-advance: wait, then go on. Anything that moves away first cancels it.
@@ -114,11 +120,11 @@ export default function McqPage({ entry }) {
     session.setPosition(id);
   };
 
+  // "One at a time" only: "several at once" shows results in the progress panel.
   const showSummary = () => {
     setCountdown(null);
     focusTarget.current = "summary";
-    if (single) session.setPosition("results");
-    else setShowResults(true);
+    session.setPosition("results");
   };
 
   const goNext = () => {
@@ -150,7 +156,6 @@ export default function McqPage({ entry }) {
   const startReview = (kind, ids) => {
     if (!ids.length) return;
     setReview({ kind, ids });
-    setShowResults(false);
     setPage(0);
     if (single) goTo(ids[0]);
     else focusTarget.current = ids[0];
@@ -176,7 +181,6 @@ export default function McqPage({ entry }) {
     session.reset();
     setReview(null);
     setPage(0);
-    setShowResults(false);
     setCountdown(null);
     setSettingsOpen(false);
     focusTarget.current = questions[0].id;
@@ -187,8 +191,7 @@ export default function McqPage({ entry }) {
     if (view === "list") {
       const anchor = current?.id ?? sequence[0]?.id;
       if (anchor) setPage(pageOf(anchor, sequence));
-      setShowResults(atResults);
-    } else if (showResults || counts.finished) {
+    } else if (counts.finished) {
       session.setPosition("results");
     } else if (shown[0]) {
       // Pick up where they were: the question they last touched on this page, else its first question.
@@ -241,7 +244,7 @@ export default function McqPage({ entry }) {
     session.toggleFlag(q.id);
   };
 
-  const checkAll = () => session.checkMany(pendingOnPage.map((q) => q.id));
+  const checkAll = () => session.checkMany(pending.map((q) => q.id));
 
   keysRef.current = (e) => {
     if (!single || !current || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
@@ -274,44 +277,28 @@ export default function McqPage({ entry }) {
     }
   };
 
-  const scrollToSummary = () => {
-    const el = summaryRef.current;
-    if (!el) return;
-    el.focus({ preventScroll: true });
-    el.closest("section")?.scrollIntoView({ block: "start", behavior: reducedMotion() ? "auto" : "smooth" });
-  };
-
   // ---- Render ------------------------------------------------------------
 
+  const nextTopic = next && getMcqs(level.id, next.id).length > 0 ? { title: next.title, href: `${topicHref(level.id, next.id)}/mcq` } : null;
+
+  // "One at a time": results replace the question card at the end.
   const summary = (
     <McqSummary
       ref={summaryRef}
       counts={counts}
       onReview={(kind) => (kind === "todo" ? reviewBy("todo") : kind === "wrong" ? retryWrong() : reviewBy(kind))}
       onRestart={clearAnswers}
-      onBack={
-        single
-          ? () => goTo((sequence.find((q) => statusOf(q, answers[q.id]) === "unanswered") ?? sequence[0]).id)
-          : counts.finished
-            ? null
-            : () => setShowResults(false)
-      }
-      next={next && getMcqs(level.id, next.id).length > 0 ? { title: next.title, href: `${topicHref(level.id, next.id)}/mcq` } : null}
+      onBack={() => goTo((sequence.find((q) => statusOf(q, answers[q.id]) === "unanswered") ?? sequence[0]).id)}
+      next={nextTopic}
       writtenHref={`${base}/written`}
     />
   );
 
-  // Progress, question numbers and "go back to". "One at a time" shows it above the question;
-  // "several at once" keeps it in a side column that stays in view on wide screens.
+  // "One at a time": progress, question numbers and "go back to", above the question.
   const overview = (
     <div className="mcq-overview">
       <McqProgress counts={counts} />
-      <McqNavigator
-        questions={questions}
-        answers={answers}
-        currentId={single ? current?.id : null}
-        onGo={goToQuestion}
-      />
+      <McqNavigator questions={questions} answers={answers} currentId={current?.id} onGo={goToQuestion} />
       <ReviewChips counts={counts} onReview={reviewBy} active={review?.kind} />
     </div>
   );
@@ -381,11 +368,18 @@ export default function McqPage({ entry }) {
         )
       ) : (
         <div className="mcq-split">
-          <aside className="mcq-aside" aria-label="Your progress">
-            {overview}
-          </aside>
+          <McqPanel
+            counts={counts}
+            questions={questions}
+            answers={answers}
+            onGo={goToQuestion}
+            onPage={new Set(shown.map((q) => q.id))}
+            firstOnPage={shown[0]?.id}
+            checkAll={{ show: !prefs.instantCheck, pending: pending.length, onClick: checkAll }}
+            filters={<ReviewChips counts={counts} onReview={reviewBy} active={review?.kind} />}
+            results={{ onRetryWrong: retryWrong, onRestart: clearAnswers, next: nextTopic, writtenHref: `${base}/written` }}
+          />
           <div className="mcq-split-main">
-            {(showResults || counts.finished) && summary}
             <div className="mcq-list-head">
               <p>
                 {sequence.length > perPage
@@ -422,30 +416,18 @@ export default function McqPage({ entry }) {
                 );
               })}
             </div>
-            <div className="mcq-list-foot">
-              {pageCount > 1 ? (
-                <Pagination page={safePage} pageCount={pageCount} onPage={(p) => { setPage(p); focusTarget.current = sequence[p * perPage]?.id; }} />
-              ) : (
-                <span />
-              )}
-              <div className="mcq-list-foot-actions">
-                {!prefs.instantCheck && (
-                  <button type="button" className="button-secondary" disabled={pendingOnPage.length === 0} onClick={checkAll}>
-                    Check all{pendingOnPage.length ? ` (${pendingOnPage.length})` : ""}
-                  </button>
-                )}
-                {safePage === pageCount - 1 && !(showResults || counts.finished) && (
-                  <button type="button" className="button-primary" onClick={showSummary}>
-                    See results
-                  </button>
-                )}
-                {(showResults || counts.finished) && (
-                  <button type="button" className="button-secondary" onClick={scrollToSummary}>
-                    Back to results ↑
-                  </button>
-                )}
+            {pageCount > 1 && (
+              <div className="mcq-list-foot">
+                <Pagination
+                  page={safePage}
+                  pageCount={pageCount}
+                  onPage={(p) => {
+                    setPage(p);
+                    focusTarget.current = sequence[p * perPage]?.id;
+                  }}
+                />
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}

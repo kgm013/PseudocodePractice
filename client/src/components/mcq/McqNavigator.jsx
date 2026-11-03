@@ -8,11 +8,14 @@ const STATUS_WORDS = {
   skipped: "skipped",
 };
 
-/** A numbered square per question, showing its status; click one to go to it. */
-export default function McqNavigator({ questions, answers, currentId, onGo }) {
+/**
+ * A numbered square per question, showing its status; click one to go to it.
+ * `onPage` (a Set of ids) underlines the questions showing on the current page.
+ */
+export default function McqNavigator({ questions, answers, currentId, onGo, onPage, legend = true, listRef }) {
   return (
     <nav className="mcq-nav" aria-label="Questions">
-      <ol className="mcq-nav-list">
+      <ol className="mcq-nav-list" ref={listRef}>
         {questions.map((q, i) => {
           const entry = answers[q.id];
           const status = statusOf(q, entry);
@@ -21,10 +24,11 @@ export default function McqNavigator({ questions, answers, currentId, onGo }) {
             <li key={q.id}>
               <button
                 type="button"
-                className={`mcq-nav-item is-${status}${entry?.flagged ? " is-flagged" : ""}`}
+                className={`mcq-nav-item is-${status}${entry?.flagged ? " is-flagged" : ""}${onPage?.has(q.id) ? " is-onpage" : ""}`}
                 aria-label={label}
                 title={label}
                 aria-current={q.id === currentId ? "step" : undefined}
+                data-question={q.id}
                 onClick={() => onGo(q.id)}
               >
                 {i + 1}
@@ -33,13 +37,20 @@ export default function McqNavigator({ questions, answers, currentId, onGo }) {
           );
         })}
       </ol>
-      <ul className="mcq-legend" aria-hidden="true">
-        <li><span className="swatch is-correct" /> Correct</li>
-        <li><span className="swatch is-wrong" /> Wrong</li>
-        <li><span className="swatch is-skipped" /> Skipped</li>
-        <li><span className="swatch is-flagged" /> Not sure</li>
-      </ul>
+      {legend && <McqLegend />}
     </nav>
+  );
+}
+
+/** What the colours on the question numbers mean. */
+export function McqLegend() {
+  return (
+    <ul className="mcq-legend" aria-hidden="true">
+      <li><span className="swatch is-correct" /> Correct</li>
+      <li><span className="swatch is-wrong" /> Wrong</li>
+      <li><span className="swatch is-skipped" /> Skipped</li>
+      <li><span className="swatch is-flagged" /> Not sure</li>
+    </ul>
   );
 }
 

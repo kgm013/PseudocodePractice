@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-function verdict(counts) {
+export function verdict(counts) {
   if (!counts.finished) return `${counts.total - counts.done} still to do.`;
   if (counts.checked === 0) return "You skipped every question. Try a few when you're ready.";
   const share = counts.correct / counts.total;
