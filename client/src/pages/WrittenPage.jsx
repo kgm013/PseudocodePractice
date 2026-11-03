@@ -275,9 +275,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
           { label: "Written" },
         ]}
       />
-      <header className="practice-intro compact">
-        <h1>{topic.title} <span className="question-mode">Written</span></h1>
-      </header>
+      <h1 className="visually-hidden">{topic.title}: Written</h1>
 
 
 
@@ -413,9 +411,7 @@ function NoWritten({ entry, onOpenCompiler }) {
           { label: "Written" },
         ]}
       />
-      <header className="practice-intro compact">
-        <h1>{topic.title}</h1>
-      </header>
+      <h1 className="visually-hidden">{topic.title}: Written</h1>
       <div className="empty-state">
         <svg className="empty-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
           <rect x="8" y="6" width="32" height="36" rx="5" fill="none" stroke="currentColor" strokeWidth="2.5" />

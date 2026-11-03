@@ -357,9 +357,7 @@ export default function McqPage({ entry }) {
           { label: "Multiple choice" },
         ]}
       />
-      <header className="practice-intro compact">
-        <h1>{topic.title} <span className="question-mode">Multiple choice</span></h1>
-      </header>
+      <h1 className="visually-hidden">{topic.title}: Multiple choice</h1>
       </div>
 
       <PracticeControls
@@ -598,9 +596,7 @@ function NoMcqs({ entry }) {
           { label: "Multiple choice" },
         ]}
       />
-      <header className="practice-intro compact">
-        <h1>{topic.title}</h1>
-      </header>
+      <h1 className="visually-hidden">{topic.title}: Multiple choice</h1>
       <div className="empty-state">
         <h2>No multiple-choice questions yet</h2>
         <p>This topic doesn't have multiple-choice questions yet.</p>

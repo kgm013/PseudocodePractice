@@ -2,7 +2,7 @@
    panel, with the same heading and toolbar as the list view. */
 
 .practice.is-single {
-  max-width: 1136px;
+  max-width: none;
   margin-left: 0;
   margin-right: 0;
 }

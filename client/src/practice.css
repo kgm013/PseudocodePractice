@@ -227,7 +227,12 @@
 /* Toolbar and settings */
 
 .practice.mcq-page {
-  max-width: 1136px;
+  max-width: none;
+  width: 100%;
+}
+
+.mcq-page > .page-head {
+  margin-bottom: 16px;
 }
 
 .practice-controls {
@@ -585,9 +590,9 @@
 
 /* Finished but closed: the toggle reads "Results" and stands out. */
 .mcq-panel.is-finished:not(.is-expanded) .mcq-panel-toggle {
-  border-color: var(--accent-fill);
-  background: var(--accent-fill);
-  color: #fff;
+  border-color: var(--action-fill);
+  background: var(--action-fill);
+  color: var(--action-text);
 }
 
 .mcq-panel-body {
@@ -681,7 +686,7 @@
    results (when finished), progress, Check all, numbers, key, "go back to". */
 @media (min-width: 1200px) {
   .practice.is-list {
-    max-width: 1136px; /* 820px of questions + 16px gap + 300px panel */
+    max-width: none;
   }
 
   .practice.is-list .page-main > :not(.mcq-split) {
@@ -951,6 +956,101 @@
 
 .question-filters {
   margin-bottom: 18px;
+}
+
+.filter-dropdown {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.filter-dropdown > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.filter-dropdown > summary::-webkit-details-marker {
+  display: none;
+}
+
+.filter-prefix {
+  color: var(--muted);
+}
+
+.filter-chevron {
+  flex: none;
+}
+
+.filter-dropdown[open] > summary {
+  border-color: var(--accent);
+}
+
+.filter-dropdown[open] .filter-chevron {
+  transform: rotate(180deg);
+}
+
+.filter-dropdown > summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.filter-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  width: min(320px, calc(100vw - 48px));
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.filter-option:hover {
+  background: var(--hover);
+}
+
+.filter-option input {
+  accent-color: var(--accent-fill);
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.filter-option:has(input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.filter-option .review-chip-count {
+  margin-left: auto;
+}
+
+.filter-menu .filter-help {
+  margin: 6px 8px 4px;
 }
 
 .question-filters .review-chips {
@@ -1300,13 +1400,13 @@
 }
 
 .button-primary {
-  border: 1px solid var(--accent-fill);
-  background: var(--accent-fill);
-  color: #fff;
+  border: 1px solid var(--action-fill);
+  background: var(--action-fill);
+  color: var(--action-text);
 }
 
 .button-primary:hover:not(:disabled) {
-  background: var(--accent-fill-hover);
+  background: var(--action-hover);
 }
 
 .button-quiet {
@@ -1460,9 +1560,9 @@
 }
 
 .page-number.is-current {
-  border-color: var(--accent-fill);
-  background: var(--accent-fill);
-  color: #fff;
+  border-color: var(--action-fill);
+  background: var(--action-fill);
+  color: var(--action-text);
 }
 
 .page-number:focus-visible {

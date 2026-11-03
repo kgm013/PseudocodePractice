@@ -13,6 +13,9 @@
   --accent: #2f5bea;
   --accent-fill: #2f5bea;
   --accent-fill-hover: #2448c4;
+  --action-fill: #30312d;
+  --action-hover: #454640;
+  --action-text: #ffffff;
   --accent-soft: #e8eefc;
   --ring: #e3eaff;
   --focus: #2452d1;
@@ -61,6 +64,9 @@
   --accent: #8fa8ff;
   --accent-fill: #3b63e6;
   --accent-fill-hover: #5075f0;
+  --action-fill: #e9dfcc;
+  --action-hover: #f5eddf;
+  --action-text: #24211c;
   --accent-soft: #1f2433;
   --ring: #232a40;
   --focus: #6c8cff;
@@ -643,8 +649,8 @@ body {
 }
 
 .level-switch button.active {
-  background: var(--accent-fill);
-  color: #fff;
+  background: var(--action-fill);
+  color: var(--action-text);
   box-shadow: 0 1px 3px rgba(28, 35, 51, 0.2);
 }
 
@@ -753,8 +759,8 @@ kbd,
   padding: 9px 22px;
   border: none;
   border-radius: 8px;
-  background: var(--accent-fill);
-  color: #fff;
+  background: var(--action-fill);
+  color: var(--action-text);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -762,12 +768,13 @@ kbd,
 }
 
 .run-button:hover {
-  background: var(--accent-fill-hover);
+  background: var(--action-hover);
 }
 
 .run-button.stop,
 .run-button.stop:hover {
   background: #c81e1e;
+  color: #fff;
 }
 
 .run-button:focus-visible,
@@ -1187,22 +1194,20 @@ kbd,
 
 .feedback-button {
   display: inline-block;
-  width: 100%;
-  max-width: 420px;
-  padding: 18px 32px;
-  border-radius: 14px;
-  background: var(--accent-fill);
-  color: #fff;
-  font-size: 1.3rem;
-  font-weight: 700;
+  padding: 10px 20px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 600;
   text-decoration: none;
-  box-shadow: 0 4px 14px rgba(47, 91, 234, 0.3);
-  transition: background 0.15s, transform 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 
 .feedback-button:hover {
-  background: var(--accent-fill-hover);
-  transform: translateY(-2px);
+  background: var(--hover);
+  color: var(--text);
 }
 
 .feedback-button:focus-visible {
