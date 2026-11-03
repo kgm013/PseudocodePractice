@@ -3,7 +3,7 @@ import CodeEditor from "../CodeEditor.jsx";
 import InlineCode from "../InlineCode.jsx";
 import { writtenStatus } from "../../practice/progressStore.js";
 
-export const REVEAL_AFTER = 3; // wrong attempts before "Reveal output" appears
+export const REVEAL_AFTER = 3; // unsuccessful attempts before output can be revealed
 
 /**
  * One written question: prompt, editor, Check answer, and only "correct" or "not quite".
@@ -26,13 +26,13 @@ export default function WrittenQuestion({
   nav,
 }) {
   const editorRef = useRef(null);
-  const [hintsShown, setHintsShown] = useState(0);
+  const [revealRequested, setRevealRequested] = useState(false);
   const status = writtenStatus(entry, question.starterCode);
   const solved = status === "correct";
   const attempts = entry?.attempts ?? 0;
-  const wrongAttempts = solved ? 0 : attempts;
-  const canReveal = !solved && wrongAttempts >= REVEAL_AFTER;
-  const hints = question.hints ?? [];
+  const attemptsLeft = Math.max(0, REVEAL_AFTER - attempts);
+  const canReveal = solved || entry?.revealed || attemptsLeft === 0;
+  const revealNoteId = `reveal-note-${question.id}`;
   const check = () => onCheck(editorRef.current.getValue());
 
   const resetCode = () => {
@@ -81,16 +81,6 @@ export default function WrittenQuestion({
         />
       </div>
 
-      {hintsShown > 0 && (
-        <ol className="written-hints">
-          {hints.slice(0, hintsShown).map((hint, i) => (
-            <li key={i}>
-              <span className="written-hint-label">Hint {i + 1}</span> <InlineCode text={hint} />
-            </li>
-          ))}
-        </ol>
-      )}
-
       <div className="mcq-feedback-slot" aria-live="polite">
         {checking ? (
           <p className="written-checking">Checking your answer…</p>
@@ -112,7 +102,7 @@ export default function WrittenQuestion({
         ) : null}
       </div>
 
-      {entry?.revealed && result && !result.correct && <RevealedOutput result={result} />}
+      {entry?.revealed && result && <RevealedOutput result={result} />}
 
       <div className="mcq-actions">
         {nav && (
@@ -123,16 +113,18 @@ export default function WrittenQuestion({
             <span className="mcq-actions-spacer" />
           </>
         )}
-        {hintsShown < hints.length && !solved && (
-          <button type="button" className="button-quiet" onClick={() => setHintsShown((n) => n + 1)}>
-            {hints.length > 1 ? `Hint (${hintsShown + 1} of ${hints.length})` : "Hint"}
-          </button>
-        )}
-        {canReveal && (
-          <button type="button" className="button-quiet" onClick={onAskReveal}>
+          <button
+            type="button"
+            className="button-quiet"
+            disabled={checking}
+            aria-describedby={!canReveal ? revealNoteId : undefined}
+            onClick={() => {
+              if (canReveal) onAskReveal();
+              else setRevealRequested(true);
+            }}
+          >
             <EyeIcon /> {entry?.revealed ? "Show output" : "Reveal output"}
           </button>
-        )}
         {!solved && status !== "skipped" && (
           <button type="button" className="button-quiet" onClick={onSkip}>
             Skip
@@ -146,6 +138,15 @@ export default function WrittenQuestion({
           <button type="button" className="button-primary" onClick={check} disabled={checking}>
             {checking ? "Checking…" : solved ? "Check again" : "Check answer"}
           </button>
+        )}
+      </div>
+
+      <div className="written-reveal-status" aria-live="polite">
+        {!canReveal && (
+          <p id={revealNoteId} className="written-reveal-remaining">
+            {revealRequested ? "Keep trying. " : ""}
+            {attemptsLeft} more attempt{attemptsLeft === 1 ? "" : "s"} to unlock output.
+          </p>
         )}
       </div>
 

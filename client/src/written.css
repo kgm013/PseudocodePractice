@@ -1,4 +1,4 @@
-/* Written questions: the prompt, a smaller editor, hints, revealed output and the reveal dialog.
+/* Written questions: the prompt, a smaller editor, revealed output and the reveal dialog.
    The card, buttons, feedback and progress panel come from practice.css. */
 
 .written-intro {
@@ -57,21 +57,10 @@
   font-size: 0.92rem;
 }
 
-.written-hints {
-  display: grid;
-  gap: 6px;
-  margin: 12px 0 0;
-  padding: 10px 14px;
-  list-style: none;
-  border-radius: 8px;
-  background: var(--info-bg);
-  font-size: 0.93rem;
-  line-height: 1.5;
-}
-
-.written-hint-label {
-  font-weight: 700;
-  color: var(--accent);
+.written-reveal-remaining {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 .written-foot {
