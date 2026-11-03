@@ -190,3 +190,129 @@
     margin-left: 0;
   }
 }
+
+/* ---- Stacked (below 1280px): head, then progress, then the question -------- */
+
+.is-single > .page-head {
+  margin-bottom: 14px;
+}
+
+.is-single > .page-side .mcq-toolbar-actions {
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+/* Laptops and tablets: Reset / Settings move up beside the view switch (one row, as in
+   "several at once"). Only as wide as the buttons, so they never cover the switch. */
+@media (min-width: 700px) and (max-width: 1279px) {
+  .is-single > .page-side .mcq-toolbar-actions {
+    width: fit-content;
+    margin: -50px 0 14px auto;
+  }
+}
+
+/* ---- Wide screens: head | question | progress ------------------------------- */
+
+@media (min-width: 1280px) {
+  .practice.is-single {
+    max-width: 1280px;
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr) 260px;
+    grid-template-areas: "head main side";
+    column-gap: 40px;
+    align-items: start;
+  }
+
+  .is-single > .page-head {
+    grid-area: head;
+    position: sticky;
+    top: 24px;
+    margin-bottom: 0;
+  }
+
+  .is-single > .page-main {
+    grid-area: main;
+    min-width: 0;
+  }
+
+  .is-single > .page-side {
+    grid-area: side;
+    position: sticky;
+    top: 24px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    padding: 2px;
+  }
+
+  /* The head reads like a side menu */
+  .is-single .page-head .practice-intro.compact {
+    margin: 16px 0 18px;
+  }
+
+  .is-single .page-head h1 {
+    font-size: 2rem;
+  }
+
+  .is-single .page-head .mode-tabs {
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 18px;
+    border-bottom: none;
+    border-left: 1px solid var(--border);
+  }
+
+  .is-single .page-head .mode-tab {
+    justify-content: space-between;
+    margin: 0 0 0 -1px;
+    padding: 8px 12px;
+    border-bottom: none;
+    border-left: 2px solid transparent;
+  }
+
+  .is-single .page-head .mode-tab[aria-current="page"] {
+    border-left-color: var(--accent);
+  }
+
+  .is-single .page-head .written-intro {
+    margin-bottom: 18px;
+    font-size: 0.88rem;
+  }
+
+  .is-single .page-head .segmented {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  .is-single .page-head .segmented button {
+    padding: 8px 12px;
+    border-radius: 9px;
+    text-align: left;
+  }
+
+  /* The progress column */
+  .is-single > .page-side .mcq-toolbar-actions {
+    justify-content: flex-start;
+    margin-bottom: 18px;
+  }
+
+  .is-single .page-side .stepper {
+    margin-bottom: 0;
+  }
+
+  .is-single .page-side .stepper .mcq-nav-list {
+    flex-wrap: wrap;
+    overflow: visible;
+    padding: 4px 2px;
+  }
+
+  .is-single .page-side .stepper-foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .is-single .page-side .stepper-foot .mcq-legend {
+    margin-left: 0;
+  }
+}

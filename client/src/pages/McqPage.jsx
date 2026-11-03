@@ -310,8 +310,36 @@ export default function McqPage({ entry }) {
     />
   );
 
+  const viewSwitch = <Segmented label="How to show the questions" options={VIEW_OPTIONS} value={prefs.view} onChange={changeView} />;
+
+  const actions = (
+    <div className="mcq-toolbar-actions">
+      <button
+        type="button"
+        className="toolbar-button is-reset"
+        disabled={!hasProgress}
+        title={hasProgress ? "Clear all your answers for this topic" : "Nothing to reset yet"}
+        onClick={clearAnswers}
+      >
+        <ResetIcon /> Reset
+      </button>
+      <button
+        type="button"
+        className="toolbar-button"
+        aria-expanded={settingsOpen}
+        aria-controls="mcq-settings"
+        onClick={() => setSettingsOpen((open) => !open)}
+      >
+        <GearIcon /> Settings
+      </button>
+    </div>
+  );
+
+  // "One at a time" on wide screens: head on the left, the question in the middle, progress
+  // on the right (single-view.css). Narrower screens stack them: head, progress, question.
   return (
     <div className={`practice mcq-page${single ? " is-single" : " is-list"}`}>
+      <div className="page-head">
       <Breadcrumbs
         items={[
           { label: "Home", href: "#/" },
@@ -324,33 +352,23 @@ export default function McqPage({ entry }) {
         <h1>{topic.title}</h1>
       </header>
       <ModeTabs levelId={level.id} topicSlug={topic.slug} current="mcq" mcqCount={questions.length} writtenCount={countWritten(topic.id)} />
-
-      <div className="mcq-toolbar">
-        <Segmented label="How to show the questions" options={VIEW_OPTIONS} value={prefs.view} onChange={changeView} />
-        <div className="mcq-toolbar-actions">
-          <button
-            type="button"
-            className="toolbar-button is-reset"
-            disabled={!hasProgress}
-            title={hasProgress ? "Clear all your answers for this topic" : "Nothing to reset yet"}
-            onClick={clearAnswers}
-          >
-            <ResetIcon /> Reset
-          </button>
-          <button
-            type="button"
-            className="toolbar-button"
-            aria-expanded={settingsOpen}
-            aria-controls="mcq-settings"
-            onClick={() => setSettingsOpen((open) => !open)}
-          >
-            <GearIcon /> Settings
-          </button>
-        </div>
+      {single && viewSwitch}
       </div>
-      {settingsOpen && <McqSettings id="mcq-settings" prefs={prefs} onChange={changePrefs} />}
 
-      {single && overview}
+      {single ? (
+        <aside className="page-side" aria-label="Your progress">
+          {actions}
+          {overview}
+        </aside>
+      ) : (
+        <div className="mcq-toolbar">
+          {viewSwitch}
+          {actions}
+        </div>
+      )}
+
+      <div className="page-main">
+      {settingsOpen && <McqSettings id="mcq-settings" prefs={prefs} onChange={changePrefs} />}
 
       {review && (
         <div className="review-banner" role="status">
@@ -449,6 +467,7 @@ export default function McqPage({ entry }) {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

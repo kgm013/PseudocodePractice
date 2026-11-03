@@ -214,8 +214,21 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
     />
   );
 
+  const viewSwitch = <Segmented label="How to show the questions" options={VIEW_OPTIONS} value={prefs.view} onChange={(view) => setPrefs({ view })} />;
+
+  const actions = (
+    <div className="mcq-toolbar-actions">
+      <button type="button" className="toolbar-button is-reset" disabled={!hasProgress} onClick={resetTopic} title={hasProgress ? "Clear your code and progress for this topic" : "Nothing to reset yet"}>
+        <ResetIcon /> Reset
+      </button>
+    </div>
+  );
+
+  // "One at a time" on wide screens: head on the left, the question in the middle, progress
+  // on the right (single-view.css). Narrower screens stack them: head, progress, question.
   return (
     <div className={`practice mcq-page written-page${single ? " is-single" : " is-list"}`}>
+      <div className="page-head">
       <Breadcrumbs
         items={[
           { label: "Home", href: "#/" },
@@ -234,28 +247,31 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
         run your code.
       </p>
 
-      <div className="mcq-toolbar">
-        <Segmented label="How to show the questions" options={VIEW_OPTIONS} value={prefs.view} onChange={(view) => setPrefs({ view })} />
-        <div className="mcq-toolbar-actions">
-          <button type="button" className="toolbar-button is-reset" disabled={!hasProgress} onClick={resetTopic} title={hasProgress ? "Clear your code and progress for this topic" : "Nothing to reset yet"}>
-            <ResetIcon /> Reset
-          </button>
-        </div>
+      {single && viewSwitch}
       </div>
 
-      {single && (
-        <SingleStepper
-          counts={counts}
-          questions={questions}
-          answers={entries}
-          currentId={atResults ? null : current?.id}
-          onGo={goToQuestion}
-          statusOf={statusOf}
-          filters={filters}
-          labels={{ correct: "solved", wrong: "not right yet", skipped: "skipped", flagged: "" }}
-        />
+      {single ? (
+        <aside className="page-side" aria-label="Your progress">
+          {actions}
+          <SingleStepper
+            counts={counts}
+            questions={questions}
+            answers={entries}
+            currentId={atResults ? null : current?.id}
+            onGo={goToQuestion}
+            statusOf={statusOf}
+            filters={filters}
+            labels={{ correct: "solved", wrong: "not right yet", skipped: "skipped", flagged: "" }}
+          />
+        </aside>
+      ) : (
+        <div className="mcq-toolbar">
+          {viewSwitch}
+          {actions}
+        </div>
       )}
 
+      <div className="page-main">
       {review && (
         <div className="review-banner" role="status">
           <span>{REVIEW_TEXT[review.kind](review.ids.length)}</span>
@@ -299,6 +315,8 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
           </div>
         </div>
       )}
+
+      </div>
 
       <RevealDialog
         open={revealFor !== null}
