@@ -107,8 +107,15 @@ export default function WrittenQuestion({
 
       {entry?.revealed && result && <RevealedOutput result={result} />}
 
-      <div className="mcq-actions written-answer-actions" role="group" aria-label="Answer actions">
-        <div className="written-secondary-actions">
+      <div className="mcq-actions">
+        {nav && (
+          <>
+            <button type="button" className="button-quiet" onClick={nav.onPrev} disabled={nav.isFirst}>
+              ← Previous
+            </button>
+            <span className="mcq-actions-spacer" />
+          </>
+        )}
           <button
             type="button"
             className="button-quiet"
@@ -121,13 +128,23 @@ export default function WrittenQuestion({
           >
             <EyeIcon /> {entry?.revealed ? "Show output" : "Reveal output"}
           </button>
-          <button type="button" className={`button-quiet flag-button${entry?.flagged ? " is-on" : ""}`} aria-pressed={Boolean(entry?.flagged)} onClick={onFlag}>
-            <FlagIcon /> Not sure
+        {!solved && status !== "skipped" && (
+          <button type="button" className="button-quiet" onClick={onSkip}>
+            Skip
           </button>
-        </div>
-        <button type="button" className="button-primary" onClick={check} disabled={checking}>
-          {checking ? "Checking…" : solved ? "Check again" : "Check answer"}
+        )}
+        <button type="button" className={`button-quiet flag-button${entry?.flagged ? " is-on" : ""}`} aria-pressed={Boolean(entry?.flagged)} onClick={onFlag}>
+          <FlagIcon /> Not sure
         </button>
+        {nav && solved ? (
+          <button type="button" className="button-primary" onClick={nav.onNext}>
+            {nav.isLast ? "See results" : "Next question →"}
+          </button>
+        ) : (
+          <button type="button" className="button-primary" onClick={check} disabled={checking}>
+            {checking ? "Checking…" : solved ? "Check again" : "Check answer"}
+          </button>
+        )}
       </div>
 
       <div className="written-reveal-status" aria-live="polite">
@@ -147,25 +164,6 @@ export default function WrittenQuestion({
           Reset code
         </button>
       </div>
-
-      {(nav || (!solved && status !== "skipped")) && (
-        <nav className="written-navigation" aria-label={`Question ${number} navigation`}>
-          {nav && (
-            <button type="button" className="button-quiet" onClick={nav.onPrev} disabled={nav.isFirst}>
-              ← Previous
-            </button>
-          )}
-          {nav && solved ? (
-            <button type="button" className="button-secondary" onClick={nav.onNext}>
-              {nav.isLast ? "See results" : "Next question →"}
-            </button>
-          ) : !solved && status !== "skipped" ? (
-            <button type="button" className="button-quiet" onClick={onSkip}>
-              {nav ? "Skip question →" : "Skip question"}
-            </button>
-          ) : null}
-        </nav>
-      )}
     </article>
   );
 }

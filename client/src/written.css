@@ -34,11 +34,6 @@
   background: var(--surface);
 }
 
-.written-editor:focus-within {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-
 .written-editor .code-editor {
   height: 220px;
   min-height: 140px;
@@ -66,34 +61,6 @@
   margin: 8px 0 0;
   color: var(--muted);
   font-size: 0.85rem;
-}
-
-.written-secondary-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.written-answer-actions > .button-primary {
-  margin-left: auto;
-  min-width: 144px;
-  justify-content: center;
-  min-height: 44px;
-}
-
-.written-navigation {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-}
-
-.written-navigation > :last-child {
-  margin-left: auto;
 }
 
 .written-foot {
@@ -225,10 +192,6 @@
 }
 
 @media (max-width: 640px) {
-  .written-answer-actions > .button-primary {
-    width: 100%;
-  }
-
   .written-editor .code-editor {
     height: 180px;
   }
