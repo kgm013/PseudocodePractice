@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import CodeEditor from "../CodeEditor.jsx";
 import InlineCode from "../InlineCode.jsx";
+import { FlagIcon } from "../mcq/McqQuestion.jsx";
 import { writtenStatus } from "../../practice/progressStore.js";
 
 export const REVEAL_AFTER = 3; // unsuccessful attempts before output can be revealed
@@ -21,6 +22,7 @@ export default function WrittenQuestion({
   onCodeChange,
   onCheck,
   onSkip,
+  onFlag,
   onAskReveal,
   onResetCode,
   nav,
@@ -52,6 +54,7 @@ export default function WrittenQuestion({
         <span className="mcq-badges">
           {solved && <span className="badge badge-solved">✓ Solved</span>}
           {status === "skipped" && <span className="badge badge-skipped">Skipped</span>}
+          {entry?.flagged && <span className="badge badge-flagged"><FlagIcon /> Not sure</span>}
           {!solved && attempts > 0 && (
             <span className="badge badge-attempts">
               {attempts} attempt{attempts === 1 ? "" : "s"}
@@ -130,6 +133,9 @@ export default function WrittenQuestion({
             Skip
           </button>
         )}
+        <button type="button" className={`button-quiet flag-button${entry?.flagged ? " is-on" : ""}`} aria-pressed={Boolean(entry?.flagged)} onClick={onFlag}>
+          <FlagIcon /> Not sure
+        </button>
         {nav && solved ? (
           <button type="button" className="button-primary" onClick={nav.onNext}>
             {nav.isLast ? "See results" : "Next question →"}

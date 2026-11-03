@@ -23,6 +23,7 @@ const REVIEW_TEXT = {
   todo: (n) => `Showing the ${n} question${n === 1 ? "" : "s"} you haven't solved yet.`,
   wrong: (n) => `Showing the ${n} question${n === 1 ? "" : "s"} you haven't got right yet.`,
   skipped: (n) => `Showing the ${n} question${n === 1 ? "" : "s"} you skipped.`,
+  flagged: (n) => `Showing the ${n} question${n === 1 ? "" : "s"} you marked "Not sure".`,
 };
 
 const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -104,7 +105,9 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
     progress.saveCode(q.id, code, q.version);
     setChecking((c) => ({ ...c, [q.id]: true }));
     const result = await checkAnswer(q.id, code, level.interpreterLevel);
-    if (countAttempt || result.correct) progress.recordCheck(q.id, result.correct, q.version);
+    // Empty code or untouched starter code isn't a student's attempt.
+    const hasAnswer = code.trim().length > 0 && code.trim() !== (q.starterCode ?? "").trim();
+    if (hasAnswer && (countAttempt || result.correct)) progress.recordCheck(q.id, result.correct, q.version);
     setResults((r) => ({ ...r, [q.id]: result }));
     setChecking((c) => ({ ...c, [q.id]: false }));
     return result;
@@ -154,9 +157,10 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
       todo: (s) => s !== "correct" && s !== "skipped",
       wrong: (s) => s === "wrong",
       skipped: (s) => s === "skipped",
+      flagged: (s, e) => Boolean(e?.flagged),
     }[kind];
     if (!pick) return;
-    const ids = questions.filter((q) => pick(statusOf(q, entries[q.id]))).map((q) => q.id);
+    const ids = questions.filter((q) => pick(statusOf(q, entries[q.id]), entries[q.id])).map((q) => q.id);
     if (!ids.length) return;
     setReview({ kind, ids });
     goTo(ids[0]);
@@ -194,6 +198,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
       onCodeChange={(code) => codeChanged(q, code)}
       onCheck={(code) => runCheck(q, code)}
       onSkip={() => skip(q)}
+      onFlag={() => progress.toggleFlag(q.id)}
       onAskReveal={() => askReveal(q)}
       onResetCode={(code) => {
         codes.current[q.id] = code;
@@ -205,7 +210,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
 
   const filters = (
     <ReviewChips
-      counts={{ ...counts, flagged: 0 }}
+      counts={counts}
       todoLabel="Not solved"
       onReview={reviewBy}
       active={review?.kind}
@@ -260,7 +265,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
             onGo={goToQuestion}
             statusOf={statusOf}
             filters={filters}
-            labels={{ correct: "solved", wrong: "not right yet", skipped: "skipped", flagged: "" }}
+            labels={{ correct: "solved", wrong: "not right yet", skipped: "skipped", flagged: "not sure" }}
           />
         </aside>
       )}
@@ -280,7 +285,6 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
           <McqSummary
             counts={counts}
             verdictFor={writtenVerdict}
-            showFlagged={false}
             onReview={reviewBy}
             onRestart={resetTopic}
             onBack={() => goTo((questions.find((q) => statusOf(q, entries[q.id]) !== "correct") ?? questions[0]).id)}

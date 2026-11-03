@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 //
 //   { version: 1, questions: { "<question id>": {
 //       questionVersion, status: "attempted" | "solved", attempts, lastCode,
-//       revealed, skipped, solvedAt, updatedAt } } }
+//       revealed, skipped, flagged, solvedAt, updatedAt } } }
 //
 // Pages use the hook below and never touch localStorage themselves. Later this is the
 // one file that changes to save progress to an account instead.
@@ -45,7 +45,10 @@ export function writtenStatus(entry, starterCode = "") {
 /** Counts in the same shape as multiple choice, so the shared progress panel works for both. */
 export function summariseWritten(questions, entries) {
   const c = { total: questions.length, correct: 0, wrong: 0, skipped: 0, answered: 0, unanswered: 0, flagged: 0 };
-  for (const q of questions) c[writtenStatus(entries[q.id], q.starterCode)] += 1;
+  for (const q of questions) {
+    c[writtenStatus(entries[q.id], q.starterCode)] += 1;
+    if (entries[q.id]?.flagged) c.flagged += 1;
+  }
   c.checked = c.correct + c.wrong;
   c.done = c.correct + c.skipped;
   c.finished = c.total > 0 && c.done === c.total;
@@ -99,6 +102,7 @@ export function useWrittenProgress() {
       [update],
     ),
     markRevealed: useCallback((id) => update(id, () => ({ revealed: true })), [update]),
+    toggleFlag: useCallback((id) => update(id, (e) => ({ flagged: !e.flagged })), [update]),
     skip: useCallback((id) => update(id, () => ({ skipped: true })), [update]),
     reset: useCallback((ids) => {
       setData((prev) => {
