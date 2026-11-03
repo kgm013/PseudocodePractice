@@ -1,0 +1,66 @@
+[
+  {
+    "id": "ol-variables",
+    "levelId": "ol",
+    "slug": "variables",
+    "title": "Variables",
+    "summary": "Declare variables and constants, choose a data type and assign values.",
+    "order": 1
+  },
+  {
+    "id": "ol-output",
+    "levelId": "ol",
+    "slug": "output",
+    "title": "Output",
+    "summary": "Show text and values on screen with `OUTPUT`.",
+    "order": 2
+  },
+  {
+    "id": "ol-input",
+    "levelId": "ol",
+    "slug": "input",
+    "title": "Input",
+    "summary": "Read values typed by the user with `INPUT` and store them.",
+    "order": 3
+  },
+  {
+    "id": "ol-arithmetic",
+    "levelId": "ol",
+    "slug": "arithmetic",
+    "title": "Arithmetic",
+    "summary": "Calculate with `+` `-` `*` `/` `^`, `DIV`, `MOD` and `ROUND`.",
+    "order": 4
+  },
+  {
+    "id": "as-variables",
+    "levelId": "as",
+    "slug": "variables",
+    "title": "Variables",
+    "summary": "Declare variables and constants, choose a data type (including `DATE`) and assign values.",
+    "order": 1
+  },
+  {
+    "id": "as-output",
+    "levelId": "as",
+    "slug": "output",
+    "title": "Output",
+    "summary": "Show text and values on screen with `OUTPUT`, joining strings with `&`.",
+    "order": 2
+  },
+  {
+    "id": "as-input",
+    "levelId": "as",
+    "slug": "input",
+    "title": "Input",
+    "summary": "Read values typed by the user with `INPUT` and convert them where needed.",
+    "order": 3
+  },
+  {
+    "id": "as-arithmetic",
+    "levelId": "as",
+    "slug": "arithmetic",
+    "title": "Arithmetic",
+    "summary": "Calculate with `+` `-` `*` `/`, `DIV`, `MOD` and `INT`.",
+    "order": 4
+  }
+]

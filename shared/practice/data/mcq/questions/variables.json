@@ -1,0 +1,655 @@
+[
+  {
+    "id": "mcq-variables-001",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q1",
+    "prompt": "What is the datatype of age?",
+    "code": "DECLARE age : INTEGER\nage ← 17",
+    "options": [
+      {
+        "id": "a",
+        "text": "`STRING`"
+      },
+      {
+        "id": "b",
+        "text": "`INTEGER`"
+      },
+      {
+        "id": "c",
+        "text": "`REAL`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "value",
+    "resultText": "INTEGER",
+    "explanation": "The declaration fixes age as INTEGER; 17 is a compatible value.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-002",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q2",
+    "prompt": "Is this assignment valid?",
+    "code": "DECLARE word : STRING\nword ← 90",
+    "options": [
+      {
+        "id": "a",
+        "text": "Valid: stores the INTEGER value 90"
+      },
+      {
+        "id": "b",
+        "text": "Valid: stores the CHAR value 9"
+      },
+      {
+        "id": "c",
+        "text": "Valid: stores the STRING value \"90\""
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "A STRING variable cannot receive an unquoted INTEGER value.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-003",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q3",
+    "prompt": "Is this assignment valid?",
+    "code": "DECLARE letter : CHAR\nletter ← \"B\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "Valid: stores the CHAR value B"
+      },
+      {
+        "id": "b",
+        "text": "Valid: stores the STRING value \"B\""
+      },
+      {
+        "id": "c",
+        "text": "Valid: stores the INTEGER value B"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "A CHAR variable needs a single-quoted character, not a double-quoted STRING.",
+    "reviewStatus": "needs-review",
+    "reviewNote": "The key says invalid, but the AS interpreter runs it."
+  },
+  {
+    "id": "mcq-variables-004",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q4",
+    "prompt": "Is this assignment valid?",
+    "code": "DECLARE total : INTEGER\ntotal ← \"10\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "Valid: total stores the INTEGER 10"
+      },
+      {
+        "id": "b",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "c",
+        "text": "Valid: total stores the STRING \"10\""
+      },
+      {
+        "id": "d",
+        "text": "Valid: total stores the CHAR 1"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "\"10\" is a STRING literal, which cannot be assigned to an INTEGER.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-005",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q5",
+    "prompt": "What value and datatype are stored in code?",
+    "code": "DECLARE code : STRING\ncode ← \"007\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "STRING containing \"007\""
+      },
+      {
+        "id": "b",
+        "text": "INTEGER containing 7"
+      },
+      {
+        "id": "c",
+        "text": "CHAR containing 7"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "valid",
+    "resultText": "Valid assignment",
+    "explanation": "The double-quoted literal \"007\" is a STRING and its leading zeroes are retained.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-006",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q6",
+    "prompt": "Is this assignment valid?",
+    "code": "DECLARE num : INTEGER\nnum ← '9'",
+    "options": [
+      {
+        "id": "a",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "b",
+        "text": "Valid: stores the INTEGER value 9"
+      },
+      {
+        "id": "c",
+        "text": "Valid: stores the CHAR value 9"
+      },
+      {
+        "id": "d",
+        "text": "Valid: stores the STRING value \"9\""
+      }
+    ],
+    "answer": "a",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "A single-quoted digit is a CHAR, not an INTEGER.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-007",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q7",
+    "prompt": "What value and datatype are stored in amount?",
+    "code": "DECLARE amount : REAL\namount ← 3.75",
+    "options": [
+      {
+        "id": "a",
+        "text": "INTEGER containing 3"
+      },
+      {
+        "id": "b",
+        "text": "REAL containing 3.75"
+      },
+      {
+        "id": "c",
+        "text": "STRING containing \"3.75\""
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "valid",
+    "resultText": "Valid assignment",
+    "explanation": "The unquoted decimal 3.75 is a REAL and matches the declaration.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-008",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q8",
+    "prompt": "Is this assignment valid?",
+    "code": "DECLARE word : STRING\nword ← 'Hi'",
+    "options": [
+      {
+        "id": "a",
+        "text": "Valid: stores the STRING \"Hi\""
+      },
+      {
+        "id": "b",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "c",
+        "text": "Valid: stores a CHAR with two letters"
+      },
+      {
+        "id": "d",
+        "text": "Valid: stores the INTEGER value Hi"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "Two characters inside single quotes are not a valid CHAR; the value is not a double-quoted STRING.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-009",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q9",
+    "prompt": "What value and datatype are stored in amount?",
+    "code": "DECLARE amount : INTEGER\namount ← 40",
+    "options": [
+      {
+        "id": "a",
+        "text": "STRING containing \"40\""
+      },
+      {
+        "id": "b",
+        "text": "INTEGER containing 40"
+      },
+      {
+        "id": "c",
+        "text": "CHAR containing 4"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "valid",
+    "resultText": "Valid assignment",
+    "explanation": "The unquoted integer 40 matches the declared INTEGER datatype.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-010",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q10",
+    "prompt": "Is this assignment valid?",
+    "code": "DECLARE ch : CHAR\nch ← \"7\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "Valid: stores the CHAR 7"
+      },
+      {
+        "id": "b",
+        "text": "Valid: stores the STRING \"7\""
+      },
+      {
+        "id": "c",
+        "text": "Valid: stores the INTEGER 7"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "A double-quoted value is STRING, not the required CHAR.",
+    "reviewStatus": "needs-review",
+    "reviewNote": "The key says invalid, but the AS interpreter runs it."
+  },
+  {
+    "id": "mcq-variables-011",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q11",
+    "prompt": "What value and datatype are stored in code?",
+    "code": "DECLARE code : INTEGER\ncode ← 120",
+    "options": [
+      {
+        "id": "a",
+        "text": "STRING containing \"120\""
+      },
+      {
+        "id": "b",
+        "text": "INTEGER containing 120"
+      },
+      {
+        "id": "c",
+        "text": "CHAR containing 1"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "valid",
+    "resultText": "Valid assignment",
+    "explanation": "The unquoted number 120 is an INTEGER and matches the declaration.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-012",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q12",
+    "prompt": "Is this assignment valid?",
+    "code": "DECLARE flag : CHAR\nflag ← 'OK'",
+    "options": [
+      {
+        "id": "a",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "b",
+        "text": "Valid: stores the character O"
+      },
+      {
+        "id": "c",
+        "text": "Valid: stores the STRING \"OK\""
+      },
+      {
+        "id": "d",
+        "text": "Valid: stores the character K"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "A CHAR literal must contain exactly one character.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-013",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q13",
+    "prompt": "Is this assignment valid?",
+    "code": "DECLARE score : INTEGER\nscore ← 2.5",
+    "options": [
+      {
+        "id": "a",
+        "text": "Valid: stores the REAL value 2.5"
+      },
+      {
+        "id": "b",
+        "text": "Valid: stores the INTEGER value 2"
+      },
+      {
+        "id": "c",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "d",
+        "text": "Valid: stores the STRING \"2.5\""
+      }
+    ],
+    "answer": "c",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "2.5 is a REAL, and strict datatype checking rejects its assignment to INTEGER.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-014",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q14",
+    "prompt": "Is this assignment valid?",
+    "code": "DECLARE p : REAL\np ← '2.5'",
+    "options": [
+      {
+        "id": "a",
+        "text": "Valid: stores the REAL value 2.5"
+      },
+      {
+        "id": "b",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "c",
+        "text": "Valid: stores the STRING \"2.5\""
+      },
+      {
+        "id": "d",
+        "text": "Valid: stores a single CHAR value 2.5"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "The multi-character single-quoted literal is invalid and cannot be assigned to REAL.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-015",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q15",
+    "prompt": "What value and datatype are stored in id?",
+    "code": "DECLARE id : STRING\nid ← \"4\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "STRING containing \"4\""
+      },
+      {
+        "id": "b",
+        "text": "INTEGER containing 4"
+      },
+      {
+        "id": "c",
+        "text": "CHAR containing 4"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "valid",
+    "resultText": "Valid assignment",
+    "explanation": "Double quotes make \"4\" a STRING even though its contents resemble a number.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-016",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q16",
+    "prompt": "Is this assignment valid?",
+    "code": "DECLARE price : REAL\nprice ← \"5.50\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "Valid: stores the REAL value 5.50"
+      },
+      {
+        "id": "b",
+        "text": "Valid: stores the REAL value 5"
+      },
+      {
+        "id": "c",
+        "text": "Valid: stores the STRING \"5.50\""
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "The assigned value is a STRING; the variable is declared REAL.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-017",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q17",
+    "prompt": "What value and datatype are stored in x?",
+    "code": "DECLARE x : REAL\nx ← 1.25",
+    "options": [
+      {
+        "id": "a",
+        "text": "REAL containing 1.25"
+      },
+      {
+        "id": "b",
+        "text": "INTEGER containing 1"
+      },
+      {
+        "id": "c",
+        "text": "STRING containing \"1.25\""
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "valid",
+    "resultText": "Valid assignment",
+    "explanation": "The numeric decimal literal 1.25 is a REAL.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-018",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q18",
+    "prompt": "What datatype is stored in grade?",
+    "code": "DECLARE grade : CHAR\ngrade ← 'A'",
+    "options": [
+      {
+        "id": "a",
+        "text": "`STRING`"
+      },
+      {
+        "id": "b",
+        "text": "`CHAR`"
+      },
+      {
+        "id": "c",
+        "text": "`INTEGER`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "value",
+    "resultText": "CHAR",
+    "explanation": "The declaration specifies CHAR and the value A matches it.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-019",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q19",
+    "prompt": "Are these assignments valid?",
+    "code": "DECLARE score : INTEGER\nscore ← 20\nscore ← \"14\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "b",
+        "text": "Valid: score finally contains INTEGER 14"
+      },
+      {
+        "id": "c",
+        "text": "Valid: score finally contains INTEGER 20"
+      },
+      {
+        "id": "d",
+        "text": "Valid: score finally contains STRING \"14\""
+      }
+    ],
+    "answer": "a",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "The first assignment is valid, but the second assigns a STRING to an INTEGER variable.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-020",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q20",
+    "prompt": "What value and datatype are stored in num?",
+    "code": "DECLARE num : INTEGER\nnum ← 5",
+    "options": [
+      {
+        "id": "a",
+        "text": "INTEGER containing 5"
+      },
+      {
+        "id": "b",
+        "text": "STRING containing \"5\""
+      },
+      {
+        "id": "c",
+        "text": "CHAR containing 5"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "valid",
+    "resultText": "Valid assignment",
+    "explanation": "num is declared INTEGER and is given an unquoted whole number.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-variables-021",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q21",
+    "prompt": "Is this assignment valid?",
+    "code": "DECLARE code : STRING\ncode ← 123",
+    "options": [
+      {
+        "id": "a",
+        "text": "Valid: stores INTEGER 123"
+      },
+      {
+        "id": "b",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "c",
+        "text": "Valid: stores STRING \"123\""
+      },
+      {
+        "id": "d",
+        "text": "Valid: stores CHAR 1"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "invalid",
+    "resultText": "Invalid assignment",
+    "explanation": "A STRING variable requires a string value; an unquoted number is INTEGER.",
+    "reviewStatus": "ok"
+  }
+]

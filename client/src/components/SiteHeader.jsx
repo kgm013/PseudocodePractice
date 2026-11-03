@@ -1,14 +1,14 @@
 export const YOUTUBE_URL = "https://www.youtube.com/@zainematics";
 export const INSTAGRAM_URL = "https://www.instagram.com/kurlyatzainematics/";
 
-/** The header: site name, page-specific controls, social links and theme toggle. */
+/** The header on every page: site name, page-specific controls, social links and theme toggle. */
 export default function SiteHeader({ theme, onToggleTheme, children }) {
   return (
     <header className="header">
-      <div className="brand">
+      <a href="#/" className="brand" aria-label="Zainematics Pseudocode Practice, home">
         <span className="brand-name">Zainematics</span>
-        <h1 className="brand-title">Pseudocode Practice</h1>
-      </div>
+        <span className="brand-title">Pseudocode Practice</span>
+      </a>
       {children}
       <div className="header-actions">
         <a className="social-link" href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer">

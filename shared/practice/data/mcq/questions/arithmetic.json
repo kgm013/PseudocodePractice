@@ -1,0 +1,839 @@
+[
+  {
+    "id": "mcq-arithmetic-001",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q64",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"5 + 5\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`10`"
+      },
+      {
+        "id": "b",
+        "text": "`\"5 + 5\"`"
+      },
+      {
+        "id": "c",
+        "text": "`5 + 5`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "5 + 5",
+    "explanation": "Everything inside double quotes is literal text. The addition is not calculated.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-002",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q65",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE x : INTEGER\nx ← 5\nOUTPUT \"x + 5\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`x + 5`"
+      },
+      {
+        "id": "b",
+        "text": "`10`"
+      },
+      {
+        "id": "c",
+        "text": "`5 + 5`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "x + 5",
+    "explanation": "The expression is in quotes, so x is not substituted and no calculation occurs.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-003",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q66",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT 6 * 3",
+    "options": [
+      {
+        "id": "a",
+        "text": "`6 * 3`"
+      },
+      {
+        "id": "b",
+        "text": "`18`"
+      },
+      {
+        "id": "c",
+        "text": "`63`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "18",
+    "explanation": "The unquoted arithmetic expression 6 * 3 is evaluated before output.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-004",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q67",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT 20 - 8",
+    "options": [
+      {
+        "id": "a",
+        "text": "`208`"
+      },
+      {
+        "id": "b",
+        "text": "`12`"
+      },
+      {
+        "id": "c",
+        "text": "`20 - 8`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "12",
+    "explanation": "The numeric subtraction is calculated: 20 - 8 is 12.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-005",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q68",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE n : INTEGER\nn ← 2\nn ← n + 4\nOUTPUT n",
+    "options": [
+      {
+        "id": "a",
+        "text": "`2`"
+      },
+      {
+        "id": "b",
+        "text": "`24`"
+      },
+      {
+        "id": "c",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "d",
+        "text": "`6`"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "output",
+    "resultText": "6",
+    "explanation": "n is updated from 2 to 6 before it is printed.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-006",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q69",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE a : INTEGER\na ← 6\nOUTPUT \"a=\", a * 2",
+    "options": [
+      {
+        "id": "a",
+        "text": "`a=6 * 2`"
+      },
+      {
+        "id": "b",
+        "text": "`a=62`"
+      },
+      {
+        "id": "c",
+        "text": "`a=12`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "a=12",
+    "explanation": "a * 2 is evaluated to 12 and appended to the quoted text a=.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-007",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q70",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"8-3\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`5`"
+      },
+      {
+        "id": "b",
+        "text": "`\"8-3\"`"
+      },
+      {
+        "id": "c",
+        "text": "`8-3`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "8-3",
+    "explanation": "The subtraction appears inside quotes, so 8-3 is displayed as text.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-008",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q71",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE z : INTEGER\nz ← 10\nOUTPUT z - 3, \"!\", z",
+    "options": [
+      {
+        "id": "a",
+        "text": "`10-3!10`"
+      },
+      {
+        "id": "b",
+        "text": "`7!7`"
+      },
+      {
+        "id": "c",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "d",
+        "text": "`7!10`"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "output",
+    "resultText": "7!10",
+    "explanation": "z - 3 is 7; then ! and the original z value 10 are appended.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-009",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q72",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT 5+5",
+    "options": [
+      {
+        "id": "a",
+        "text": "`5+5`"
+      },
+      {
+        "id": "b",
+        "text": "`55`"
+      },
+      {
+        "id": "c",
+        "text": "`10`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "10",
+    "explanation": "An unquoted addition expression is evaluated: 5 + 5 is 10.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-010",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q73",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE sign : CHAR\nsign ← '+'\nOUTPUT \"2\", sign, \"3\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`2+3`"
+      },
+      {
+        "id": "b",
+        "text": "`5`"
+      },
+      {
+        "id": "c",
+        "text": "`2 + 3`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "2+3",
+    "explanation": "The three displayed items are 2, +, and 3; they are not an arithmetic expression.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-011",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q74",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE expression : STRING\nexpression ← \"5+5\"\nOUTPUT expression, \"=\", 5+5",
+    "options": [
+      {
+        "id": "a",
+        "text": "`10=10`"
+      },
+      {
+        "id": "b",
+        "text": "`5+5=5+5`"
+      },
+      {
+        "id": "c",
+        "text": "`5+5=10`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "5+5=10",
+    "explanation": "The stored string 5+5 stays literal, while the separate unquoted addition evaluates to 10.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-012",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q75",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT 7 + 1",
+    "options": [
+      {
+        "id": "a",
+        "text": "`71`"
+      },
+      {
+        "id": "b",
+        "text": "`7 + 1`"
+      },
+      {
+        "id": "c",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "d",
+        "text": "`8`"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "output",
+    "resultText": "8",
+    "explanation": "Unquoted 7 + 1 is evaluated to 8.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-013",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q76",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE x : INTEGER\nx ← 10\nOUTPUT \"x+2=\", x + 2",
+    "options": [
+      {
+        "id": "a",
+        "text": "`x+2=10+2`"
+      },
+      {
+        "id": "b",
+        "text": "`x+2=102`"
+      },
+      {
+        "id": "c",
+        "text": "`x+2=12`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "x+2=12",
+    "explanation": "The quoted prefix remains x+2=, and the unquoted calculation equals 12.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-014",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q77",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE a : STRING\na ← \"5\"\nOUTPUT a, \" + \", a",
+    "options": [
+      {
+        "id": "a",
+        "text": "`10`"
+      },
+      {
+        "id": "b",
+        "text": "`55`"
+      },
+      {
+        "id": "c",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "d",
+        "text": "`5 + 5`"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "output",
+    "resultText": "5 + 5",
+    "explanation": "The string value 5 is printed, then the literal spaces-plus-sign, then 5 again.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-015",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q78",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE n : INTEGER\nn ← 1\nOUTPUT \"1\", n + 1",
+    "options": [
+      {
+        "id": "a",
+        "text": "`3`"
+      },
+      {
+        "id": "b",
+        "text": "`12`"
+      },
+      {
+        "id": "c",
+        "text": "`11`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "12",
+    "explanation": "The literal 1 is followed by the calculated value n + 1 = 2.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-016",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q79",
+    "prompt": "What will happen?",
+    "code": "DECLARE age : INTEGER\nage ← 11\nOUTPUT age + \"1\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "Displays `12`"
+      },
+      {
+        "id": "b",
+        "text": "Displays `111`"
+      },
+      {
+        "id": "c",
+        "text": "Displays `age1`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "invalid",
+    "resultText": "Invalid pseudocode",
+    "explanation": "Adding a STRING literal to an INTEGER is not permitted with strict datatype rules.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-017",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q80",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE a : INTEGER\na ← 3\nOUTPUT a, a + 2",
+    "options": [
+      {
+        "id": "a",
+        "text": "`5`"
+      },
+      {
+        "id": "b",
+        "text": "`6`"
+      },
+      {
+        "id": "c",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "d",
+        "text": "`35`"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "output",
+    "resultText": "35",
+    "explanation": "The first item is 3; the second calculation gives 5, so the output is 35.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-018",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q81",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"4*4\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`4*4`"
+      },
+      {
+        "id": "b",
+        "text": "`16`"
+      },
+      {
+        "id": "c",
+        "text": "`44`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "4*4",
+    "explanation": "The entire expression 4*4 is quoted and therefore is not evaluated.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-019",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q82",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE n : INTEGER\nn ← 10\nOUTPUT n, \" + 2\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`12`"
+      },
+      {
+        "id": "b",
+        "text": "`n + 2`"
+      },
+      {
+        "id": "c",
+        "text": "`10 + 2`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "10 + 2",
+    "explanation": "The INTEGER n contributes 10; the second quoted item contributes the literal \" + 2\".",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-020",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q83",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE n : INTEGER\nn ← 5\nOUTPUT n + 3, \" marks\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`8 marks`"
+      },
+      {
+        "id": "b",
+        "text": "`53 marks`"
+      },
+      {
+        "id": "c",
+        "text": "`5 + 3 marks`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "8 marks",
+    "explanation": "n + 3 equals 8; the following quoted text starts with a space.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-021",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q84",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT 2 + 4 * 3",
+    "options": [
+      {
+        "id": "a",
+        "text": "`18`"
+      },
+      {
+        "id": "b",
+        "text": "`14`"
+      },
+      {
+        "id": "c",
+        "text": "`243`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "14",
+    "explanation": "Multiplication has precedence: 4 * 3 is 12, then 2 + 12 is 14.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-022",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q85",
+    "prompt": "What will happen?",
+    "code": "DECLARE total : INTEGER\ntotal ← \"5+5\"\nOUTPUT total",
+    "options": [
+      {
+        "id": "a",
+        "text": "Displays `10`"
+      },
+      {
+        "id": "b",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "c",
+        "text": "Displays `5+5`"
+      },
+      {
+        "id": "d",
+        "text": "Displays `total`"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "invalid",
+    "resultText": "Invalid pseudocode",
+    "explanation": "The STRING literal \"5+5\" cannot be stored in an INTEGER variable.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-023",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q86",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"5+5\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`10`"
+      },
+      {
+        "id": "b",
+        "text": "`\"5+5\"`"
+      },
+      {
+        "id": "c",
+        "text": "`5+5`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "5+5",
+    "explanation": "The addition is in double quotes, so the text 5+5 is printed unchanged.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-024",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q87",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT 11 - 6",
+    "options": [
+      {
+        "id": "a",
+        "text": "`116`"
+      },
+      {
+        "id": "b",
+        "text": "`11 - 6`"
+      },
+      {
+        "id": "c",
+        "text": "`5`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "5",
+    "explanation": "Unquoted 11 - 6 is calculated and printed as 5.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-025",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q88",
+    "prompt": "What will happen?",
+    "code": "DECLARE a : INTEGER\na ← 12\nOUTPUT \"a=\", a + \"2\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "Displays `a=14`"
+      },
+      {
+        "id": "b",
+        "text": "Displays `a=122`"
+      },
+      {
+        "id": "c",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "d",
+        "text": "Displays `a=12 + 2`"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "invalid",
+    "resultText": "Invalid pseudocode",
+    "explanation": "INTEGER a cannot be added to STRING \"2\" in a numeric expression.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-026",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q89",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"7-2\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`7-2`"
+      },
+      {
+        "id": "b",
+        "text": "`5`"
+      },
+      {
+        "id": "c",
+        "text": "`\"7-2\"`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "7-2",
+    "explanation": "The quoted subtraction is literal text, so 7-2 appears unchanged.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-arithmetic-027",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q90",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE y : INTEGER\ny ← 2 + 3\nOUTPUT y",
+    "options": [
+      {
+        "id": "a",
+        "text": "`2 + 3`"
+      },
+      {
+        "id": "b",
+        "text": "`23`"
+      },
+      {
+        "id": "c",
+        "text": "`5`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "5",
+    "explanation": "Assignment first evaluates 2 + 3 to 5; OUTPUT y prints that value.",
+    "reviewStatus": "ok"
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "ol",
+    "name": "O Level / IGCSE",
+    "codes": "2210 · 0478",
+    "interpreterLevel": "O",
+    "order": 1
+  },
+  {
+    "id": "as",
+    "name": "AS Level",
+    "codes": "9618",
+    "interpreterLevel": "AS",
+    "order": 2
+  }
+]

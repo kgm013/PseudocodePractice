@@ -1,0 +1,169 @@
+[
+  {
+    "id": "mcq-input-001",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q59",
+    "prompt": "The user enters 004. What will be displayed?",
+    "code": "DECLARE code : STRING\nINPUT code\nOUTPUT \"ID:\", code",
+    "inputs": [
+      "004"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`ID:004`"
+      },
+      {
+        "id": "b",
+        "text": "`ID:4`"
+      },
+      {
+        "id": "c",
+        "text": "`ID:\"004\"`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "ID:004",
+    "explanation": "The STRING input 004 preserves its leading zeroes and follows ID: directly.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-input-002",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q60",
+    "prompt": "The user enters Sara. What will be displayed?",
+    "code": "DECLARE name : STRING\nINPUT name\nOUTPUT name",
+    "inputs": [
+      "Sara"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`Sara`"
+      },
+      {
+        "id": "b",
+        "text": "`\"Sara\"`"
+      },
+      {
+        "id": "c",
+        "text": "`name`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "Sara",
+    "explanation": "INPUT stores Sara in name; OUTPUT name displays the entered value.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-input-003",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q61",
+    "prompt": "What will happen?",
+    "code": "DECLARE age : INTEGER\nINPUT \"age\"\nOUTPUT age",
+    "options": [
+      {
+        "id": "a",
+        "text": "Asks the user to enter their age"
+      },
+      {
+        "id": "b",
+        "text": "Displays `age`"
+      },
+      {
+        "id": "c",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "d",
+        "text": "Displays `\"age\"`"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "invalid",
+    "resultText": "Invalid pseudocode",
+    "explanation": "INPUT must be followed by an identifier, not the quoted literal \"age\".",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-input-004",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q62",
+    "prompt": "The user enters Paris. What will be displayed?",
+    "code": "DECLARE city : STRING\nINPUT city\nOUTPUT \"city\"",
+    "inputs": [
+      "Paris"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`Paris`"
+      },
+      {
+        "id": "b",
+        "text": "`city`"
+      },
+      {
+        "id": "c",
+        "text": "`\"Paris\"`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "city",
+    "explanation": "OUTPUT \"city\" prints the literal word, not the input stored in city.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-input-005",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q63",
+    "prompt": "The user enters 8. What will be displayed?",
+    "code": "DECLARE score : INTEGER\nINPUT score\nOUTPUT score",
+    "inputs": [
+      "8"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "`score`"
+      },
+      {
+        "id": "b",
+        "text": "`\"8\"`"
+      },
+      {
+        "id": "c",
+        "text": "`8`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "8",
+    "explanation": "INPUT stores the entered integer 8; OUTPUT score displays its value.",
+    "reviewStatus": "ok"
+  }
+]
