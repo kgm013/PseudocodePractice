@@ -51,3 +51,21 @@ export function useQuestionType() {
   }, []);
   return [type, update];
 }
+
+const WRITTEN_PREFS_KEY = "pseudo-practice:written-prefs";
+
+/** Written questions: "single" (one at a time) or "list" (several at once). */
+export function useWrittenPrefs() {
+  const [prefs, setPrefs] = useState(() => {
+    const saved = load(WRITTEN_PREFS_KEY, null);
+    return { view: saved?.view === "list" ? "list" : "single" };
+  });
+  const update = useCallback((partial) => {
+    setPrefs((prev) => {
+      const next = { ...prev, ...partial };
+      save(WRITTEN_PREFS_KEY, next);
+      return next;
+    });
+  }, []);
+  return [prefs, update];
+}

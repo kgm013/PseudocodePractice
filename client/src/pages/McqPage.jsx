@@ -7,7 +7,8 @@ import McqNavigator, { McqProgress } from "../components/mcq/McqNavigator.jsx";
 import McqSettings from "../components/mcq/McqSettings.jsx";
 import McqSummary from "../components/mcq/McqSummary.jsx";
 import McqPanel from "../components/mcq/McqPanel.jsx";
-import { countMcqs, getMcqs } from "@shared/practice/bank.ts";
+import ReviewChips from "../components/mcq/ReviewChips.jsx";
+import { countMcqs, countWritten, getMcqs } from "@shared/practice/bank.ts";
 import { levelHref, topicHref } from "../practice/routes.js";
 import { statusOf, summarise, useMcqSession } from "../practice/mcqSession.js";
 import { useMcqPrefs } from "../practice/prefs.js";
@@ -293,7 +294,7 @@ export default function McqPage({ entry }) {
       onRestart={clearAnswers}
       onBack={() => goTo((sequence.find((q) => statusOf(q, answers[q.id]) === "unanswered") ?? sequence[0]).id)}
       next={nextTopic}
-      writtenHref={`${base}/written`}
+      otherHref={`${base}/written`}
     />
   );
 
@@ -319,7 +320,7 @@ export default function McqPage({ entry }) {
       <header className="practice-intro compact">
         <h1>{topic.title}</h1>
       </header>
-      <ModeTabs levelId={level.id} topicSlug={topic.slug} current="mcq" mcqCount={questions.length} />
+      <ModeTabs levelId={level.id} topicSlug={topic.slug} current="mcq" mcqCount={questions.length} writtenCount={countWritten(topic.id)} />
 
       <div className="mcq-toolbar">
         <Segmented label="How to show the questions" options={VIEW_OPTIONS} value={prefs.view} onChange={changeView} />
@@ -391,7 +392,7 @@ export default function McqPage({ entry }) {
             firstOnPage={shown[0]?.id}
             checkAll={{ show: !prefs.instantCheck, pending: pending.length, onClick: checkAll }}
             filters={<ReviewChips counts={counts} onReview={reviewBy} active={review?.kind} />}
-            results={{ onRetryWrong: retryWrong, onRestart: clearAnswers, next: nextTopic, writtenHref: `${base}/written` }}
+            results={{ onRetryWrong: retryWrong, onRestart: clearAnswers, next: nextTopic, otherHref: `${base}/written` }}
           />
           <div className="mcq-split-main">
             <div className="mcq-list-head">
@@ -523,27 +524,6 @@ function FlagButton({ flagged, onClick }) {
   );
 }
 
-function ReviewChips({ counts, onReview, active }) {
-  const chips = [
-    { kind: "todo", label: "Unanswered", n: counts.total - counts.done },
-    { kind: "skipped", label: "Skipped", n: counts.skipped },
-    { kind: "flagged", label: "Not sure", n: counts.flagged },
-    { kind: "wrong", label: "Wrong", n: counts.wrong },
-  ].filter((c) => c.n > 0);
-  // Only worth showing once something has been answered, skipped or marked.
-  if (counts.done === 0 && counts.flagged === 0) return null;
-  return (
-    <div className="review-chips">
-      <span className="review-chips-label">Go back to:</span>
-      {chips.map((c) => (
-        <button key={c.kind} type="button" className={`review-chip${active === c.kind ? " is-active" : ""}`} onClick={() => onReview(c.kind)}>
-          {c.label} <span className="review-chip-count">{c.n}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
-
 function Pagination({ page, pageCount, onPage }) {
   return (
     <nav className="pagination" aria-label="Pages">
@@ -585,7 +565,7 @@ function NoMcqs({ entry }) {
       <header className="practice-intro compact">
         <h1>{topic.title}</h1>
       </header>
-      <ModeTabs levelId={level.id} topicSlug={topic.slug} current="mcq" mcqCount={0} />
+      <ModeTabs levelId={level.id} topicSlug={topic.slug} current="mcq" mcqCount={0} writtenCount={countWritten(topic.id)} />
       <div className="empty-state">
         <h2>No multiple-choice questions yet</h2>
         <p>This topic doesn't have multiple-choice questions. You can practise it with written questions instead.</p>

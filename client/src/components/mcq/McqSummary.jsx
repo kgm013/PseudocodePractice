@@ -11,7 +11,7 @@ export function verdict(counts) {
 }
 
 /** Results for the topic, with ways back into the questions that need another look. */
-const McqSummary = forwardRef(function McqSummary({ counts, onReview, onRestart, onBack, next, writtenHref }, headingRef) {
+const McqSummary = forwardRef(function McqSummary({ counts, onReview, onRestart, onBack, next, otherHref, otherLabel = "Written questions", verdictFor = verdict, showFlagged = true }, headingRef) {
   return (
     <section className="mcq-summary" aria-labelledby="mcq-summary-title">
       <h2 id="mcq-summary-title" ref={headingRef} tabIndex={-1}>
@@ -21,7 +21,7 @@ const McqSummary = forwardRef(function McqSummary({ counts, onReview, onRestart,
         <span className="summary-big">{counts.correct}</span>
         <span> of {counts.total} correct</span>
       </p>
-      <p className="summary-verdict">{verdict(counts)}</p>
+      <p className="summary-verdict">{verdictFor(counts)}</p>
 
       <ul className="summary-stats">
         <li className="is-correct">
@@ -33,9 +33,11 @@ const McqSummary = forwardRef(function McqSummary({ counts, onReview, onRestart,
         <li className="is-skipped">
           <strong>{counts.skipped}</strong> skipped
         </li>
-        <li className="is-flagged">
-          <strong>{counts.flagged}</strong> not sure
-        </li>
+        {showFlagged && (
+          <li className="is-flagged">
+            <strong>{counts.flagged}</strong> not sure
+          </li>
+        )}
       </ul>
 
       <div className="summary-actions">
@@ -76,9 +78,9 @@ const McqSummary = forwardRef(function McqSummary({ counts, onReview, onRestart,
             <span className="pager-title">{next.title}</span>
           </a>
         )}
-        <a className="pager-link" href={writtenHref}>
+        <a className="pager-link" href={otherHref}>
           <span className="pager-label">Same topic</span>
-          <span className="pager-title">Written questions</span>
+          <span className="pager-title">{otherLabel}</span>
         </a>
       </div>
     </section>

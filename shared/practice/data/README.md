@@ -16,6 +16,8 @@ data moves into a database only that file changes.
 | `sources.json` | `sources` | worksheet or paper the questions came from |
 | `mcq/questions/<lesson>.json` | `mcq_questions` + `mcq_options` | multiple-choice question; its `options` list becomes rows in `mcq_options` |
 | `mcq/placements.json` | `topic_mcqs` | question shown in a topic, with its position |
+| `written/questions/<lesson>.json` | `written_questions` + `written_tests` | written question; its `tests` list becomes rows in `written_tests` |
+| `written/placements.json` | `topic_written` | written question shown in a topic, with its position |
 | `known-ids.txt` | (none) | every ID ever used, so none is reused or lost |
 
 ### Questions are stored once, placed many times
@@ -48,6 +50,25 @@ Optional fields are left out when empty; never write `null`.
 | `explanation` | yes | Shown after the student checks their answer. |
 | `reviewStatus` | yes | `ok`, or `needs-review` when the interpreter disagrees with the answer key. |
 | `reviewNote` | with needs-review | Why it needs review. |
+
+**Written question** (`written_questions`)
+
+| Field | Required | Meaning |
+|---|---|---|
+| `id` | yes | Permanent ID, `wq-<lesson>-001`. |
+| `version`, `sourceId`, `sourceRef` | yes | As for multiple choice. |
+| `title`, `prompt` | yes | Backticks mark code; a blank line starts a new paragraph. |
+| `starterCode` | no | Code already in the editor when the question opens. |
+| `solution` | yes | The model answer. Its output for each test is what answers are compared with. Never sent to pages. |
+| `harness` | no | Code run after the student's, e.g. calls to a `FUNCTION` they wrote. Never sent to pages. |
+| `exactOutput` | no | `true` = the output must match exactly, with no extra lines such as input prompts. |
+| `mustUse`, `mustNotUse` | no | Statements the answer must or mustn't contain: `DECLARE`, `FOR`, `IF`, `ARRAY`, ... or a built-in such as `MOD`. |
+| `hints` | no | Shown one at a time when the student asks. |
+| `tests` | yes | `{ id, inputs?, files?, expected?, hidden? }`. Hidden tests are marked but never shown, even after "Reveal output". Questions with `INPUT` need 2 or more tests. |
+
+Marking (`shared/practice/checker.ts`): the expected lines must appear in order; extra lines are
+allowed unless `exactOutput` is set; spaces at the ends of lines and runs of spaces don't matter;
+letter case and `5` versus `5.0` do. Students only see right or wrong.
 
 ## Adding questions
 
@@ -129,6 +150,46 @@ CREATE TABLE mcq_options (
 CREATE TABLE topic_mcqs (
   topic_id    text NOT NULL REFERENCES topics(id),
   question_id text NOT NULL REFERENCES mcq_questions(id),
+  sort_order  integer NOT NULL,
+  PRIMARY KEY (topic_id, question_id),
+  UNIQUE (topic_id, sort_order)
+);
+
+CREATE TABLE written_questions (
+  id            text PRIMARY KEY,                     -- 'wq-variables-001'
+  version       integer NOT NULL DEFAULT 1,
+  source_id     text NOT NULL REFERENCES sources(id),
+  source_ref    text NOT NULL,
+  title         text NOT NULL,
+  prompt        text NOT NULL,
+  starter_code  text,
+  solution      text NOT NULL,
+  harness       text,
+  exact_output  boolean NOT NULL DEFAULT false,
+  must_use      text[] NOT NULL DEFAULT '{}',
+  must_not_use  text[] NOT NULL DEFAULT '{}',
+  hints         text[] NOT NULL DEFAULT '{}',
+  difficulty    smallint CHECK (difficulty BETWEEN 1 AND 3),
+  review_status text NOT NULL DEFAULT 'ok' CHECK (review_status IN ('ok', 'needs-review')),
+  review_note   text,
+  retired_at    timestamptz,
+  UNIQUE (source_id, source_ref)
+);
+
+CREATE TABLE written_tests (
+  question_id text NOT NULL REFERENCES written_questions(id),
+  id          text NOT NULL,                          -- 't1'
+  sort_order  integer NOT NULL,
+  inputs      text[] NOT NULL DEFAULT '{}',
+  files       jsonb,
+  expected    text[],
+  hidden      boolean NOT NULL DEFAULT false,
+  PRIMARY KEY (question_id, id)
+);
+
+CREATE TABLE topic_written (
+  topic_id    text NOT NULL REFERENCES topics(id),
+  question_id text NOT NULL REFERENCES written_questions(id),
   sort_order  integer NOT NULL,
   PRIMARY KEY (topic_id, question_id),
   UNIQUE (topic_id, sort_order)

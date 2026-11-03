@@ -1,4 +1,4 @@
-import { statusOf } from "../../practice/mcqSession.js";
+import { statusOf as mcqStatusOf } from "../../practice/mcqSession.js";
 
 const STATUS_WORDS = {
   unanswered: "not answered",
@@ -12,7 +12,7 @@ const STATUS_WORDS = {
  * A numbered square per question, showing its status; click one to go to it.
  * `onPage` (a Set of ids) underlines the questions showing on the current page.
  */
-export default function McqNavigator({ questions, answers, currentId, onGo, onPage, legend = true, listRef }) {
+export default function McqNavigator({ questions, answers, currentId, onGo, onPage, legend = true, listRef, statusOf = mcqStatusOf }) {
   return (
     <nav className="mcq-nav" aria-label="Questions">
       <ol className="mcq-nav-list" ref={listRef}>

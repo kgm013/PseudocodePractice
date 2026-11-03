@@ -14,9 +14,23 @@ import variablesMcqs from "./data/mcq/questions/variables.json" with { type: "js
 import outputMcqs from "./data/mcq/questions/output.json" with { type: "json" };
 import inputMcqs from "./data/mcq/questions/input.json" with { type: "json" };
 import arithmeticMcqs from "./data/mcq/questions/arithmetic.json" with { type: "json" };
-import type { Level, McqPlacement, McqQuestion, Source, Topic } from "./types.ts";
+import writtenPlacementsData from "./data/written/placements.json" with { type: "json" };
+import variablesWritten from "./data/written/questions/variables.json" with { type: "json" };
+import { checkWritten } from "./checker.ts";
+import type { WrittenCheck } from "./checker.ts";
+import type {
+  Level,
+  McqPlacement,
+  McqQuestion,
+  Source,
+  Topic,
+  WrittenPlacement,
+  WrittenQuestion,
+  WrittenQuestionForPage,
+} from "./types.ts";
 
-export type { Level, McqOption, McqPlacement, McqQuestion, Source, Topic } from "./types.ts";
+export type { Level, McqOption, McqPlacement, McqQuestion, Source, Topic, WrittenQuestionForPage } from "./types.ts";
+export type { WrittenCheck, TestRun } from "./checker.ts";
 
 // Every file in data/mcq/questions/ must be listed here (the bank test checks this).
 export const MCQ_QUESTION_FILES = { variables: variablesMcqs, output: outputMcqs, input: inputMcqs, arithmetic: arithmeticMcqs };
@@ -92,4 +106,49 @@ export function getMcq(questionId: string): McqQuestion | null {
 
 export function getSource(sourceId: string): Source | null {
   return sources.find((s) => s.id === sourceId) ?? null;
+}
+
+// ---- Written questions -------------------------------------------------------------
+
+// Every file in data/written/questions/ must be listed here (the bank test checks this).
+export const WRITTEN_QUESTION_FILES = { variables: variablesWritten };
+
+const writtenPlacements = (writtenPlacementsData as WrittenPlacement[]).slice().sort(byOrder);
+const written = new Map<string, WrittenQuestion>(
+  Object.values(WRITTEN_QUESTION_FILES).flatMap((file) => (file as WrittenQuestion[]).map((q) => [q.id, q] as const)),
+);
+
+/** What a page may see: no solution, no harness, no hidden tests. */
+function forPage(q: WrittenQuestion): WrittenQuestionForPage {
+  const { solution, harness, tests, ...rest } = q;
+  return { ...rest, tests: tests.filter((t) => !t.hidden).map(({ id, inputs, files }) => ({ id, inputs, files })) };
+}
+
+/** A topic's written questions, in order, as pages may see them. */
+export function getWrittenQuestions(topicId: string): WrittenQuestionForPage[] {
+  return writtenPlacements
+    .filter((p) => p.topicId === topicId)
+    .map((p) => written.get(p.questionId))
+    .filter((q): q is WrittenQuestion => q !== undefined)
+    .map(forPage);
+}
+
+export function countWritten(topicId: string): number {
+  return writtenPlacements.filter((p) => p.topicId === topicId && written.has(p.questionId)).length;
+}
+
+/**
+ * Marks a written answer. Runs in a Web Worker today; becomes a server call later, so
+ * the solution never has to reach the browser. Details of hidden tests are removed.
+ */
+export function checkWrittenAnswer(questionId: string, code: string, level: Level["interpreterLevel"]): WrittenCheck {
+  const question = written.get(questionId);
+  if (!question) throw new Error(`Unknown written question ${questionId}`);
+  const result = checkWritten(question, code, level);
+  return { ...result, runs: result.runs.filter((r) => !r.hidden) };
+}
+
+/** For tests and tools only: the full question, solution included. */
+export function getWrittenQuestionWithSolution(questionId: string): WrittenQuestion | null {
+  return written.get(questionId) ?? null;
 }

@@ -10,7 +10,7 @@ import { verdict } from "./McqSummary.jsx";
  * that scroll sideways, Check all), with the filters and results one tap away.
  * When every question is done, the results appear here (and the bar opens by itself).
  */
-export default function McqPanel({ counts, questions, answers, onGo, onPage, firstOnPage, checkAll, filters, results }) {
+export default function McqPanel({ counts, questions, answers, onGo, onPage, firstOnPage, checkAll, filters, results, statusOf }) {
   const [expanded, setExpanded] = useState(false);
   const listRef = useRef(null);
 
@@ -52,7 +52,7 @@ export default function McqPanel({ counts, questions, answers, onGo, onPage, fir
           )}
         </p>
         <McqProgress counts={counts} />
-        <McqNavigator questions={questions} answers={answers} onGo={onGo} onPage={onPage} legend={false} listRef={listRef} />
+        <McqNavigator questions={questions} answers={answers} onGo={onGo} onPage={onPage} legend={false} listRef={listRef} statusOf={statusOf} />
         {showCheckAll && (
           <button type="button" className="button-primary mcq-panel-check" disabled={checkAll.pending === 0} onClick={checkAll.onClick}>
             Check all{checkAll.pending ? ` (${checkAll.pending})` : ""}
@@ -86,7 +86,7 @@ export default function McqPanel({ counts, questions, answers, onGo, onPage, fir
   );
 }
 
-function PanelResults({ counts, onRetryWrong, onRestart, next, writtenHref }) {
+function PanelResults({ counts, onRetryWrong, onRestart, next, otherHref, otherLabel = "Written questions", verdictFor = verdict }) {
   return (
     <section className="mcq-panel-results" aria-labelledby="mcq-panel-results-title">
       <h2 id="mcq-panel-results-title">Results</h2>
@@ -94,7 +94,7 @@ function PanelResults({ counts, onRetryWrong, onRestart, next, writtenHref }) {
         <span className="summary-big">{counts.correct}</span>
         <span> of {counts.total} correct</span>
       </p>
-      <p className="summary-verdict">{verdict(counts)}</p>
+      <p className="summary-verdict">{verdictFor(counts)}</p>
       <div className="mcq-panel-results-actions">
         {counts.wrong > 0 && (
           <button type="button" className="button-primary" onClick={onRetryWrong}>
@@ -112,9 +112,9 @@ function PanelResults({ counts, onRetryWrong, onRestart, next, writtenHref }) {
             <span className="pager-title">{next.title}</span>
           </a>
         )}
-        <a className="pager-link" href={writtenHref}>
+        <a className="pager-link" href={otherHref}>
           <span className="pager-label">Same topic</span>
-          <span className="pager-title">Written questions</span>
+          <span className="pager-title">{otherLabel}</span>
         </a>
       </div>
     </section>

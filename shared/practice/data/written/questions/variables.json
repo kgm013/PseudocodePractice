@@ -1,0 +1,41 @@
+[
+  {
+    "id": "wq-variables-001",
+    "version": 1,
+    "sourceId": "placeholders",
+    "sourceRef": "P1",
+    "title": "Store and display a score",
+    "prompt": "Declare an `INTEGER` variable called `Score`. Store the value `42` in it, then display the value of `Score`.",
+    "solution": "DECLARE Score : INTEGER\nScore ← 42\nOUTPUT Score",
+    "exactOutput": true,
+    "mustUse": ["DECLARE"],
+    "hints": [
+      "A declaration is written `DECLARE <name> : <data type>`.",
+      "Assign with `←` (type `<-`), then `OUTPUT` the variable's name without quotes."
+    ],
+    "difficulty": 1,
+    "tests": [{ "id": "t1" }],
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "wq-variables-002",
+    "version": 1,
+    "sourceId": "placeholders",
+    "sourceRef": "P2",
+    "title": "Greet the user",
+    "prompt": "Ask the user for their name and store it in a `STRING` variable. Then display `Hello` followed by a space and their name.\n\nFor example, if the user enters `Sara`, the program displays `Hello Sara`.",
+    "solution": "DECLARE Name : STRING\nINPUT Name\nOUTPUT \"Hello \", Name",
+    "mustUse": ["DECLARE", "INPUT"],
+    "hints": [
+      "Declare a `STRING` variable first, then use `INPUT` to store what the user types in it.",
+      "`OUTPUT` can show several values separated by commas. Commas don't add spaces, so put the space inside the quotes."
+    ],
+    "difficulty": 1,
+    "tests": [
+      { "id": "t1", "inputs": ["Sara"] },
+      { "id": "t2", "inputs": ["Ali"] },
+      { "id": "t3", "inputs": ["Mohammed Khan"], "hidden": true }
+    ],
+    "reviewStatus": "ok"
+  }
+]

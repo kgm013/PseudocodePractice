@@ -1,0 +1,216 @@
+/* Written questions: the prompt, a smaller editor, hints, revealed output and the reveal dialog.
+   The card, buttons, feedback and progress panel come from practice.css. */
+
+.written-intro {
+  margin: 0 0 14px;
+  max-width: 64ch;
+  color: var(--muted);
+  font-size: 0.93rem;
+  line-height: 1.5;
+}
+
+.written-title {
+  margin-bottom: 6px;
+}
+
+.written-prompt {
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+
+.written-prompt p {
+  margin: 0 0 8px;
+}
+
+.written-prompt p:last-child {
+  margin-bottom: 0;
+}
+
+/* An editor sized for a short answer; it grows with a drag on its corner. */
+.written-editor {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.written-editor .code-editor {
+  height: 220px;
+  min-height: 140px;
+  resize: vertical;
+  overflow: hidden;
+}
+
+.badge-solved {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.badge-attempts {
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.written-checking {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.written-hints {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  list-style: none;
+  border-radius: 8px;
+  background: var(--info-bg);
+  font-size: 0.93rem;
+  line-height: 1.5;
+}
+
+.written-hint-label {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.written-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.written-foot .mcq-keys {
+  margin: 0;
+}
+
+.written-foot .link-button {
+  margin-left: auto;
+  color: var(--muted);
+}
+
+.written-foot .link-button:hover {
+  color: var(--accent);
+}
+
+/* What the student's code displays, after they chose to reveal it */
+
+.written-reveal {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  background: var(--console-bg);
+}
+
+.written-reveal h3 {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.written-reveal-note {
+  margin: 0 0 8px;
+  font-size: 0.92rem;
+}
+
+.written-reveal-errors {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.written-reveal-line {
+  font-weight: 700;
+  color: var(--error);
+}
+
+.written-run + .written-run {
+  margin-top: 10px;
+}
+
+.written-run-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.written-run-output {
+  margin: 0;
+  padding: 8px 10px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  white-space: pre;
+}
+
+.written-run-error {
+  margin: 4px 0 0;
+  color: var(--error);
+  font-size: 0.88rem;
+}
+
+/* The "try to work it out first" dialog */
+
+.reveal-dialog {
+  max-width: min(460px, calc(100vw - 32px));
+  padding: 22px 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.reveal-dialog::backdrop {
+  background: rgba(10, 14, 24, 0.55);
+}
+
+.reveal-dialog h2 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+}
+
+.reveal-dialog p {
+  margin: 0 0 10px;
+  line-height: 1.55;
+}
+
+.reveal-small {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.reveal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+@media (max-width: 640px) {
+  .written-editor .code-editor {
+    height: 180px;
+  }
+
+  .reveal-actions .button-primary,
+  .reveal-actions .button-secondary {
+    flex: 1 1 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}

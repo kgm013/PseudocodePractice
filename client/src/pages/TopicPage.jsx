@@ -1,8 +1,9 @@
 import Breadcrumbs from "../components/Breadcrumbs.jsx";
 import InlineCode from "../components/InlineCode.jsx";
-import { getMcqs } from "@shared/practice/bank.ts";
+import { getMcqs, getWrittenQuestions } from "@shared/practice/bank.ts";
 import { levelHref, topicHref } from "../practice/routes.js";
 import { readTopicSummary } from "../practice/mcqSession.js";
+import { readWrittenSummary } from "../practice/progressStore.js";
 
 /** A topic's home: pick multiple choice or written questions. */
 export default function TopicPage({ entry }) {
@@ -10,6 +11,8 @@ export default function TopicPage({ entry }) {
   const base = topicHref(level.id, topic.slug);
   const mcqs = getMcqs(topic.id);
   const progress = mcqs.length ? readTopicSummary(topic.id, mcqs) : null;
+  const written = getWrittenQuestions(topic.id);
+  const writtenProgress = readWrittenSummary(written);
 
   return (
     <div className="practice">
@@ -62,9 +65,22 @@ export default function TopicPage({ entry }) {
           <span className="mode-card-title">Written</span>
           <span className="mode-card-text">Write pseudocode in the editor and check whether it gives the right result.</span>
           <span className="mode-card-foot">
-            <span className="meta-quiet">Coming soon</span>
+            {written.length === 0 ? (
+              <span className="meta-quiet">Coming soon</span>
+            ) : (
+              <>
+                <span className="meta-quiet">
+                  {written.length} question{written.length === 1 ? "" : "s"}
+                </span>
+                {writtenProgress.correct + writtenProgress.wrong + writtenProgress.skipped > 0 && (
+                  <span className={`meta-pill${writtenProgress.correct === writtenProgress.total ? " is-done" : ""}`}>
+                    {writtenProgress.correct}/{writtenProgress.total} solved
+                  </span>
+                )}
+              </>
+            )}
             <span className="mode-card-go" aria-hidden="true">
-              Open →
+              {written.length === 0 ? "Open →" : writtenProgress.correct === writtenProgress.total ? "Review →" : "Start →"}
             </span>
           </span>
         </a>

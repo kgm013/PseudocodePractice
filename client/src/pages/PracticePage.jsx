@@ -1,9 +1,10 @@
 import Breadcrumbs from "../components/Breadcrumbs.jsx";
 import InlineCode from "../components/InlineCode.jsx";
 import Segmented from "../components/Segmented.jsx";
-import { getMcqs, getTopics } from "@shared/practice/bank.ts";
+import { getMcqs, getTopics, getWrittenQuestions } from "@shared/practice/bank.ts";
 import { topicHref } from "../practice/routes.js";
 import { readTopicSummary } from "../practice/mcqSession.js";
+import { readWrittenSummary } from "../practice/progressStore.js";
 import { useQuestionType } from "../practice/prefs.js";
 
 const TYPE_OPTIONS = [
@@ -60,7 +61,7 @@ function TopicRow({ level, topic, number, type }) {
         </span>
       </span>
       <span className="topic-meta">
-        {type === "written" ? <span className="meta-quiet">Coming soon</span> : <McqMeta level={level} topic={topic} mcqs={mcqs} />}
+        {type === "written" ? <WrittenMeta topic={topic} /> : <McqMeta level={level} topic={topic} mcqs={mcqs} />}
       </span>
       {!unavailable && (
         <svg className="topic-chevron" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
@@ -96,4 +97,19 @@ function McqMeta({ level, topic, mcqs }) {
   }
   if (s.done > 0) return <span className="meta-pill">{s.done}/{s.total} done</span>;
   return <span className="meta-quiet">{mcqs.length} questions</span>;
+}
+
+function WrittenMeta({ topic }) {
+  const questions = getWrittenQuestions(topic.id);
+  if (questions.length === 0) return <span className="meta-quiet">Coming soon</span>;
+  const s = readWrittenSummary(questions);
+  if (s.correct === s.total) {
+    return (
+      <span className="meta-pill is-done">
+        <span aria-hidden="true">✓</span> {s.correct}/{s.total} solved
+      </span>
+    );
+  }
+  if (s.correct + s.wrong + s.skipped > 0) return <span className="meta-pill">{s.correct}/{s.total} solved</span>;
+  return <span className="meta-quiet">{questions.length} question{questions.length === 1 ? "" : "s"}</span>;
 }

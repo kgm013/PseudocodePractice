@@ -1,7 +1,7 @@
 import { topicHref } from "../practice/routes.js";
 
 /** Switches between a topic's multiple-choice and written questions. */
-export default function ModeTabs({ levelId, topicSlug, current, mcqCount }) {
+export default function ModeTabs({ levelId, topicSlug, current, mcqCount, writtenCount }) {
   const base = topicHref(levelId, topicSlug);
   return (
     <nav className="mode-tabs" aria-label="Question type">
@@ -15,7 +15,7 @@ export default function ModeTabs({ levelId, topicSlug, current, mcqCount }) {
         </span>
       )}
       <a className="mode-tab" href={`${base}/written`} aria-current={current === "written" ? "page" : undefined}>
-        Written
+        Written{writtenCount > 0 && <span className="mode-count">{writtenCount}</span>}
       </a>
     </nav>
   );

@@ -64,3 +64,49 @@ export interface McqPlacement {
   questionId: McqQuestion["id"];
   order: number; // position within the topic
 }
+
+/** One run of a written answer. Table: written_tests (question_id, id). */
+export interface WrittenTest {
+  id: string; // "t1", unique within the question
+  inputs?: string[]; // values for INPUT, in order
+  files?: Record<string, string>; // text files that exist before the program runs
+  expected?: string[]; // only when the model solution's output shouldn't be used
+  hidden?: boolean; // never shown, not even after "Reveal output"
+}
+
+/**
+ * A question answered by writing pseudocode, stored once and placed in topics like
+ * multiple choice. Table: written_questions (tests go to written_tests).
+ * `solution` and hidden tests never reach the page: bank.ts strips them.
+ */
+export interface WrittenQuestion {
+  id: string; // "wq-input-001": permanent, never reused
+  version: number;
+  sourceId: Source["id"];
+  sourceRef: string;
+  title: string;
+  prompt: string; // backticks mark code; a blank line starts a new paragraph
+  starterCode?: string;
+  solution: string; // model answer; its output is what answers are compared with
+  harness?: string; // code added after the student's (e.g. calls to their FUNCTION)
+  exactOutput?: boolean; // true = no extra lines (such as input prompts) allowed
+  mustUse?: string[]; // constructs the answer must contain, e.g. ["FOR"]
+  mustNotUse?: string[];
+  hints?: string[];
+  difficulty?: 1 | 2 | 3;
+  tests: WrittenTest[];
+  reviewStatus: ReviewStatus;
+  reviewNote?: string;
+}
+
+/** What a page may see of a written question: no solution, no hidden tests. */
+export type WrittenQuestionForPage = Omit<WrittenQuestion, "solution" | "harness" | "tests"> & {
+  tests: Pick<WrittenTest, "id" | "inputs" | "files">[]; // visible tests only
+};
+
+/** Table: topic_written (topic_id, question_id) is the key. */
+export interface WrittenPlacement {
+  topicId: Topic["id"];
+  questionId: WrittenQuestion["id"];
+  order: number;
+}

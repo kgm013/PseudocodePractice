@@ -1,0 +1,22 @@
+[
+  {
+    "topicId": "as-variables",
+    "questionId": "wq-variables-001",
+    "order": 1
+  },
+  {
+    "topicId": "as-variables",
+    "questionId": "wq-variables-002",
+    "order": 2
+  },
+  {
+    "topicId": "ol-variables",
+    "questionId": "wq-variables-001",
+    "order": 1
+  },
+  {
+    "topicId": "ol-variables",
+    "questionId": "wq-variables-002",
+    "order": 2
+  }
+]

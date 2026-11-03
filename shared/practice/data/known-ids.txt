@@ -102,5 +102,8 @@ mcq-arithmetic-024
 mcq-arithmetic-025
 mcq-arithmetic-026
 mcq-arithmetic-027
+placeholders
+wq-variables-001
+wq-variables-002
 
 # Retired
