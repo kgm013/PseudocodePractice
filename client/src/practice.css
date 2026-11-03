@@ -243,7 +243,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   padding: 7px 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--control-border);
   border-radius: 999px;
   background: var(--surface);
   color: var(--text);
@@ -811,7 +811,7 @@
   font: inherit;
   font-size: 0.85rem;
   font-weight: 600;
-  border: 1px solid var(--border);
+  border: 1px solid var(--control-border);
   border-radius: 8px;
   background: var(--surface);
   color: var(--muted);
@@ -1073,7 +1073,7 @@
   align-items: center;
   gap: 12px;
   padding: 11px 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--control-border);
   border-radius: 10px;
   background: var(--surface);
   cursor: pointer;
@@ -1111,7 +1111,7 @@
 }
 
 .mcq-options:disabled .mcq-option:hover {
-  border-color: var(--border);
+  border-color: var(--control-border);
   background: var(--surface);
 }
 
