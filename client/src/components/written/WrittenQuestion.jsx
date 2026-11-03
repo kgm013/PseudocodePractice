@@ -160,7 +160,7 @@ export default function WrittenQuestion({
       </div>
 
       {(nav || (!solved && status !== "skipped")) && (
-        <nav className="written-navigation" aria-label={`Question ${number} navigation`}>
+        <nav className="question-navigation" aria-label={`Question ${number} navigation`}>
           {nav && (
             <button type="button" className="button-quiet" onClick={nav.onPrev} disabled={nav.isFirst}>
               ← Previous

@@ -9,7 +9,6 @@ export default function SiteHeader({ theme, onToggleTheme, children }) {
         <span className="brand-name">Zainematics</span>
         <span className="brand-title">Pseudocode Practice</span>
       </a>
-      {children}
       <div className="header-actions">
         <a className="social-link" href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer">
           <YouTubeIcon />
@@ -23,6 +22,7 @@ export default function SiteHeader({ theme, onToggleTheme, children }) {
           <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span> {theme === "dark" ? "Light" : "Dark"} mode
         </button>
       </div>
+      {children && <div className="header-context">{children}</div>}
     </header>
   );
 }

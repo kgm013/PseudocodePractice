@@ -150,6 +150,12 @@ body {
   gap: 8px;
 }
 
+.header-context {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
 .social-link {
   display: inline-flex;
   align-items: center;

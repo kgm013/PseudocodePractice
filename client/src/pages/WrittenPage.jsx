@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Breadcrumbs from "../components/Breadcrumbs.jsx";
 import Segmented from "../components/Segmented.jsx";
+import PracticeControls from "../components/PracticeControls.jsx";
 import McqPanel from "../components/mcq/McqPanel.jsx";
 import SingleStepper from "../components/mcq/SingleStepper.jsx";
 import McqSummary from "../components/mcq/McqSummary.jsx";
@@ -278,34 +279,14 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
         <h1>{topic.title} <span className="question-mode">Written</span></h1>
       </header>
 
-      <p className="written-intro">
-        You can't check your code's output in the exam; don't practise with it here either.
-      </p>
+
 
       </div>
 
-      <div className="mcq-toolbar">
-        {viewSwitch}
-        {actions}
-      </div>
-
-      {single && (
-        <aside className="page-side" aria-label="Your progress">
-          <SingleStepper
-            counts={counts}
-            questions={questions}
-            answers={entries}
-            currentId={atResults ? null : current?.id}
-            onGo={goToQuestion}
-            statusOf={statusOf}
-            labels={{ correct: "solved", wrong: "not right yet", skipped: "skipped", flagged: "not sure" }}
-          />
-        </aside>
-      )}
-
-      <div className="page-main">
-      {filters}
-      {settingsOpen && (
+      <PracticeControls
+        viewSwitch={viewSwitch}
+        actions={actions}
+        settings={settingsOpen && (
         <div className="mcq-settings" id="written-settings">
           {single ? (
             <div className="setting-group">
@@ -333,6 +314,39 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
           <div className="setting-foot"><p>Settings are saved on this device. Your code and progress stay until you press Reset.</p></div>
         </div>
       )}
+        filters={filters}
+      />
+
+      {single ? (
+        <aside className="page-side" aria-label="Your progress">
+          <SingleStepper
+            counts={counts}
+            questions={questions}
+            answers={entries}
+            currentId={atResults ? null : current?.id}
+            onGo={goToQuestion}
+            statusOf={statusOf}
+            labels={{ correct: "solved", wrong: "not right yet", skipped: "skipped", flagged: "not sure" }}
+          />
+        </aside>
+      ) : (
+        <McqPanel
+            counts={counts}
+            questions={questions}
+            answers={entries}
+            statusOf={statusOf}
+            onGo={goToQuestion}
+            onPage={new Set(shown.map((q) => q.id))}
+            firstOnPage={shown[0]?.id}
+            checkAll={{ show: true, pending: pending.length, onClick: checkAll }}
+            results={{ onRetryWrong: () => reviewBy("wrong"), onRestart: resetTopic, next: nextTopic, verdictFor: writtenVerdict, ...other }}
+          />
+      )}
+
+      <div className="page-main">
+      <p className="written-intro">
+        You can't check your code's output in the exam; don't practise with it here either.
+      </p>
       {sequence.length === 0 ? (
         <section className="empty-state" role="status">
           <h2>No questions match these filters</h2>
@@ -355,17 +369,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
         )
       ) : (
         <div className="mcq-split">
-          <McqPanel
-            counts={counts}
-            questions={questions}
-            answers={entries}
-            statusOf={statusOf}
-            onGo={goToQuestion}
-            onPage={new Set(shown.map((q) => q.id))}
-            firstOnPage={shown[0]?.id}
-            checkAll={{ show: true, pending: pending.length, onClick: checkAll }}
-            results={{ onRetryWrong: () => reviewBy("wrong"), onRestart: resetTopic, next: nextTopic, verdictFor: writtenVerdict, ...other }}
-          />
+
           <div className="mcq-split-main">
             <div className="mcq-list-head"><p>{sequence.length > perPage ? `Questions ${safePage * perPage + 1}–${safePage * perPage + shown.length} of ${sequence.length}` : `${sequence.length} question${sequence.length === 1 ? "" : "s"}`}</p></div>
             <div className="mcq-list">{shown.map((q) => card(q, null))}</div>

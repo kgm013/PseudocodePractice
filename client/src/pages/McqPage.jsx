@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Breadcrumbs from "../components/Breadcrumbs.jsx";
 import Segmented from "../components/Segmented.jsx";
+import PracticeControls from "../components/PracticeControls.jsx";
 import McqQuestion, { FlagIcon } from "../components/mcq/McqQuestion.jsx";
 import McqSettings from "../components/mcq/McqSettings.jsx";
 import McqSummary from "../components/mcq/McqSummary.jsx";
@@ -361,20 +362,32 @@ export default function McqPage({ entry }) {
       </header>
       </div>
 
-      <div className="mcq-toolbar">
-        {viewSwitch}
-        {actions}
-      </div>
+      <PracticeControls
+        viewSwitch={viewSwitch}
+        actions={actions}
+        settings={settingsOpen && <McqSettings id="mcq-settings" prefs={prefs} onChange={changePrefs} />}
+        filters={<ReviewChips counts={counts} active={activeFilters} onReview={(kind) => applyFilters(toggleFilter(activeFilters, kind))} onClear={() => applyFilters([])} />}
+      />
 
-      {single && (
+      {single ? (
         <aside className="page-side" aria-label="Your progress">
           {overview}
         </aside>
+      ) : (
+        <McqPanel
+            counts={counts}
+            questions={questions}
+            answers={answers}
+            onGo={goToQuestion}
+            onPage={new Set(shown.map((q) => q.id))}
+            firstOnPage={shown[0]?.id}
+            checkAll={{ show: !prefs.instantCheck, pending: pending.length, onClick: checkAll }}
+            results={{ onRetryWrong: retryWrong, onRestart: clearAnswers, next: nextTopic, otherHref: base, otherLabel: "Topic overview" }}
+          />
       )}
 
       <div className="page-main">
-      <ReviewChips counts={counts} active={activeFilters} onReview={(kind) => applyFilters(toggleFilter(activeFilters, kind))} onClear={() => applyFilters([])} />
-      {settingsOpen && <McqSettings id="mcq-settings" prefs={prefs} onChange={changePrefs} />}
+
 
       {review && (
         <div className="review-banner" role="status">
@@ -416,16 +429,7 @@ export default function McqPage({ entry }) {
         )
       ) : (
         <div className="mcq-split">
-          <McqPanel
-            counts={counts}
-            questions={questions}
-            answers={answers}
-            onGo={goToQuestion}
-            onPage={new Set(shown.map((q) => q.id))}
-            firstOnPage={shown[0]?.id}
-            checkAll={{ show: !prefs.instantCheck, pending: pending.length, onClick: checkAll }}
-            results={{ onRetryWrong: retryWrong, onRestart: clearAnswers, next: nextTopic, otherHref: base, otherLabel: "Topic overview" }}
-          />
+
           <div className="mcq-split-main">
             <div className="mcq-list-head">
               <p>
@@ -446,19 +450,22 @@ export default function McqPage({ entry }) {
                     onChoose={(c) => choose(q, c)}
                     actions={
                       <>
+                        <FlagButton flagged={e?.flagged} onClick={() => toggleFlag(q)} />
+                        <span className="mcq-actions-spacer" />
                         {!e?.checked && !prefs.instantCheck && (
                           <button type="button" className="button-primary" disabled={!e?.choice} onClick={() => check(q)}>
-                            Check
+                            Check answer
                           </button>
                         )}
-                        {!e?.checked && (
-                          <button type="button" className="button-quiet" disabled={e?.skipped} onClick={() => skip(q)}>
-                            {e?.skipped ? "Skipped" : "Skip"}
-                          </button>
-                        )}
-                        <FlagButton flagged={e?.flagged} onClick={() => toggleFlag(q)} />
                       </>
                     }
+                    footer={!e?.checked && (
+                        <nav className="question-navigation" aria-label={`Question ${questions.indexOf(q) + 1} navigation`}>
+                          <button type="button" className="button-quiet" disabled={e?.skipped} onClick={() => skip(q)}>
+                            {e?.skipped ? "Skipped" : "Skip question"}
+                          </button>
+                        </nav>
+                    )}
                   />
                 );
               })}
@@ -503,24 +510,12 @@ function SingleQuestion({ question, number, total, entry, isFirst, isLast, prefs
       onChoose={onChoose}
       actions={
         <>
-          <button type="button" className="button-quiet" onClick={onPrev} disabled={isFirst}>
-            ← Previous
-          </button>
+          <FlagButton flagged={entry?.flagged} onClick={onFlag} />
           <span className="mcq-actions-spacer" />
           {!checked && (
-            <button type="button" className="button-quiet" onClick={onSkip}>
-              Skip
-            </button>
-          )}
-          <FlagButton flagged={entry?.flagged} onClick={onFlag} />
-          {checked ? (
-            <button type="button" className="button-primary" onClick={onNext}>
-              {isLast ? "See results" : "Next question →"}
-            </button>
-          ) : (
             !prefs.instantCheck && (
               <button type="button" className="button-primary" onClick={onCheck} disabled={!entry?.choice}>
-                Check
+                Check answer
               </button>
             )
           )}
@@ -543,6 +538,14 @@ function SingleQuestion({ question, number, total, entry, isFirst, isLast, prefs
             <span>Keys:</span> <kbd>A</kbd>–<kbd>D</kbd> choose · <kbd>Enter</kbd> check / next · <kbd>S</kbd> skip · <kbd>M</kbd> not sure ·{" "}
             <kbd>←</kbd> <kbd>→</kbd> move
           </p>
+          <nav className="question-navigation" aria-label={`Question ${number} navigation`}>
+            <button type="button" className="button-quiet" onClick={onPrev} disabled={isFirst}>← Previous</button>
+            {checked ? (
+              <button type="button" className="button-secondary" onClick={onNext}>{isLast ? "See results" : "Next question →"}</button>
+            ) : (
+              <button type="button" className="button-quiet" onClick={onSkip}>Skip question →</button>
+            )}
+          </nav>
         </>
       }
     />

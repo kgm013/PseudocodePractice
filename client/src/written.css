@@ -83,7 +83,7 @@
   min-height: 44px;
 }
 
-.written-navigation {
+.question-navigation {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -94,7 +94,7 @@
   border-top: 1px solid var(--border);
 }
 
-.written-navigation > :last-child {
+.question-navigation > :last-child {
   margin-left: auto;
 }
 
