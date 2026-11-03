@@ -291,8 +291,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
       </header>
 
       <p className="written-intro">
-        Write your answer, then check it. You'll only find out whether it's right, just like in the exam, where you can't
-        run your code.
+        You can't check your code's output in the exam, so don't practise with it here either.
       </p>
 
       </div>
