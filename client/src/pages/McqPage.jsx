@@ -176,6 +176,9 @@ export default function McqPage({ entry }) {
     if (!single && keep) setPage(pageOf(keep, questions));
   };
 
+  // Anything to reset: an answer picked, checked or skipped, or a "Not sure" mark.
+  const hasProgress = counts.done + counts.answered + counts.flagged > 0;
+
   const clearAnswers = () => {
     if (!window.confirm("Clear all your answers for this topic and start again?")) return;
     session.reset();
@@ -320,17 +323,28 @@ export default function McqPage({ entry }) {
 
       <div className="mcq-toolbar">
         <Segmented label="How to show the questions" options={VIEW_OPTIONS} value={prefs.view} onChange={changeView} />
-        <button
-          type="button"
-          className="toolbar-button"
-          aria-expanded={settingsOpen}
-          aria-controls="mcq-settings"
-          onClick={() => setSettingsOpen((open) => !open)}
-        >
-          <GearIcon /> Settings
-        </button>
+        <div className="mcq-toolbar-actions">
+          <button
+            type="button"
+            className="toolbar-button is-reset"
+            disabled={!hasProgress}
+            title={hasProgress ? "Clear all your answers for this topic" : "Nothing to reset yet"}
+            onClick={clearAnswers}
+          >
+            <ResetIcon /> Reset
+          </button>
+          <button
+            type="button"
+            className="toolbar-button"
+            aria-expanded={settingsOpen}
+            aria-controls="mcq-settings"
+            onClick={() => setSettingsOpen((open) => !open)}
+          >
+            <GearIcon /> Settings
+          </button>
+        </div>
       </div>
-      {settingsOpen && <McqSettings id="mcq-settings" prefs={prefs} onChange={changePrefs} onClear={clearAnswers} />}
+      {settingsOpen && <McqSettings id="mcq-settings" prefs={prefs} onChange={changePrefs} />}
 
       {single && overview}
 
@@ -580,6 +594,21 @@ function NoMcqs({ entry }) {
         </a>
       </div>
     </div>
+  );
+}
+
+function ResetIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+      <path
+        d="M4 10a6 6 0 1 0 1.8-4.3M4 3.5v3.2h3.2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 

@@ -1,7 +1,7 @@
 import { AUTO_ADVANCE_DELAYS, PER_PAGE_OPTIONS } from "../../practice/prefs.js";
 
 /** The settings panel under the MCQ toolbar. Only shows what applies to the current view. */
-export default function McqSettings({ id, prefs, onChange, onClear }) {
+export default function McqSettings({ id, prefs, onChange }) {
   const single = prefs.view === "single";
   return (
     <div className="mcq-settings" id={id}>
@@ -59,10 +59,7 @@ export default function McqSettings({ id, prefs, onChange, onClear }) {
       )}
 
       <div className="setting-foot">
-        <p>Settings are saved on this device. Your answers are kept until you close this tab.</p>
-        <button type="button" className="link-button danger" onClick={onClear}>
-          Clear my answers
-        </button>
+        <p>Settings are saved on this device. Your answers are kept until you close this tab, or until you press Reset.</p>
       </div>
     </div>
   );
