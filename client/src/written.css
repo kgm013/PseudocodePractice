@@ -7,8 +7,7 @@
   color: var(--muted);
   font-size: 0.93rem;
   line-height: 1.5;
-  white-space: nowrap;
-  overflow-x: auto;
+  overflow-wrap: break-word;
 }
 
 .written-title {

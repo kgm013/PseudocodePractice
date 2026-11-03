@@ -192,19 +192,42 @@
 }
 
 /* Shared top heading and toolbar; progress stacks above the question on small screens. */
-.is-single > .page-main {
+.mcq-page > .page-main {
   min-width: 0;
 }
 
 .is-single > .page-side {
   min-width: 0;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 0 18px auto;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.is-single .page-side .stepper {
+  margin-bottom: 0;
+}
+
+.is-single .page-side .mcq-nav-list {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+.mcq-page > .mcq-panel {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 0 18px auto;
+  position: static;
 }
 
 /* Wide screens: give the question most of the width and keep progress close by. */
-@media (min-width: 1200px) {
+@media (min-width: 1024px) {
   .practice.mcq-page {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 300px;
+    grid-template-columns: minmax(0, 1fr) clamp(280px, 22vw, 320px);
     grid-template-areas:
       "head side"
       "controls side"
@@ -235,10 +258,13 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     background: var(--surface);
+    margin: 0;
   }
 
   .mcq-page > .mcq-panel {
     grid-area: side;
+    position: sticky;
+    margin: 0;
   }
 
   .mcq-page .mcq-split {

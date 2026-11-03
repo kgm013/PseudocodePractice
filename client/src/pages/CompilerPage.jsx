@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { compile } from "@shared/interpreter/index.ts";
 import CodeEditor from "../components/CodeEditor.jsx";
+import Breadcrumbs from "../components/Breadcrumbs.jsx";
 import ProblemsList from "../components/ProblemsList.jsx";
 import ConsolePanel from "../components/ConsolePanel.jsx";
 import FilesPanel from "../components/FilesPanel.jsx";
@@ -25,13 +26,14 @@ try {
 export default function CompilerPage({ level }) {
   // A new key gives each level a fresh editor, console and runner.
   return (
-    <>
+    <div className="compiler-page">
+      <Breadcrumbs items={[{ label: "Home", href: "#/" }, { label: "Compiler" }]} />
       <h1 className="visually-hidden">Compiler</h1>
       <Playground key={level} level={level} />
       <p className="footnote">
         There's no autocomplete or suggested text here on purpose: you won't have it in your exam either. :)
       </p>
-    </>
+    </div>
   );
 }
 
