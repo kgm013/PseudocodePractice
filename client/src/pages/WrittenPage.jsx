@@ -11,7 +11,7 @@ import { countWritten, getWrittenQuestions } from "@shared/practice/bank.ts";
 import { levelHref, topicHref } from "../practice/routes.js";
 import { summariseWritten, useWrittenProgress, writtenStatus } from "../practice/progressStore.js";
 import { useWrittenChecker } from "../practice/useWrittenChecker.js";
-import { useWrittenPrefs } from "../practice/prefs.js";
+import { AUTO_ADVANCE_DELAYS, PER_PAGE_OPTIONS, useWrittenPrefs } from "../practice/prefs.js";
 import { TopicPager } from "./TopicPage.jsx";
 
 const VIEW_OPTIONS = [
@@ -47,23 +47,33 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
   const [results, setResults] = useState({}); // question id → last check result (this visit only)
   const [checking, setChecking] = useState({}); // question id → true while marking
   const [position, setPosition] = useState(null); // "one at a time": question id, or "results"
+  const [page, setPage] = useState(0); // "several at once" page
   const [review, setReview] = useState(null); // { kind, ids }
   const [revealFor, setRevealFor] = useState(null); // question id the reveal dialog is asking about
   const [resetKey, setResetKey] = useState(0); // rebuilds the editors after Reset
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [countdown, setCountdown] = useState(null); // checked question waiting to advance
   const codes = useRef({}); // latest code per question, for "Check all"
   const saveTimers = useRef({});
   const focusTarget = useRef(null);
+  const goNextRef = useRef(null);
+  const activeQuestionRef = useRef(null);
 
   const single = prefs.view === "single";
   const base = topicHref(level.id, topic.slug);
   const statusOf = (q, e) => writtenStatus(e, q.starterCode);
   const counts = summariseWritten(questions, entries);
   const sequence = review ? questions.filter((q) => review.ids.includes(q.id)) : questions;
+  const perPage = prefs.perPage || sequence.length || 1;
+  const pageCount = Math.max(1, Math.ceil(sequence.length / perPage));
+  const safePage = Math.min(page, pageCount - 1);
+  const shown = sequence.slice(safePage * perPage, safePage * perPage + perPage);
   const atResults = position === "results";
   const current = atResults
     ? null
     : sequence.find((q) => q.id === position) ?? sequence.find((q) => statusOf(q, entries[q.id]) !== "correct") ?? sequence[0] ?? null;
   const index = current ? sequence.indexOf(current) : -1;
+  activeQuestionRef.current = single ? current?.id : null;
 
   // Keep the question on screen in place: "the first unsolved" would otherwise move on by itself.
   useEffect(() => {
@@ -88,11 +98,18 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
 
   useEffect(() => () => Object.values(saveTimers.current).forEach(clearTimeout), []);
 
+  useEffect(() => {
+    if (!countdown) return undefined;
+    const timer = setTimeout(() => goNextRef.current?.(), countdown.ms);
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
   if (questions.length === 0) return <NoWritten entry={entry} onOpenCompiler={onOpenCompiler} />;
 
   // ---- Answering ------------------------------------------------------------
 
   const codeChanged = (q, code) => {
+    setCountdown(null);
     codes.current[q.id] = code;
     clearTimeout(saveTimers.current[q.id]);
     saveTimers.current[q.id] = setTimeout(() => progress.saveCode(q.id, code, q.version), 400);
@@ -100,6 +117,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
 
   // `countAttempt` is false when the run is only to show the output: looking isn't an attempt.
   const runCheck = async (q, code, countAttempt = true) => {
+    setCountdown(null);
     codes.current[q.id] = code;
     clearTimeout(saveTimers.current[q.id]);
     progress.saveCode(q.id, code, q.version);
@@ -110,6 +128,9 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
     if (hasAnswer && (countAttempt || result.correct)) progress.recordCheck(q.id, result.correct, q.version);
     setResults((r) => ({ ...r, [q.id]: result }));
     setChecking((c) => ({ ...c, [q.id]: false }));
+    if (activeQuestionRef.current === q.id && countAttempt && hasAnswer && result.correct && prefs.autoAdvance) {
+      setCountdown({ id: q.id, ms: prefs.delay * 1000, key: Date.now() });
+    }
     return result;
   };
 
@@ -125,6 +146,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
   };
 
   const showOutput = (q) => {
+    setCountdown(null);
     progress.markRevealed(q.id);
     // The output shown is always for the code as it is now.
     runCheck(q, codes.current[q.id] ?? entries[q.id]?.lastCode ?? "", false);
@@ -133,22 +155,29 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
   // ---- Navigation --------------------------------------------------------------
 
   const goTo = (id) => {
+    setCountdown(null);
     focusTarget.current = id;
     setPosition(id);
   };
   const goNext = () => {
+    setCountdown(null);
     if (index >= 0 && index < sequence.length - 1) goTo(sequence[index + 1].id);
     else {
       focusTarget.current = "summary";
       setPosition("results");
     }
   };
+  goNextRef.current = goNext;
   const goPrev = () => index > 0 && goTo(sequence[index - 1].id);
 
   const goToQuestion = (id) => {
-    if (review && !review.ids.includes(id)) setReview(null);
+    const list = review && !review.ids.includes(id) ? questions : sequence;
+    if (list === questions && review) setReview(null);
     if (single) goTo(id);
-    else focusTarget.current = id;
+    else {
+      setPage(Math.max(0, Math.floor(list.findIndex((q) => q.id === id) / perPage)));
+      focusTarget.current = id;
+    }
     if (!single) setPosition(id);
   };
 
@@ -163,6 +192,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
     const ids = questions.filter((q) => pick(statusOf(q, entries[q.id]), entries[q.id])).map((q) => q.id);
     if (!ids.length) return;
     setReview({ kind, ids });
+    setPage(0);
     goTo(ids[0]);
   };
 
@@ -177,6 +207,8 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
     codes.current = {};
     setResults({});
     setReview(null);
+    setPage(0);
+    setCountdown(null);
     setResetKey((k) => k + 1);
     goTo(questions[0].id);
   };
@@ -195,12 +227,16 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
       entry={entries[q.id]}
       result={results[q.id]}
       checking={Boolean(checking[q.id])}
+      countdown={single && countdown?.id === q.id ? countdown : null}
+      advanceDelay={prefs.delay}
+      onStay={() => setCountdown(null)}
       onCodeChange={(code) => codeChanged(q, code)}
       onCheck={(code) => runCheck(q, code)}
       onSkip={() => skip(q)}
-      onFlag={() => progress.toggleFlag(q.id)}
+      onFlag={() => { setCountdown(null); progress.toggleFlag(q.id); }}
       onAskReveal={() => askReveal(q)}
       onResetCode={(code) => {
+        setCountdown(null);
         codes.current[q.id] = code;
         progress.saveCode(q.id, code, q.version);
       }}
@@ -217,12 +253,23 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
     />
   );
 
-  const viewSwitch = <Segmented label="How to show the questions" options={VIEW_OPTIONS} value={prefs.view} onChange={(view) => setPrefs({ view })} />;
+  const changePrefs = (partial) => {
+    setCountdown(null);
+    if (partial.perPage !== undefined && shown[0]) {
+      const first = sequence.indexOf(shown[0]);
+      setPage(Math.floor(first / (partial.perPage || sequence.length || 1)));
+    }
+    setPrefs(partial);
+  };
+  const viewSwitch = <Segmented label="How to show the questions" options={VIEW_OPTIONS} value={prefs.view} onChange={(view) => changePrefs({ view })} />;
 
   const actions = (
     <div className="mcq-toolbar-actions">
       <button type="button" className="toolbar-button is-reset" disabled={!hasProgress} onClick={resetTopic} title={hasProgress ? "Clear your code and progress for this topic" : "Nothing to reset yet"}>
         <ResetIcon /> Reset
+      </button>
+      <button type="button" className="toolbar-button" aria-expanded={settingsOpen} aria-controls="written-settings" onClick={() => setSettingsOpen((open) => !open)}>
+        <GearIcon /> Settings
       </button>
     </div>
   );
@@ -271,6 +318,34 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
       )}
 
       <div className="page-main">
+      {settingsOpen && (
+        <div className="mcq-settings" id="written-settings">
+          {single ? (
+            <div className="setting-group">
+              <label className="toggle">
+                <input type="checkbox" role="switch" checked={prefs.autoAdvance} onChange={(e) => changePrefs({ autoAdvance: e.target.checked })} />
+                <span className="toggle-track" aria-hidden="true"><span className="toggle-thumb" /></span>
+                <span className="toggle-label">Go to the next question automatically after a correct answer</span>
+              </label>
+              <label className={`setting-inline${prefs.autoAdvance ? "" : " is-off"}`}>
+                <span>Wait</span>
+                <select value={prefs.delay} disabled={!prefs.autoAdvance} onChange={(e) => changePrefs({ delay: Number(e.target.value) })}>
+                  {AUTO_ADVANCE_DELAYS.map((delay) => <option key={delay} value={delay}>{delay} seconds{delay === 3 ? " (recommended)" : ""}</option>)}
+                </select>
+                <span>after checking</span>
+              </label>
+            </div>
+          ) : (
+            <label className="setting-inline">
+              <span>Questions per page</span>
+              <select value={prefs.perPage} onChange={(e) => changePrefs({ perPage: Number(e.target.value) })}>
+                {PER_PAGE_OPTIONS.map((n) => <option key={n} value={n}>{n === 0 ? "All" : n}</option>)}
+              </select>
+            </label>
+          )}
+          <div className="setting-foot"><p>Settings are saved on this device. Your code and progress stay until you press Reset.</p></div>
+        </div>
+      )}
       {review && (
         <div className="review-banner" role="status">
           <span>{REVIEW_TEXT[review.kind](review.ids.length)}</span>
@@ -302,14 +377,24 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
             answers={entries}
             statusOf={statusOf}
             onGo={goToQuestion}
-            onPage={new Set(sequence.map((q) => q.id))}
-            firstOnPage={sequence[0]?.id}
+            onPage={new Set(shown.map((q) => q.id))}
+            firstOnPage={shown[0]?.id}
             checkAll={{ show: true, pending: pending.length, onClick: checkAll }}
             filters={filters}
             results={{ onRetryWrong: () => reviewBy("wrong"), onRestart: resetTopic, next: nextTopic, verdictFor: writtenVerdict, ...other }}
           />
           <div className="mcq-split-main">
-            <div className="mcq-list">{sequence.map((q) => card(q, null))}</div>
+            <div className="mcq-list-head"><p>{sequence.length > perPage ? `Questions ${safePage * perPage + 1}–${safePage * perPage + shown.length} of ${sequence.length}` : `${sequence.length} question${sequence.length === 1 ? "" : "s"}`}</p></div>
+            <div className="mcq-list">{shown.map((q) => card(q, null))}</div>
+            {pageCount > 1 && (
+              <div className="mcq-list-foot">
+                <nav className="pagination" aria-label="Pages">
+                  <button type="button" className="button-quiet" disabled={safePage === 0} onClick={() => { setPage(safePage - 1); focusTarget.current = sequence[(safePage - 1) * perPage]?.id; }}>← Previous</button>
+                  {Array.from({ length: pageCount }, (_, p) => <button key={p} type="button" className={`page-number${p === safePage ? " is-current" : ""}`} aria-current={p === safePage ? "page" : undefined} aria-label={`Page ${p + 1}`} onClick={() => { setPage(p); focusTarget.current = sequence[p * perPage]?.id; }}>{p + 1}</button>)}
+                  <button type="button" className="button-quiet" disabled={safePage === pageCount - 1} onClick={() => { setPage(safePage + 1); focusTarget.current = sequence[(safePage + 1) * perPage]?.id; }}>Next →</button>
+                </nav>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -364,6 +449,14 @@ function ResetIcon() {
   return (
     <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
       <path d="M4 10a6 6 0 1 0 1.8-4.3M4 3.5v3.2h3.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function GearIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+      <path d="M10 12.6a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2Zm6.3-1.4.1-1.2-.1-1.2 1.6-1.3-1.6-2.8-2 .7a6.6 6.6 0 0 0-2-1.2L12 2h-4l-.3 2.2a6.6 6.6 0 0 0-2 1.2l-2-.7L2.1 7.5l1.6 1.3-.1 1.2.1 1.2-1.6 1.3 1.6 2.8 2-.7c.6.5 1.3.9 2 1.2L8 18h4l.3-2.2c.7-.3 1.4-.7 2-1.2l2 .7 1.6-2.8-1.6-1.3Z" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
     </svg>
   );
 }

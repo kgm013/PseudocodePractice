@@ -19,6 +19,9 @@ export default function WrittenQuestion({
   entry,
   result,
   checking,
+  countdown,
+  advanceDelay,
+  onStay,
   onCodeChange,
   onCheck,
   onSkip,
@@ -129,6 +132,14 @@ export default function WrittenQuestion({
           {checking ? "Checking…" : solved ? "Check again" : "Check answer"}
         </button>
       </div>
+
+      {countdown && (
+        <div className="autoadvance" role="status">
+          <span>{nav?.isLast ? "Results" : "Next question"} in {advanceDelay} seconds</span>
+          <span className="autoadvance-bar" aria-hidden="true"><span key={countdown.key} style={{ animationDuration: `${countdown.ms}ms` }} /></span>
+          <button type="button" className="link-button" onClick={onStay}>Stay here</button>
+        </div>
+      )}
 
       <div className="written-reveal-status" aria-live="polite">
         {!canReveal && (

@@ -43,15 +43,23 @@ export function useMcqPrefs() {
 
 const WRITTEN_PREFS_KEY = "pseudo-practice:written-prefs";
 
-/** Written questions: "single" (one at a time) or "list" (several at once). */
+const DEFAULT_WRITTEN_PREFS = { view: "single", autoAdvance: true, delay: 3, perPage: 5 };
+
+function cleanWrittenPrefs(saved) {
+  const p = { ...DEFAULT_WRITTEN_PREFS, ...(saved && typeof saved === "object" ? saved : {}) };
+  if (p.view !== "single" && p.view !== "list") p.view = DEFAULT_WRITTEN_PREFS.view;
+  if (!AUTO_ADVANCE_DELAYS.includes(p.delay)) p.delay = DEFAULT_WRITTEN_PREFS.delay;
+  if (!PER_PAGE_OPTIONS.includes(p.perPage)) p.perPage = DEFAULT_WRITTEN_PREFS.perPage;
+  p.autoAdvance = Boolean(p.autoAdvance);
+  return p;
+}
+
+/** Written question view and automatic advance settings. */
 export function useWrittenPrefs() {
-  const [prefs, setPrefs] = useState(() => {
-    const saved = load(WRITTEN_PREFS_KEY, null);
-    return { view: saved?.view === "list" ? "list" : "single" };
-  });
+  const [prefs, setPrefs] = useState(() => cleanWrittenPrefs(load(WRITTEN_PREFS_KEY, null)));
   const update = useCallback((partial) => {
     setPrefs((prev) => {
-      const next = { ...prev, ...partial };
+      const next = cleanWrittenPrefs({ ...prev, ...partial });
       save(WRITTEN_PREFS_KEY, next);
       return next;
     });
