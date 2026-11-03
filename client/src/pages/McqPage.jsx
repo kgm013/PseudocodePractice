@@ -7,8 +7,8 @@ import McqNavigator, { McqProgress } from "../components/mcq/McqNavigator.jsx";
 import McqSettings from "../components/mcq/McqSettings.jsx";
 import McqSummary from "../components/mcq/McqSummary.jsx";
 import McqPanel from "../components/mcq/McqPanel.jsx";
-import { levelHref, topicHref } from "../practice/topics.js";
-import { getMcqs } from "../practice/mcqs.js";
+import { countMcqs, getMcqs } from "@shared/practice/bank.ts";
+import { levelHref, topicHref } from "../practice/routes.js";
 import { statusOf, summarise, useMcqSession } from "../practice/mcqSession.js";
 import { useMcqPrefs } from "../practice/prefs.js";
 
@@ -38,9 +38,9 @@ const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce
 /** A topic's multiple-choice questions, one at a time or several per page. */
 export default function McqPage({ entry }) {
   const { level, topic, next } = entry;
-  const questions = getMcqs(level.id, topic.id);
+  const questions = getMcqs(topic.id);
   const [prefs, setPrefs] = useMcqPrefs();
-  const session = useMcqSession(level.id, topic.id);
+  const session = useMcqSession(topic.id);
   const { answers } = session;
 
   const [review, setReview] = useState(null); // { kind, ids }: a fixed set to go back over
@@ -282,7 +282,7 @@ export default function McqPage({ entry }) {
 
   // ---- Render ------------------------------------------------------------
 
-  const nextTopic = next && getMcqs(level.id, next.id).length > 0 ? { title: next.title, href: `${topicHref(level.id, next.id)}/mcq` } : null;
+  const nextTopic = next && countMcqs(next.id) > 0 ? { title: next.title, href: `${topicHref(level.id, next.slug)}/mcq` } : null;
 
   // "One at a time": results replace the question card at the end.
   const summary = (
@@ -319,7 +319,7 @@ export default function McqPage({ entry }) {
       <header className="practice-intro compact">
         <h1>{topic.title}</h1>
       </header>
-      <ModeTabs levelId={level.id} topicId={topic.id} current="mcq" mcqCount={questions.length} />
+      <ModeTabs levelId={level.id} topicSlug={topic.slug} current="mcq" mcqCount={questions.length} />
 
       <div className="mcq-toolbar">
         <Segmented label="How to show the questions" options={VIEW_OPTIONS} value={prefs.view} onChange={changeView} />
@@ -585,7 +585,7 @@ function NoMcqs({ entry }) {
       <header className="practice-intro compact">
         <h1>{topic.title}</h1>
       </header>
-      <ModeTabs levelId={level.id} topicId={topic.id} current="mcq" mcqCount={0} />
+      <ModeTabs levelId={level.id} topicSlug={topic.slug} current="mcq" mcqCount={0} />
       <div className="empty-state">
         <h2>No multiple-choice questions yet</h2>
         <p>This topic doesn't have multiple-choice questions. You can practise it with written questions instead.</p>

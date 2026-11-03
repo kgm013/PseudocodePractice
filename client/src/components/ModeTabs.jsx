@@ -1,8 +1,8 @@
-import { topicHref } from "../practice/topics.js";
+import { topicHref } from "../practice/routes.js";
 
 /** Switches between a topic's multiple-choice and written questions. */
-export default function ModeTabs({ levelId, topicId, current, mcqCount }) {
-  const base = topicHref(levelId, topicId);
+export default function ModeTabs({ levelId, topicSlug, current, mcqCount }) {
+  const base = topicHref(levelId, topicSlug);
   return (
     <nav className="mode-tabs" aria-label="Question type">
       {mcqCount > 0 ? (

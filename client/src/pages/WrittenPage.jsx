@@ -1,7 +1,7 @@
 import Breadcrumbs from "../components/Breadcrumbs.jsx";
 import ModeTabs from "../components/ModeTabs.jsx";
-import { levelHref, topicHref } from "../practice/topics.js";
-import { getMcqs } from "../practice/mcqs.js";
+import { countMcqs } from "@shared/practice/bank.ts";
+import { levelHref, topicHref } from "../practice/routes.js";
 import { TopicPager } from "./TopicPage.jsx";
 
 /** A topic's written questions. Not built yet, so it shows a placeholder. */
@@ -13,14 +13,14 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
         items={[
           { label: "Home", href: "#/" },
           { label: level.name, href: levelHref(level.id) },
-          { label: topic.title, href: topicHref(level.id, topic.id) },
+          { label: topic.title, href: topicHref(level.id, topic.slug) },
           { label: "Written" },
         ]}
       />
       <header className="practice-intro compact">
         <h1>{topic.title}</h1>
       </header>
-      <ModeTabs levelId={level.id} topicId={topic.id} current="written" mcqCount={getMcqs(level.id, topic.id).length} />
+      <ModeTabs levelId={level.id} topicSlug={topic.slug} current="written" mcqCount={countMcqs(topic.id)} />
 
       <div className="empty-state">
         <svg className="empty-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">

@@ -1,15 +1,15 @@
 import Breadcrumbs from "../components/Breadcrumbs.jsx";
 import InlineCode from "../components/InlineCode.jsx";
-import { levelHref, topicHref } from "../practice/topics.js";
-import { getMcqs } from "../practice/mcqs.js";
+import { getMcqs } from "@shared/practice/bank.ts";
+import { levelHref, topicHref } from "../practice/routes.js";
 import { readTopicSummary } from "../practice/mcqSession.js";
 
 /** A topic's home: pick multiple choice or written questions. */
 export default function TopicPage({ entry }) {
   const { level, topic, number, total } = entry;
-  const base = topicHref(level.id, topic.id);
-  const mcqs = getMcqs(level.id, topic.id);
-  const progress = mcqs.length ? readTopicSummary(level.id, topic.id, mcqs) : null;
+  const base = topicHref(level.id, topic.slug);
+  const mcqs = getMcqs(topic.id);
+  const progress = mcqs.length ? readTopicSummary(topic.id, mcqs) : null;
 
   return (
     <div className="practice">
@@ -81,7 +81,7 @@ export function TopicPager({ entry, suffix = "" }) {
   return (
     <nav className="topic-pager" aria-label="Topics">
       {previous ? (
-        <a className="pager-link" href={topicHref(level.id, previous.id) + suffix}>
+        <a className="pager-link" href={topicHref(level.id, previous.slug) + suffix}>
           <span className="pager-label">← Previous topic</span>
           <span className="pager-title">{previous.title}</span>
         </a>
@@ -92,7 +92,7 @@ export function TopicPager({ entry, suffix = "" }) {
         </a>
       )}
       {next ? (
-        <a className="pager-link pager-next" href={topicHref(level.id, next.id) + suffix}>
+        <a className="pager-link pager-next" href={topicHref(level.id, next.slug) + suffix}>
           <span className="pager-label">Next topic →</span>
           <span className="pager-title">{next.title}</span>
         </a>

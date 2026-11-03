@@ -361,7 +361,8 @@ body {
   border-radius: 5px;
   background: var(--accent-soft);
   color: var(--text);
-  white-space: nowrap;
+  /* Keep every space as written: in output questions "Hello there" and "Hellothere" differ. */
+  white-space: pre;
 }
 
 .section-head {

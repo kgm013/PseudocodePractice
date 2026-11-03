@@ -1,0 +1,1149 @@
+[
+  {
+    "id": "mcq-output-001",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q22",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"135\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`135`"
+      },
+      {
+        "id": "b",
+        "text": "`\"135\"`"
+      },
+      {
+        "id": "c",
+        "text": "`270`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "135",
+    "explanation": "The double quotes delimit a string; only its contents, 135, are printed.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-002",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q23",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE code : STRING\ncode ← \"135\"\nOUTPUT \"Code=\", code",
+    "options": [
+      {
+        "id": "a",
+        "text": "`Code=code`"
+      },
+      {
+        "id": "b",
+        "text": "`Code=\"135\"`"
+      },
+      {
+        "id": "c",
+        "text": "`Code=135`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "Code=135",
+    "explanation": "code stores the string 135. The quoted prefix is followed immediately by the variable value.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-003",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q24",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT 95",
+    "options": [
+      {
+        "id": "a",
+        "text": "`\"95\"`"
+      },
+      {
+        "id": "b",
+        "text": "`95`"
+      },
+      {
+        "id": "c",
+        "text": "`9 5`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "95",
+    "explanation": "95 is an unquoted numeric literal, so its value is printed.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-004",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q25",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE n : STRING\nn ← \"95\"\nOUTPUT n, 5",
+    "options": [
+      {
+        "id": "a",
+        "text": "`100`"
+      },
+      {
+        "id": "b",
+        "text": "`955`"
+      },
+      {
+        "id": "c",
+        "text": "`95 5`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "955",
+    "explanation": "The stored text 95 and the number 5 are displayed next to each other, not added.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-005",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q26",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE x : INTEGER\nx ← 7\nOUTPUT x, \"5\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`75`"
+      },
+      {
+        "id": "b",
+        "text": "`12`"
+      },
+      {
+        "id": "c",
+        "text": "`7 5`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "75",
+    "explanation": "The value of x is 7; the quoted character 5 follows without a space.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-006",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q27",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE letter : CHAR\nletter ← '5'\nOUTPUT \"Digit:\", letter",
+    "options": [
+      {
+        "id": "a",
+        "text": "`Digit:'5'`"
+      },
+      {
+        "id": "b",
+        "text": "`Digit:5`"
+      },
+      {
+        "id": "c",
+        "text": "`Digit:letter`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "Digit:5",
+    "explanation": "The CHAR contains 5 and the quoted prefix contains no trailing space.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-007",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q28",
+    "prompt": "What will happen?",
+    "code": "OUTPUT \"Hi 123'",
+    "options": [
+      {
+        "id": "a",
+        "text": "Displays `Hi 123`"
+      },
+      {
+        "id": "b",
+        "text": "Displays `\"Hi 123\"`"
+      },
+      {
+        "id": "c",
+        "text": "Displays `Hi 123'`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "invalid",
+    "resultText": "Invalid pseudocode",
+    "explanation": "The opening double quote is never closed; the final single quote does not match.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-008",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q29",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"variable\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`\"variable\"`"
+      },
+      {
+        "id": "b",
+        "text": "The value of a variable named variable"
+      },
+      {
+        "id": "c",
+        "text": "`variable`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "variable",
+    "explanation": "The quoted word is printed literally; it is not treated as a variable name.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-009",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q30",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT '@'",
+    "options": [
+      {
+        "id": "a",
+        "text": "`'@'`"
+      },
+      {
+        "id": "b",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "c",
+        "text": "`@`"
+      },
+      {
+        "id": "d",
+        "text": "`\"@\"`"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "@",
+    "explanation": "A single character in single quotes is a valid CHAR literal; its quote marks are not printed.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-010",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q31",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE qty : STRING\nqty ← \"12\"\nOUTPUT \"Qty \", qty, \"!\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`Qty 12 !`"
+      },
+      {
+        "id": "b",
+        "text": "`Qty \"12\"!`"
+      },
+      {
+        "id": "c",
+        "text": "`Qty 12!`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "Qty 12!",
+    "explanation": "The first string already includes the space after Qty; the later values follow without spaces.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-011",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q32",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT 12, 3",
+    "options": [
+      {
+        "id": "a",
+        "text": "`15`"
+      },
+      {
+        "id": "b",
+        "text": "`12 3`"
+      },
+      {
+        "id": "c",
+        "text": "`123`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "123",
+    "explanation": "Comma-separated OUTPUT items appear together, without adding or spacing them.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-012",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q33",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE value : REAL\nvalue ← 83.67\nOUTPUT \"value=\", value",
+    "options": [
+      {
+        "id": "a",
+        "text": "`value=83.67`"
+      },
+      {
+        "id": "b",
+        "text": "`83.67`"
+      },
+      {
+        "id": "c",
+        "text": "`value=\"83.67\"`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "value=83.67",
+    "explanation": "The REAL value is printed after the exact quoted prefix value=.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-013",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q34",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"83.67\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`\"83.67\"`"
+      },
+      {
+        "id": "b",
+        "text": "`83.67`"
+      },
+      {
+        "id": "c",
+        "text": "`8367`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "83.67",
+    "explanation": "Double quotes identify text, but the quote marks themselves are not printed.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-014",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q35",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT '1'",
+    "options": [
+      {
+        "id": "a",
+        "text": "`'1'`"
+      },
+      {
+        "id": "b",
+        "text": "`1`"
+      },
+      {
+        "id": "c",
+        "text": "`\"1\"`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "1",
+    "explanation": "The digit 1 is a valid CHAR literal and prints without its single quotes.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-015",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q36",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE word : STRING\nword ← \"Hello\"\nOUTPUT word, \" \", \"World\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`Hello World`"
+      },
+      {
+        "id": "b",
+        "text": "`HelloWorld`"
+      },
+      {
+        "id": "c",
+        "text": "`word World`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "Hello World",
+    "explanation": "The explicitly quoted single space separates the stored word and World.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-016",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q37",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE n : INTEGER\nn ← 95\nOUTPUT \"n\", n",
+    "options": [
+      {
+        "id": "a",
+        "text": "`9595`"
+      },
+      {
+        "id": "b",
+        "text": "`n95`"
+      },
+      {
+        "id": "c",
+        "text": "`n 95`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "n95",
+    "explanation": "The literal n is followed immediately by the stored numeric value 95.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-017",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q38",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"score\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`score`"
+      },
+      {
+        "id": "b",
+        "text": "`\"score\"`"
+      },
+      {
+        "id": "c",
+        "text": "The value of score"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "score",
+    "explanation": "A quoted variable name is plain text, irrespective of whether that variable exists.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-018",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q39",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE value : STRING\nvalue ← \"9\"\nOUTPUT \"v=\", value, 1",
+    "options": [
+      {
+        "id": "a",
+        "text": "`v=91`"
+      },
+      {
+        "id": "b",
+        "text": "`v=10`"
+      },
+      {
+        "id": "c",
+        "text": "`v=9 1`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "v=91",
+    "explanation": "The literal v=, the string value 9, and integer 1 are concatenated in output.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-019",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q40",
+    "prompt": "What will happen?",
+    "code": "OUTPUT '83.67'",
+    "options": [
+      {
+        "id": "a",
+        "text": "Displays `83.67`"
+      },
+      {
+        "id": "b",
+        "text": "Displays `'83.67'`"
+      },
+      {
+        "id": "c",
+        "text": "Displays `83`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "invalid",
+    "resultText": "Invalid pseudocode",
+    "explanation": "The literal has multiple characters between single quotes; CHAR permits only one.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-020",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q41",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"@\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`@`"
+      },
+      {
+        "id": "b",
+        "text": "`\"@\"`"
+      },
+      {
+        "id": "c",
+        "text": "`'@'`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "@",
+    "explanation": "Double-quoted @ is a STRING literal and prints as @ without quotation marks.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-021",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q42",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"A\", \"B\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`A B`"
+      },
+      {
+        "id": "b",
+        "text": "`\"A\"\"B\"`"
+      },
+      {
+        "id": "c",
+        "text": "`AB`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "AB",
+    "explanation": "Two quoted strings are printed consecutively: AB, with no automatic space.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-022",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q43",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT 1",
+    "options": [
+      {
+        "id": "a",
+        "text": "`1`"
+      },
+      {
+        "id": "b",
+        "text": "`\"1\"`"
+      },
+      {
+        "id": "c",
+        "text": "`'1'`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "1",
+    "explanation": "An unquoted integer literal 1 displays as 1.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-023",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q44",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE letter : CHAR\nletter ← 'A'\nOUTPUT letter",
+    "options": [
+      {
+        "id": "a",
+        "text": "`'A'`"
+      },
+      {
+        "id": "b",
+        "text": "`letter`"
+      },
+      {
+        "id": "c",
+        "text": "`A`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "A",
+    "explanation": "The single-quoted A is a valid CHAR value; its quotation marks are not shown.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-024",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q45",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE symbol : CHAR\nsymbol ← '@'\nOUTPUT symbol, \"@\", '@'",
+    "options": [
+      {
+        "id": "a",
+        "text": "`@@@`"
+      },
+      {
+        "id": "b",
+        "text": "`'@@@'`"
+      },
+      {
+        "id": "c",
+        "text": "`@ @ @`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "@@@",
+    "explanation": "Each of the three items is @. Commas insert no spaces.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-025",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q46",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE person : STRING\nperson ← \"Ira\"\nOUTPUT \"Hello, \", person, \"!\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`Hello,Ira!`"
+      },
+      {
+        "id": "b",
+        "text": "`Hello, Ira!`"
+      },
+      {
+        "id": "c",
+        "text": "`Hello, person!`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "Hello, Ira!",
+    "explanation": "The first literal includes a comma and a space; then Ira and ! are appended.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-026",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q47",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT 83.67",
+    "options": [
+      {
+        "id": "a",
+        "text": "`83`"
+      },
+      {
+        "id": "b",
+        "text": "`\"83.67\"`"
+      },
+      {
+        "id": "c",
+        "text": "`83.67`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "83.67",
+    "explanation": "The unquoted REAL literal 83.67 is output as a number.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-027",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q48",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"Hello \", \"there\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`Hello, there`"
+      },
+      {
+        "id": "b",
+        "text": "`Hellothere`"
+      },
+      {
+        "id": "c",
+        "text": "`Hello there`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "Hello there",
+    "explanation": "The first literal contains a trailing space, producing Hello there.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-028",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q49",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"1\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`\"1\"`"
+      },
+      {
+        "id": "b",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "c",
+        "text": "`1`"
+      },
+      {
+        "id": "d",
+        "text": "`'1'`"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "1",
+    "explanation": "The double-quoted digit is text; printing it shows 1 without quote marks.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-029",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q50",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT 3, 4",
+    "options": [
+      {
+        "id": "a",
+        "text": "`7`"
+      },
+      {
+        "id": "b",
+        "text": "`3 4`"
+      },
+      {
+        "id": "c",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "d",
+        "text": "`34`"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "output",
+    "resultText": "34",
+    "explanation": "The integers 3 and 4 are output side by side, not added.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-030",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q51",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE digit : CHAR\ndigit ← '1'\nOUTPUT digit, \"2\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`3`"
+      },
+      {
+        "id": "b",
+        "text": "`'1'2`"
+      },
+      {
+        "id": "c",
+        "text": "`12`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "12",
+    "explanation": "The CHAR digit prints as 1, followed immediately by the quoted string 2.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-031",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q52",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE code : STRING\ncode ← \"007\"\nOUTPUT code, \"-\", \"1\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`006`"
+      },
+      {
+        "id": "b",
+        "text": "`7-1`"
+      },
+      {
+        "id": "c",
+        "text": "`007-1`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "007-1",
+    "explanation": "The string 007 keeps its zeroes; the literal hyphen and 1 follow.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-032",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q53",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE grade : CHAR\ngrade ← 'A'\nOUTPUT \"Grade: \", grade",
+    "options": [
+      {
+        "id": "a",
+        "text": "`Grade:'A'`"
+      },
+      {
+        "id": "b",
+        "text": "`Grade:grade`"
+      },
+      {
+        "id": "c",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "d",
+        "text": "`Grade: A`"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "output",
+    "resultText": "Grade: A",
+    "explanation": "The first literal includes a space after the colon; then the CHAR A is printed.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-033",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q54",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE txt : STRING\ntxt ← \"10\"\nOUTPUT txt, \"5\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "`105`"
+      },
+      {
+        "id": "b",
+        "text": "`15`"
+      },
+      {
+        "id": "c",
+        "text": "`10 5`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "a",
+    "resultKind": "output",
+    "resultText": "105",
+    "explanation": "The string value 10 is printed immediately before the literal 5.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-034",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q55",
+    "prompt": "What will be displayed?",
+    "code": "OUTPUT \"n\"",
+    "options": [
+      {
+        "id": "a",
+        "text": "The value of n"
+      },
+      {
+        "id": "b",
+        "text": "`n`"
+      },
+      {
+        "id": "c",
+        "text": "`\"n\"`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "b",
+    "resultKind": "output",
+    "resultText": "n",
+    "explanation": "The identifier n appears within double quotes, so the letter n is printed.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-035",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q56",
+    "prompt": "What will happen?",
+    "code": "DECLARE x : INTEGER\nx ← 5\nOUTPUT \"Hi 123', x",
+    "options": [
+      {
+        "id": "a",
+        "text": "Displays `Hi 1235`"
+      },
+      {
+        "id": "b",
+        "text": "Displays `Hi 123, 5`"
+      },
+      {
+        "id": "c",
+        "text": "Displays `Hi 123`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "invalid",
+    "resultText": "Invalid pseudocode",
+    "explanation": "The double-quoted literal is never closed; a single quote does not close it.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-036",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q57",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE x : STRING\nx ← \"23\"\nOUTPUT \"x\", x",
+    "options": [
+      {
+        "id": "a",
+        "text": "`2323`"
+      },
+      {
+        "id": "b",
+        "text": "`x 23`"
+      },
+      {
+        "id": "c",
+        "text": "`x23`"
+      },
+      {
+        "id": "d",
+        "text": "Invalid pseudocode"
+      }
+    ],
+    "answer": "c",
+    "resultKind": "output",
+    "resultText": "x23",
+    "explanation": "The quoted letter x is followed by the stored string 23.",
+    "reviewStatus": "ok"
+  },
+  {
+    "id": "mcq-output-037",
+    "version": 1,
+    "sourceId": "four-lessons",
+    "sourceRef": "Q58",
+    "prompt": "What will be displayed?",
+    "code": "DECLARE first : STRING\nDECLARE second : INTEGER\nfirst ← \"5\"\nsecond ← 5\nOUTPUT first, second",
+    "options": [
+      {
+        "id": "a",
+        "text": "Invalid pseudocode"
+      },
+      {
+        "id": "b",
+        "text": "`10`"
+      },
+      {
+        "id": "c",
+        "text": "`5 5`"
+      },
+      {
+        "id": "d",
+        "text": "`55`"
+      }
+    ],
+    "answer": "d",
+    "resultKind": "output",
+    "resultText": "55",
+    "explanation": "first is the text 5 and second is the integer 5; OUTPUT places both side by side.",
+    "reviewStatus": "ok"
+  }
+]

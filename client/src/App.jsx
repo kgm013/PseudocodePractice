@@ -11,7 +11,8 @@ import TopicPage from "./pages/TopicPage.jsx";
 import McqPage from "./pages/McqPage.jsx";
 import WrittenPage from "./pages/WrittenPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
-import { getLevel, getTopic, levelHref } from "./practice/topics.js";
+import { getLevel, getTopic } from "@shared/practice/bank.ts";
+import { levelHref } from "./practice/routes.js";
 import { useHashRoute } from "./useHashRoute.js";
 import { load, save } from "./storage.js";
 

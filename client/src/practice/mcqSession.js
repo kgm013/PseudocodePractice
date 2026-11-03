@@ -11,7 +11,8 @@ import { load, save } from "../storage.js";
 //   flagged  they marked it "Not sure" to come back to
 
 const VERSION = 1;
-const keyFor = (levelId, topicId) => `pseudo-practice:mcq:${levelId}:${topicId}`;
+// Keyed by topic id ("ol-variables"), so each level keeps its own answers for shared questions.
+const keyFor = (topicId) => `pseudo-practice:mcq:${topicId}`;
 const EMPTY = { choice: null, checked: false, skipped: false, flagged: false };
 
 /** "unanswered" | "answered" (picked, not checked) | "correct" | "wrong" | "skipped" */
@@ -35,15 +36,15 @@ export function summarise(questions, answers) {
   return counts;
 }
 
-function readSession(levelId, topicId) {
-  const saved = load(keyFor(levelId, topicId), null, sessionStorage);
+function readSession(topicId) {
+  const saved = load(keyFor(topicId), null, sessionStorage);
   if (!saved || saved.version !== VERSION || typeof saved.answers !== "object") return { answers: {}, position: null };
   return { answers: saved.answers, position: typeof saved.position === "string" ? saved.position : null };
 }
 
 /** Progress for a topic without subscribing to changes (for topic lists). */
-export function readTopicSummary(levelId, topicId, questions) {
-  return summarise(questions, readSession(levelId, topicId).answers);
+export function readTopicSummary(topicId, questions) {
+  return summarise(questions, readSession(topicId).answers);
 }
 
 function reducer(state, action) {
@@ -91,12 +92,12 @@ function reducer(state, action) {
 }
 
 /** Session state for one topic's multiple choice, saved as it changes. */
-export function useMcqSession(levelId, topicId) {
-  const [state, dispatch] = useReducer(reducer, null, () => readSession(levelId, topicId));
+export function useMcqSession(topicId) {
+  const [state, dispatch] = useReducer(reducer, null, () => readSession(topicId));
 
   useEffect(() => {
-    save(keyFor(levelId, topicId), { version: VERSION, ...state }, sessionStorage);
-  }, [levelId, topicId, state]);
+    save(keyFor(topicId), { version: VERSION, ...state }, sessionStorage);
+  }, [topicId, state]);
 
   const actions = {
     choose: useCallback((id, choice) => dispatch({ type: "choose", id, choice }), []),

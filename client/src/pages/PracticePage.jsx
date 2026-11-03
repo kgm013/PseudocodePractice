@@ -1,8 +1,8 @@
 import Breadcrumbs from "../components/Breadcrumbs.jsx";
 import InlineCode from "../components/InlineCode.jsx";
 import Segmented from "../components/Segmented.jsx";
-import { topicHref } from "../practice/topics.js";
-import { getMcqs } from "../practice/mcqs.js";
+import { getMcqs, getTopics } from "@shared/practice/bank.ts";
+import { topicHref } from "../practice/routes.js";
 import { readTopicSummary } from "../practice/mcqSession.js";
 import { useQuestionType } from "../practice/prefs.js";
 
@@ -33,7 +33,7 @@ export default function PracticePage({ level }) {
           <Segmented label="Question type" options={TYPE_OPTIONS} value={type} onChange={setType} />
         </div>
         <ol className="topic-list">
-          {level.topics.map((topic, i) => (
+          {getTopics(level.id).map((topic, i) => (
             <li key={topic.id}>
               <TopicRow level={level} topic={topic} number={i + 1} type={type} />
             </li>
@@ -45,7 +45,7 @@ export default function PracticePage({ level }) {
 }
 
 function TopicRow({ level, topic, number, type }) {
-  const mcqs = getMcqs(level.id, topic.id);
+  const mcqs = getMcqs(topic.id);
   const unavailable = type === "mcq" && mcqs.length === 0;
 
   const body = (
@@ -78,7 +78,7 @@ function TopicRow({ level, topic, number, type }) {
     );
   }
   return (
-    <a className="topic-row" href={`${topicHref(level.id, topic.id)}/${type}`}>
+    <a className="topic-row" href={`${topicHref(level.id, topic.slug)}/${type}`}>
       {body}
     </a>
   );
@@ -86,7 +86,7 @@ function TopicRow({ level, topic, number, type }) {
 
 function McqMeta({ level, topic, mcqs }) {
   if (mcqs.length === 0) return <span className="meta-quiet">No multiple choice yet</span>;
-  const s = readTopicSummary(level.id, topic.id, mcqs);
+  const s = readTopicSummary(topic.id, mcqs);
   if (s.finished) {
     return (
       <span className="meta-pill is-done">
