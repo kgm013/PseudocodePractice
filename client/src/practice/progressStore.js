@@ -52,6 +52,7 @@ export function summariseWritten(questions, entries) {
   c.checked = c.correct + c.wrong;
   c.done = c.correct + c.skipped;
   c.finished = c.total > 0 && c.done === c.total;
+  c.progressKind = "solved";
   return c;
 }
 

@@ -77,7 +77,7 @@ function McqMeta({ topic, mcqs }) {
       </span>
     );
   }
-  if (s.done > 0) return <span className="meta-pill">{s.done}/{s.total} MCQs done</span>;
+  if (s.done > 0) return <span className="meta-pill">{s.checked}/{s.total} MCQs answered</span>;
   return <span className="meta-quiet">{mcqs.length} MCQs</span>;
 }
 

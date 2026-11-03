@@ -927,6 +927,25 @@
   border-top: 1px solid var(--border);
 }
 
+.question-filters {
+  margin-bottom: 18px;
+}
+
+.question-filters .review-chips {
+  padding-top: 0;
+  border-top: none;
+}
+
+.filter-help {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.question-filters .review-chip.is-active {
+  background: var(--accent-soft);
+}
+
 .review-chips-label {
   margin-right: 2px;
   color: var(--muted);

@@ -12,6 +12,8 @@ export function verdict(counts) {
 
 /** Results for the topic, with ways back into the questions that need another look. */
 const McqSummary = forwardRef(function McqSummary({ counts, onReview, onRestart, onBack, next, otherHref, otherLabel = "Written questions", verdictFor = verdict, showFlagged = true }, headingRef) {
+  const written = counts.progressKind === "solved";
+  const remaining = counts.total - (written ? counts.correct : counts.done);
   return (
     <section className="mcq-summary" aria-labelledby="mcq-summary-title">
       <h2 id="mcq-summary-title" ref={headingRef} tabIndex={-1}>
@@ -19,16 +21,16 @@ const McqSummary = forwardRef(function McqSummary({ counts, onReview, onRestart,
       </h2>
       <p className="summary-score">
         <span className="summary-big">{counts.correct}</span>
-        <span> of {counts.total} correct</span>
+        <span> of {counts.total} {written ? "solved" : "correct"}</span>
       </p>
       <p className="summary-verdict">{verdictFor(counts)}</p>
 
       <ul className="summary-stats">
         <li className="is-correct">
-          <strong>{counts.correct}</strong> correct
+          <strong>{counts.correct}</strong> {written ? "solved" : "correct"}
         </li>
         <li className="is-wrong">
-          <strong>{counts.wrong}</strong> wrong
+          <strong>{counts.wrong}</strong> {written ? "not right yet" : "incorrect"}
         </li>
         <li className="is-skipped">
           <strong>{counts.skipped}</strong> skipped
@@ -41,9 +43,9 @@ const McqSummary = forwardRef(function McqSummary({ counts, onReview, onRestart,
       </ul>
 
       <div className="summary-actions">
-        {counts.total - counts.done > 0 && (
+        {remaining > 0 && (
           <button type="button" className="button-primary" onClick={() => onReview("todo")}>
-            Answer the {counts.total - counts.done} left
+            {written ? `Review ${remaining} not solved` : `Answer the ${remaining} left`}
           </button>
         )}
         {counts.wrong > 0 && (

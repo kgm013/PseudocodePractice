@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import McqNavigator, { McqLegend, McqProgress } from "./McqNavigator.jsx";
 import { verdict } from "./McqSummary.jsx";
+import { progressInfo } from "@shared/practice/presentation.ts";
 
 /**
  * "Several at once": everything about your progress in one place.
@@ -30,26 +31,13 @@ export default function McqPanel({ counts, questions, answers, onGo, onPage, fir
   }, [firstOnPage]);
 
   const showCheckAll = checkAll.show && !counts.finished;
+  const { value, label } = progressInfo(counts);
 
   return (
     <aside className={`mcq-panel${expanded ? " is-expanded" : ""}${counts.finished ? " is-finished" : ""}`} aria-label="Progress">
       <div className="mcq-panel-bar">
         <p className="mcq-panel-short">
-          {counts.finished ? (
-            <>
-              <strong>
-                {counts.correct}/{counts.total}
-              </strong>{" "}
-              correct
-            </>
-          ) : (
-            <>
-              <strong>
-                {counts.done}/{counts.total}
-              </strong>{" "}
-              done
-            </>
-          )}
+          <strong>{value}/{counts.total}</strong> {label}
         </p>
         <McqProgress counts={counts} />
         <McqNavigator questions={questions} answers={answers} onGo={onGo} onPage={onPage} legend={false} listRef={listRef} statusOf={statusOf} />
@@ -75,24 +63,25 @@ export default function McqPanel({ counts, questions, answers, onGo, onPage, fir
 
       <div className="mcq-panel-body" id="mcq-panel-body">
         {counts.finished && <PanelResults counts={counts} {...results} />}
-        <McqLegend />
+        <McqLegend written={counts.progressKind === "solved"} />
         {filters}
       </div>
 
       <p className="visually-hidden" role="status">
-        {counts.finished ? `All done: ${counts.correct} of ${counts.total} correct.` : ""}
+        {counts.finished ? `Results: ${counts.correct} of ${counts.total} ${label === "solved" ? "solved" : "correct"}.` : ""}
       </p>
     </aside>
   );
 }
 
 function PanelResults({ counts, onRetryWrong, onRestart, next, otherHref, otherLabel = "Written questions", verdictFor = verdict }) {
+  const written = counts.progressKind === "solved";
   return (
     <section className="mcq-panel-results" aria-labelledby="mcq-panel-results-title">
       <h2 id="mcq-panel-results-title">Results</h2>
       <p className="summary-score">
         <span className="summary-big">{counts.correct}</span>
-        <span> of {counts.total} correct</span>
+        <span> of {counts.total} {written ? "solved" : "correct"}</span>
       </p>
       <p className="summary-verdict">{verdictFor(counts)}</p>
       <div className="mcq-panel-results-actions">

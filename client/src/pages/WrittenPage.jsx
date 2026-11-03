@@ -13,23 +13,17 @@ import { summariseWritten, useWrittenProgress, writtenStatus } from "../practice
 import { useWrittenChecker } from "../practice/useWrittenChecker.js";
 import { AUTO_ADVANCE_DELAYS, PER_PAGE_OPTIONS, useWrittenPrefs } from "../practice/prefs.js";
 import { TopicPager } from "./TopicPage.jsx";
+import { matchesFilters, toggleFilter } from "@shared/practice/presentation.ts";
 
 const VIEW_OPTIONS = [
   { value: "single", label: "One at a time" },
   { value: "list", label: "Several at once" },
 ];
 
-const REVIEW_TEXT = {
-  todo: (n) => `Showing the ${n} question${n === 1 ? "" : "s"} you haven't solved yet.`,
-  wrong: (n) => `Showing the ${n} question${n === 1 ? "" : "s"} you haven't got right yet.`,
-  skipped: (n) => `Showing the ${n} question${n === 1 ? "" : "s"} you skipped.`,
-  flagged: (n) => `Showing the ${n} question${n === 1 ? "" : "s"} you marked "Not sure".`,
-};
-
 const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 function writtenVerdict(counts) {
-  if (!counts.finished) return `${counts.total - counts.done} still to solve.`;
+  if (!counts.finished) return `${counts.total - counts.correct} still to solve.`;
   if (counts.correct === counts.total) return "Every question solved. Well done.";
   if (counts.correct === 0) return "You skipped them all. Have a go when you're ready.";
   return `You solved ${counts.correct} and skipped ${counts.skipped}. Come back to the skipped ones when you're ready.`;
@@ -48,7 +42,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
   const [checking, setChecking] = useState({}); // question id → true while marking
   const [position, setPosition] = useState(null); // "one at a time": question id, or "results"
   const [page, setPage] = useState(0); // "several at once" page
-  const [review, setReview] = useState(null); // { kind, ids }
+  const [activeFilters, setActiveFilters] = useState([]);
   const [revealFor, setRevealFor] = useState(null); // question id the reveal dialog is asking about
   const [resetKey, setResetKey] = useState(0); // rebuilds the editors after Reset
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -63,7 +57,7 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
   const base = topicHref(level.id, topic.slug);
   const statusOf = (q, e) => writtenStatus(e, q.starterCode);
   const counts = summariseWritten(questions, entries);
-  const sequence = review ? questions.filter((q) => review.ids.includes(q.id)) : questions;
+  const sequence = questions.filter((q) => matchesFilters(statusOf(q, entries[q.id]), Boolean(entries[q.id]?.flagged), activeFilters, true));
   const perPage = prefs.perPage || sequence.length || 1;
   const pageCount = Math.max(1, Math.ceil(sequence.length / perPage));
   const safePage = Math.min(page, pageCount - 1);
@@ -128,14 +122,14 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
     if (hasAnswer && (countAttempt || result.correct)) progress.recordCheck(q.id, result.correct, q.version);
     setResults((r) => ({ ...r, [q.id]: result }));
     setChecking((c) => ({ ...c, [q.id]: false }));
-    if (activeQuestionRef.current === q.id && countAttempt && hasAnswer && result.correct && prefs.autoAdvance) {
+    if (activeQuestionRef.current === q.id && countAttempt && hasAnswer && result.correct && prefs.autoAdvance && matchesFilters("correct", Boolean(entries[q.id]?.flagged), activeFilters, true)) {
       setCountdown({ id: q.id, ms: prefs.delay * 1000, key: Date.now() });
     }
     return result;
   };
 
   // Code written but not checked yet, across the topic.
-  const pending = questions.filter((q) => statusOf(q, entries[q.id]) === "answered");
+  const pending = sequence.filter((q) => statusOf(q, entries[q.id]) === "answered");
   const checkAll = async () => {
     for (const q of pending) await runCheck(q, codes.current[q.id] ?? entries[q.id]?.lastCode ?? "");
   };
@@ -171,8 +165,8 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
   const goPrev = () => index > 0 && goTo(sequence[index - 1].id);
 
   const goToQuestion = (id) => {
-    const list = review && !review.ids.includes(id) ? questions : sequence;
-    if (list === questions && review) setReview(null);
+    const list = sequence.some((q) => q.id === id) ? sequence : questions;
+    if (list === questions) setActiveFilters([]);
     if (single) goTo(id);
     else {
       setPage(Math.max(0, Math.floor(list.findIndex((q) => q.id === id) / perPage)));
@@ -181,20 +175,13 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
     if (!single) setPosition(id);
   };
 
-  const reviewBy = (kind) => {
-    const pick = {
-      todo: (s) => s !== "correct" && s !== "skipped",
-      wrong: (s) => s === "wrong",
-      skipped: (s) => s === "skipped",
-      flagged: (s, e) => Boolean(e?.flagged),
-    }[kind];
-    if (!pick) return;
-    const ids = questions.filter((q) => pick(statusOf(q, entries[q.id]), entries[q.id])).map((q) => q.id);
-    if (!ids.length) return;
-    setReview({ kind, ids });
+  const applyFilters = (filters) => {
+    setActiveFilters(filters);
     setPage(0);
-    goTo(ids[0]);
+    const first = questions.find((q) => matchesFilters(statusOf(q, entries[q.id]), Boolean(entries[q.id]?.flagged), filters, true));
+    goTo(first?.id ?? null);
   };
+  const reviewBy = (kind) => applyFilters([kind]);
 
   const skip = (q) => {
     progress.skip(q.id);
@@ -204,9 +191,9 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
   const resetTopic = () => {
     if (!window.confirm("Clear your code and progress for every question in this topic?")) return;
     progress.reset(questions.map((q) => q.id));
+    setActiveFilters([]);
     codes.current = {};
     setResults({});
-    setReview(null);
     setPage(0);
     setCountdown(null);
     setResetKey((k) => k + 1);
@@ -248,8 +235,9 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
     <ReviewChips
       counts={counts}
       todoLabel="Not solved"
-      onReview={reviewBy}
-      active={review?.kind}
+      onReview={(kind) => applyFilters(toggleFilter(activeFilters, kind))}
+      active={activeFilters}
+      onClear={() => applyFilters([])}
     />
   );
 
@@ -310,13 +298,13 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
             currentId={atResults ? null : current?.id}
             onGo={goToQuestion}
             statusOf={statusOf}
-            filters={filters}
             labels={{ correct: "solved", wrong: "not right yet", skipped: "skipped", flagged: "not sure" }}
           />
         </aside>
       )}
 
       <div className="page-main">
+      {filters}
       {settingsOpen && (
         <div className="mcq-settings" id="written-settings">
           {single ? (
@@ -345,16 +333,13 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
           <div className="setting-foot"><p>Settings are saved on this device. Your code and progress stay until you press Reset.</p></div>
         </div>
       )}
-      {review && (
-        <div className="review-banner" role="status">
-          <span>{REVIEW_TEXT[review.kind](review.ids.length)}</span>
-          <button type="button" className="link-button" onClick={() => setReview(null)}>
-            Show all questions
-          </button>
-        </div>
-      )}
-
-      {single ? (
+      {sequence.length === 0 ? (
+        <section className="empty-state" role="status">
+          <h2>No questions match these filters</h2>
+          <p>Select another group or show all questions.</p>
+          <button type="button" className="button-secondary" onClick={() => applyFilters([])}>Show all questions</button>
+        </section>
+      ) : single ? (
         atResults || !current ? (
           <McqSummary
             counts={counts}
@@ -379,7 +364,6 @@ export default function WrittenPage({ entry, onOpenCompiler }) {
             onPage={new Set(shown.map((q) => q.id))}
             firstOnPage={shown[0]?.id}
             checkAll={{ show: true, pending: pending.length, onClick: checkAll }}
-            filters={filters}
             results={{ onRetryWrong: () => reviewBy("wrong"), onRestart: resetTopic, next: nextTopic, verdictFor: writtenVerdict, ...other }}
           />
           <div className="mcq-split-main">

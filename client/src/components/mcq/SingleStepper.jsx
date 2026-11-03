@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import McqNavigator, { McqLegend, McqProgress } from "./McqNavigator.jsx";
+import { progressInfo } from "@shared/practice/presentation.ts";
 
-const DEFAULT_LABELS = { correct: "correct", wrong: "wrong", skipped: "skipped", flagged: "not sure" };
+const DEFAULT_LABELS = { correct: "correct", wrong: "incorrect", skipped: "skipped", flagged: "not sure" };
 
 /**
  * "One at a time": a slim progress strip above the question. How far you are, a thin bar,
@@ -21,12 +22,13 @@ export default function SingleStepper({ counts, questions, answers, currentId, o
   }, [currentId]);
 
   const stats = ["correct", "wrong", "skipped", "flagged"].filter((k) => counts[k] > 0);
+  const { value, label } = progressInfo(counts);
 
   return (
     <section className="stepper" aria-label="Progress">
       <div className="stepper-top">
         <p className="stepper-done">
-          <strong>{counts.done}</strong> of {counts.total} done
+          <strong>{value}</strong> of {counts.total} {label}
         </p>
         {stats.length > 0 && (
           <ul className="stepper-stats">
@@ -50,7 +52,7 @@ export default function SingleStepper({ counts, questions, answers, currentId, o
       />
       <div className="stepper-foot">
         {filters}
-        <McqLegend flagged={Boolean(labels.flagged)} />
+        <McqLegend flagged={Boolean(labels.flagged)} written={counts.progressKind === "solved"} />
       </div>
     </section>
   );

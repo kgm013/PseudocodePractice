@@ -44,7 +44,7 @@ export default function TopicPage({ entry }) {
               <span className="meta-quiet">{mcqs.length} questions</span>
               {progress?.done > 0 && (
                 <span className={`meta-pill${progress.finished ? " is-done" : ""}`}>
-                  {progress.finished ? `${progress.correct}/${progress.total} correct` : `${progress.done}/${progress.total} done`}
+                  {progress.finished ? `${progress.correct}/${progress.total} correct` : `${progress.checked}/${progress.total} answered`}
                 </span>
               )}
               <span className="mode-card-go" aria-hidden="true">

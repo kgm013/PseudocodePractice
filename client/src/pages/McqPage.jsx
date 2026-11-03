@@ -11,6 +11,7 @@ import { countMcqs, getMcqs } from "@shared/practice/bank.ts";
 import { levelHref, topicHref } from "../practice/routes.js";
 import { statusOf, summarise, useMcqSession } from "../practice/mcqSession.js";
 import { useMcqPrefs } from "../practice/prefs.js";
+import { matchesFilters, toggleFilter } from "@shared/practice/presentation.ts";
 
 const VIEW_OPTIONS = [
   { value: "single", label: "One at a time" },
@@ -26,13 +27,6 @@ const REVIEW_TEXT = {
   retry: (n) => `Trying the ${plural(n, "question")} you got wrong again.`,
 };
 
-const REVIEW_PICK = {
-  todo: (status) => status === "unanswered" || status === "answered",
-  wrong: (status) => status === "wrong",
-  skipped: (status) => status === "skipped",
-  flagged: (status, entry) => Boolean(entry?.flagged),
-};
-
 const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 /** A topic's multiple-choice questions, one at a time or several per page. */
@@ -44,6 +38,7 @@ export default function McqPage({ entry }) {
   const { answers } = session;
 
   const [review, setReview] = useState(null); // { kind, ids }: a fixed set to go back over
+  const [activeFilters, setActiveFilters] = useState([]);
   const [page, setPage] = useState(0); // "several at once" page
   const [countdown, setCountdown] = useState(null); // { id, ms, key }: auto-advance in progress
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -52,7 +47,7 @@ export default function McqPage({ entry }) {
 
   const base = topicHref(level.id, topic.slug);
   const counts = summarise(questions, answers);
-  const sequence = review ? questions.filter((q) => review.ids.includes(q.id)) : questions;
+  const sequence = questions.filter((q) => review ? review.ids.includes(q.id) : matchesFilters(statusOf(q, answers[q.id]), Boolean(answers[q.id]?.flagged), activeFilters));
   const single = prefs.view === "single";
 
   // One at a time: which question is showing. Without a saved position, resume at the first one not done.
@@ -71,7 +66,7 @@ export default function McqPage({ entry }) {
   const safePage = Math.min(page, pageCount - 1);
   const shown = sequence.slice(safePage * perPage, safePage * perPage + perPage);
   // Picked but not checked yet, across the whole topic (what "Check all" checks).
-  const pending = questions.filter((q) => statusOf(q, answers[q.id]) === "answered");
+  const pending = sequence.filter((q) => statusOf(q, answers[q.id]) === "answered");
 
   // Move focus (and scroll if needed) after navigation, so keyboard and screen reader users follow along.
   useEffect(() => {
@@ -145,6 +140,10 @@ export default function McqPage({ entry }) {
       setReview(null);
       list = questions;
     }
+    if (activeFilters.length && !sequence.some((q) => q.id === id)) {
+      setActiveFilters([]);
+      list = questions;
+    }
     if (single) goTo(id);
     else {
       setPage(pageOf(id, list));
@@ -155,14 +154,22 @@ export default function McqPage({ entry }) {
 
   const startReview = (kind, ids) => {
     if (!ids.length) return;
+    setActiveFilters([]);
     setReview({ kind, ids });
     setPage(0);
     if (single) goTo(ids[0]);
     else focusTarget.current = ids[0];
   };
 
-  const reviewBy = (kind) =>
-    startReview(kind, questions.filter((q) => REVIEW_PICK[kind](statusOf(q, answers[q.id]), answers[q.id])).map((q) => q.id));
+  const applyFilters = (filters) => {
+    setActiveFilters(filters);
+    setReview(null);
+    setCountdown(null);
+    setPage(0);
+    const first = questions.find((q) => matchesFilters(statusOf(q, answers[q.id]), Boolean(answers[q.id]?.flagged), filters));
+    session.setPosition(first?.id ?? null);
+  };
+  const reviewBy = (kind) => applyFilters([kind]);
 
   const retryWrong = () => {
     const ids = questions.filter((q) => statusOf(q, answers[q.id]) === "wrong").map((q) => q.id);
@@ -173,6 +180,7 @@ export default function McqPage({ entry }) {
   const endReview = () => {
     const keep = single ? current?.id : shown[0]?.id;
     setReview(null);
+    setActiveFilters([]);
     if (!single && keep) setPage(pageOf(keep, questions));
   };
 
@@ -182,6 +190,7 @@ export default function McqPage({ entry }) {
   const clearAnswers = () => {
     if (!window.confirm("Clear all your answers for this topic and start again?")) return;
     session.reset();
+    setActiveFilters([]);
     setReview(null);
     setPage(0);
     setCountdown(null);
@@ -194,7 +203,7 @@ export default function McqPage({ entry }) {
     if (view === "list") {
       const anchor = current?.id ?? sequence[0]?.id;
       if (anchor) setPage(pageOf(anchor, sequence));
-    } else if (counts.finished) {
+    } else if (counts.finished && !activeFilters.length && !review) {
       session.setPosition("results");
     } else if (shown[0]) {
       // Pick up where they were: the question they last touched on this page, else its first question.
@@ -216,7 +225,8 @@ export default function McqPage({ entry }) {
   // ---- Answering --------------------------------------------------------
 
   const afterCheck = (q, choice) => {
-    if (single && prefs.autoAdvance && (choice === q.answer || !prefs.waitWhenWrong)) {
+    const stillVisible = matchesFilters(choice === q.answer ? "correct" : "wrong", Boolean(answers[q.id]?.flagged), activeFilters);
+    if (single && stillVisible && prefs.autoAdvance && (choice === q.answer || !prefs.waitWhenWrong)) {
       setCountdown({ id: q.id, ms: prefs.delay * 1000, key: Date.now() });
     }
   };
@@ -306,7 +316,6 @@ export default function McqPage({ entry }) {
       answers={answers}
       currentId={atResults ? null : current?.id}
       onGo={goToQuestion}
-      filters={<ReviewChips counts={counts} onReview={reviewBy} active={review?.kind} />}
     />
   );
 
@@ -364,6 +373,7 @@ export default function McqPage({ entry }) {
       )}
 
       <div className="page-main">
+      <ReviewChips counts={counts} active={activeFilters} onReview={(kind) => applyFilters(toggleFilter(activeFilters, kind))} onClear={() => applyFilters([])} />
       {settingsOpen && <McqSettings id="mcq-settings" prefs={prefs} onChange={changePrefs} />}
 
       {review && (
@@ -375,7 +385,13 @@ export default function McqPage({ entry }) {
         </div>
       )}
 
-      {single ? (
+      {sequence.length === 0 ? (
+        <section className="empty-state" role="status">
+          <h2>No questions match these filters</h2>
+          <p>Select another group or show all questions.</p>
+          <button type="button" className="button-secondary" onClick={() => applyFilters([])}>Show all questions</button>
+        </section>
+      ) : single ? (
         atResults || !current ? (
           summary
         ) : (
@@ -408,7 +424,6 @@ export default function McqPage({ entry }) {
             onPage={new Set(shown.map((q) => q.id))}
             firstOnPage={shown[0]?.id}
             checkAll={{ show: !prefs.instantCheck, pending: pending.length, onClick: checkAll }}
-            filters={<ReviewChips counts={counts} onReview={reviewBy} active={review?.kind} />}
             results={{ onRetryWrong: retryWrong, onRestart: clearAnswers, next: nextTopic, otherHref: base, otherLabel: "Topic overview" }}
           />
           <div className="mcq-split-main">

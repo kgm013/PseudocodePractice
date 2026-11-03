@@ -1,4 +1,5 @@
 import { statusOf as mcqStatusOf } from "../../practice/mcqSession.js";
+import { progressInfo } from "@shared/practice/presentation.ts";
 
 const STATUS_WORDS = {
   unanswered: "not answered",
@@ -43,11 +44,11 @@ export default function McqNavigator({ questions, answers, currentId, onGo, onPa
 }
 
 /** What the colours on the question numbers mean. */
-export function McqLegend({ flagged = true }) {
+export function McqLegend({ flagged = true, written = false }) {
   return (
     <ul className="mcq-legend" aria-hidden="true">
-      <li><span className="swatch is-correct" /> Correct</li>
-      <li><span className="swatch is-wrong" /> Wrong</li>
+      <li><span className="swatch is-correct" /> {written ? "Solved" : "Correct"}</li>
+      <li><span className="swatch is-wrong" /> {written ? "Not right yet" : "Incorrect"}</li>
       <li><span className="swatch is-skipped" /> Skipped</li>
       {flagged && <li><span className="swatch is-flagged" /> Not sure</li>}
     </ul>
@@ -56,33 +57,33 @@ export function McqLegend({ flagged = true }) {
 
 /** A bar split into correct / wrong / skipped, with a one-line count. */
 export function McqProgress({ counts }) {
-  const pct = (n) => `${(n / counts.total) * 100}%`;
+  const { value, label, written } = progressInfo(counts);
+  const pct = (n) => `${counts.total ? (n / counts.total) * 100 : 0}%`;
   return (
     <div className="mcq-progress">
       <div
         className="mcq-progress-bar"
         role="progressbar"
-        aria-label="Questions done"
+        aria-label={`Questions ${label}`}
         aria-valuemin={0}
         aria-valuemax={counts.total}
-        aria-valuenow={counts.done}
+        aria-valuenow={value}
       >
         <span className="seg is-correct" style={{ width: pct(counts.correct) }} />
-        <span className="seg is-wrong" style={{ width: pct(counts.wrong) }} />
-        <span className="seg is-skipped" style={{ width: pct(counts.skipped) }} />
+        {!written && <span className="seg is-wrong" style={{ width: pct(counts.wrong) }} />}
       </div>
       <p className="mcq-progress-text">
         <strong>
-          {counts.done} of {counts.total}
+          {value} of {counts.total}
         </strong>{" "}
-        done
-        {counts.checked > 0 && (
+        {label}
+        {!written && counts.checked > 0 && (
           <>
             {" · "}
             {counts.correct} correct
           </>
         )}
-        {counts.wrong > 0 && <> · {counts.wrong} wrong</>}
+        {counts.wrong > 0 && <> · {counts.wrong} {written ? "not right yet" : "incorrect"}</>}
         {counts.skipped > 0 && <> · {counts.skipped} skipped</>}
         {counts.flagged > 0 && <> · {counts.flagged} not sure</>}
       </p>
